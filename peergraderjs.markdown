@@ -68,7 +68,7 @@ The code is open source and open license, thus hackable.
 The
 
 ### License
-CC-BY-SA-4 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIparis)
+CC-BY-SA-NC-4.0 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIparis)
 
 A system developed under the benevolent guidance of Antoine Taly and the CRI.
 
