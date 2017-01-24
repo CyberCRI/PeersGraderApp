@@ -4,10 +4,15 @@ PeerGraderJS
 
 **PeerGradesJS** is an accessible process to allow peer grading activities among a class of users, collect dozens or hundreds evaluations, and calculates grades received from other peers, from teachers, as well as the seriousness of the grades given to other peers. The system is Open Source and Open License.
 
-The current version (v.0.3) is based on Google Forms, Google SpreadSheet, Codepen.io, TableTop.js, D3js (v.3), JQuery and Javascript.
+<p align="center">
+  <img width="400px" src="https://github.com/CyberCRI/PeerGradersJS/blob/master/img/PeerGraderJS-Class10-ani-900px-legend.gif?raw=true" alt="Schematic image"/>
+</p>
 
 ### Versions
-* -- CURRENT
+The current version (v.0.2.2).
+
+### Technologies
+Version v.0.2.2 is based on Google Forms/Google SpreadSheet, JS (TableTop.js, JQuery, D3js), and Github pages.
 
 ### Human requirements
 For out of the box usage:
@@ -54,7 +59,7 @@ Before the workshop, test this process. Answer 6 times to your questionnaire,
 * **PeerGrades** : grades a student receives from all his/her peer, averaged.
 * **ProfGrades** : grades a student receives from all his/her professors, averaged. If no professor specifically graded the student, the student inherit professor's grade from its group.
 * **Normalness** (aka seriousness as grader): compare the student A's grades given to others students with others similar gradings. If the grades is too far off, the students was not a normal teacher, and his/her normalness score get lower. If distance from the mean grade is 1pts : normalness is 20/20, 2pts : 18, 4pts : 16, 8pts : 10, more 0/20. So, if student B receive a mean evaluation of 16/20, but A gives 15/20, A get a normalness of 20/20. If student B receive a mean evaluation of 16/20 from others, but A gives 7/20, A is a very strange teacher and A get a normalness of 0/20.
-* **FinalScore** : the final grade of the student for this workshop. The default calculation being : `FinalScore = (PeerGrades * 0.25 + ProfGrades * 0.50 + Normalness * 0.25)`.`
+* **FinalScore** : the final grade of the student for this workshop. The default calculation being : `FinalScore = (PeerGrades * 0.25 + ProfGrades * 0.50 + Normalness * 0.25)`.
 
 To hack this process, collaborate with a junior or senior Javascript developer.
 
@@ -70,7 +75,6 @@ CC-BY-SA-NC-4.0 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIp
 
 A system developed under the benevolent guidance of Antoine Taly and the CRI.
 
-
+<!-- 
 A [Pen](http://codepen.io/hugolpz/pen/BpLPQb) by [Lopez Hugo](http://codepen.io/hugolpz) on [CodePen](http://codepen.io/).
-
-[License](http://codepen.io/hugolpz/pen/BpLPQb/license).
+[License](http://codepen.io/hugolpz/pen/BpLPQb/license). -->
