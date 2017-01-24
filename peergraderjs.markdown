@@ -60,12 +60,10 @@ To hack this process, collaborate with a junior or senior Javascript developer.
 
 ### How to run a workshop? (default)
 
-
 To hack this process, collaborate with a junior or senior Javascript developer.
 
 ### Hacking
 The code is open source and open license, thus hackable.
-The
 
 ### License
 CC-BY-SA-NC-4.0 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIparis)
@@ -73,6 +71,6 @@ CC-BY-SA-NC-4.0 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIp
 A system developed under the benevolent guidance of Antoine Taly and the CRI.
 
 
-A [Pen](https://codepen.io/hugolpz/pen/BpLPQb) by [Lopez Hugo](http://codepen.io/hugolpz) on [CodePen](http://codepen.io/).
+A [Pen](http://codepen.io/hugolpz/pen/BpLPQb) by [Lopez Hugo](http://codepen.io/hugolpz) on [CodePen](http://codepen.io/).
 
-[License](https://codepen.io/hugolpz/pen/BpLPQb/license).
+[License](http://codepen.io/hugolpz/pen/BpLPQb/license).

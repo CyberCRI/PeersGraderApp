@@ -364,12 +364,13 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
   var seriousnessAssessment = function(a, b, bonus, counter){ 
     var distance = Math.abs(a - b),
         bump = 0;
-    if      (distance< 1) { bump=20; }
-    else if (distance< 2) { bump=16; }
-    else if (distance< 4) { bump=10; }
-    else if (distance< 6) { bump= 6; }
+    if      (distance<= 1) { bump=20; }
+    else if (distance<= 2) { bump=16; }
+    else if (distance<= 4) { bump=10; }
+    else if (distance<= 6) { bump= 6; }
     else { bump= 0; }
-    bonus= bonus + bump; counter= counter+1;
+    bonus= bonus + bump;
+    counter= counter+1;
     return [bonus,counter,bump]
   }
 
