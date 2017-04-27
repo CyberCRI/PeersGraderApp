@@ -3,11 +3,8 @@ PeerGraderJS
 **PeerGradersJS** is an accessible process to allow peer grading activities among a class of users, collect dozens or hundreds evaluations, and calculates grades received from other peers, from teachers, as well as the seriousness of the grades given to other peers. The system is Open Source and Open License.
 
 ### Technical side
-#### Versions
-The current version (v.0.2.2).
-
-#### Technologies
-The current version (v.0.2.2) is based on Google Forms/Google SpreadSheet, JS (TableTop.js, JQuery, D3js), and Github pages.
+**Version:** v.0.2.2.<br>
+**Stack:** Google Forms, Google SpreadSheet, TableTop.js, JQuery, D3js, Github pages.
 
 #### Code structure
 ```
@@ -22,7 +19,6 @@ The current version (v.0.2.2) is based on Google Forms/Google SpreadSheet, JS (T
 **Note:** don't change anything if you are not a web developer. 
 To hack this process, collaborate with a junior or senior Javascript developer.
 
-
 ### Activity / Teaching side
 #### Basic scheme
 The current version helps to collect all the evaluations' datum, to process them, and to provide to the teacher.s the students' final grades. The activity set up is still to organize by the teaching team by other means. In an ideal case with a class of 30 students, 10 groups of 3 presenting their work, the students dispatch on the cycle 1/6 would looks like below : 
@@ -36,18 +32,18 @@ This rotation occurs with a minor shift for *n* cycles, the shift allows everyon
 
 #### Vocabulary
 * **Class** : your cohort of students or users.
-* **Student** : the learning users, students' judgment have normal credibility.
 * **Group** : association of students providing one single item to others, to be graded. Groups can have 1 to n members.
+* **Student** : the learning users, students' judgment have normal credibility.
 * **Professor** : the authoritative users, professors' judgment have higher credibility.
 * **Work/item** : the object being graded, it can be a poster, a PowerPoint presentation, a speech by one or several students, a drawing, an invention, etc.
 * **Cycle** : a cycle is, by default, a period made of presentation time, Q&A time, evaluation time, and move-around time. Students either present to graders or walk towar others to grades the work of a presenting group.
 
 #### Results
-* **Grading system** : the default system is .../20. 20 is best score, 0 is worst.
+* **Grading system** : `[0-20]`. 0 is worst score, 20 is best.
 * **PeerGrades** : grades a student receives from all his/her peer, averaged.
 * **ProfGrades** : grades a student receives from all his/her professors, averaged. If no professor specifically graded the student, the student inherit professor's grade from its group.
 * **Normalness** (aka seriousness as grader): compare the student A's grades given to others students with others similar gradings. If the grades is too far off, the students was not a normal teacher, and his/her normalness score get lower. If distance from the mean grade is 1pts : normalness is 20/20, 2pts : 18, 4pts : 16, 8pts : 10, more 0/20. So, if student B receive a mean evaluation of 16/20, but A gives 15/20, A get a normalness of 20/20. If student B receive a mean evaluation of 16/20 from others, but A gives 7/20, A is a very strange teacher and A get a normalness of 0/20.
-* **FinalScore** : the final grade of the student for this workshop. The default calculation being : `FinalScore = (PeerGrades * 0.25 + ProfGrades * 0.50 + Normalness * 0.25)`.
+* **FinalScore** : the final grade of the student for this workshop. The default calculation being : `FinalScore = PeerGrades * 0.25 + ProfGrades * 0.50 + Normalness * 0.25`.
 
 To hack this process, collaborate with a junior or senior Javascript developer.
 
@@ -107,7 +103,7 @@ Before the workshop, test this process. Answer 6 times to your questionnaire,
  Students G01b and G02b, never specifically graded by any professor, will inherit professor's grade from their group.
 
 ### Hacking
-The code is open source and open license, thus hackable.
+The code is open source and open license, thus hackable. As of v.0.2.2 the stack is basic, a junior Javascript developer can clone and edit it.
 
 ### License
 CC-BY-SA-NC-4.0 -- Lopez Hugo, Center for Research in Interdisciplinarity (@CRIparis)
