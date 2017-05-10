@@ -40,8 +40,8 @@ This rotation occurs with a minor shift for *n* cycles, the shift allows everyon
 
 #### Results
 * **Grading system** : `[0-20]`. 0 is worst score, 20 is best.
-* **PeerGrades** : grades a student receives from all his/her peer, averaged.
-* **ProfGrades** : grades a student receives from all his/her professors, averaged. If no professor specifically graded the student, the student inherit professor's grade from its group.
+* **PeerGrades** : grades a student receives from all his/her peer(s), averaged.
+* **ProfGrades** : grades a student receives from all his/her professor(s), averaged. If no professor specifically graded the student, the student inherit professor's grade from its group.
 * **Normalness** (aka seriousness as grader): compare the student A's grades given to others students with others similar gradings. If the grades is too far off, the students was not a normal teacher, and his/her normalness score get lower. If distance from the mean grade is 1pts : normalness is 20/20, 2pts : 18, 4pts : 16, 8pts : 10, more 0/20. So, if student B receive a mean evaluation of 16/20, but A gives 15/20, A get a normalness of 20/20. If student B receive a mean evaluation of 16/20 from others, but A gives 7/20, A is a very strange teacher and A get a normalness of 0/20.
 * **FinalScore** : the final grade of the student for this workshop. The default calculation being : `FinalScore = PeerGrades * 0.25 + ProfGrades * 0.50 + Normalness * 0.25`.
 
