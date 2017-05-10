@@ -62,8 +62,7 @@ To hack this process, collaborate with a junior or senior Javascript developer.
 ### How to set the things up (default)
 By default, we assume you have X students, organized in 6 cycles.
 
-1. Open [this google form](http://tinyurl.com/biomedpeers ) > duplicate it : you now own a copy
-2. > Go to the spreadsheet > Publish to the web > copy this long Google spreadsheet hash code
+1. Open [this google form](http://tinyurl.com/biomedpeers ) > duplicate it : you now own a copy<br>> Go to the spreadsheet > Publish to the web > copy this long Google spreadsheet hash code
 3. Open [this webcode](https://cybercri.github.io/PeerGradersJS/) > Fork it[1] > Save the URL
 4. Enter your long Google spreadsheet hash code > Your workshop data should get displayed
 
