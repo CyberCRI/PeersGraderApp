@@ -40,6 +40,7 @@ This rotation occurs with a minor shift for *n* cycles, the shift allows everyon
 * **Personal planing** : the succession of places where an individual should be, for each cycle it points to one item to review.
 * **Table of planings** : at the beggining of the *n* cycles, the table of planings displays for each student her/his personal planing.
 * **One [instance of] evaluation** : when one student grade one item. With 40 students, in groups of 4, with 6 cycles, 180 evaluations are given by students alone.
+* **Evaluation grid** : a table with skills displayed by the work/item, degree of mastery of these skills, and associated scoring for this skill at this level of mastery. Guide the student along his evaluation of his peers.
 
 #### Results
 * **Grading system** : `[0-20]`. 0 is worst score, 20 is best.
