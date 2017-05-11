@@ -1,6 +1,6 @@
-PeerGraderJS
+PeersGraderJS
 ------------
-**PeerGradersJS** is an accessible process to allow peer grading activities among a class of users, collect dozens or hundreds evaluations, and calculates grades received from other peers, from teachers, as well as the seriousness of the grades given to other peers. The system is Open Source and Open License.
+**PeersGraderJS** is an accessible process to allow peer grading activities among a class of users, collect dozens or hundreds evaluations, and calculates grades received from other peers, from teachers, as well as the seriousness of the grades given to other peers. The system is Open Source and Open License.
 
 ### Technical side
 **Version:** v.0.2.2.<br>
@@ -23,7 +23,7 @@ To hack this process, collaborate with a junior or senior Javascript developer.
 #### Basic scheme
 The current version helps to collect all the evaluations' datum, to process them, and to provide to the teacher.s the students' final grades. The activity set up is still to organize by the teaching team by other means. In an ideal case with a class of 30 students, 10 groups of 3 presenting their work, the students dispatch on the cycle 1/6 would looks like below : 
 <p align="center">
-  <img width="400px" src="https://github.com/CyberCRI/PeerGradersJS/blob/master/img/PeerGraderJS-Class10-ani-900px-legend.gif?raw=true" alt="Schematic image"/>
+  <img width="400px" src="https://github.com/CyberCRI/PeersGraderJS/blob/master/img/PeerGraderJS-Class10-ani-900px-legend.gif?raw=true" alt="Schematic image"/>
 </p>
 
 ... in addition of which each teacher also evaluate one work. 
@@ -47,7 +47,7 @@ This rotation occurs with a minor shift for *n* cycles, the shift allows everyon
 
 To hack this process, collaborate with a junior or senior Javascript developer.
 
-### How to run a Peer Grading workshop with PeerGradersJS ?
+### How to run a Peer Grading workshop with PeersGraderJS ?
 #### Requirements
 For out of the box usage:
 * teaching experience
@@ -63,7 +63,7 @@ To hack this process, collaborate with a junior or senior Javascript developer.
 By default, we assume you have X students, organized in 6 cycles.
 
 1. Open [this google form](http://tinyurl.com/biomedpeers ) > duplicate it : you now own a copy<br>> Go to the spreadsheet > Publish to the web > copy this long Google spreadsheet hash code
-3. Open [this webcode](https://cybercri.github.io/PeerGradersJS/) > Fork it[1] > Save the URL
+3. Open [this webcode](https://cybercri.github.io/PeersGraderJS/) > Fork it[1] > Save the URL
 4. Enter your long Google spreadsheet hash code > Your workshop data should get displayed
 
 #### Students' guide (template)
