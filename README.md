@@ -37,6 +37,9 @@ This rotation occurs with a minor shift for *n* cycles, the shift allows everyon
 * **Professor** : the authoritative users, professors' judgment have higher credibility.
 * **Work/item** : the object being graded, it can be a poster, a PowerPoint presentation, a speech by one or several students, a drawing, an invention, etc.
 * **Cycle** : a cycle is, by default, a period made of presentation time, Q&A time, evaluation time, and move-around time. Students either present to graders or walk towar others to grades the work of a presenting group.
+* **Personal planing** : the succession of places where an individual should be, for each cycle it points to one item to review.
+* **Table of planings** : at the beggining of the *n* cycles, the table of planings displays for each student her/his personal planing.
+* **One [instance of] evaluation** : when one student grade one item. With 40 students, in groups of 4, with 6 cycles, 180 evaluations are given by students alone.
 
 #### Results
 * **Grading system** : `[0-20]`. 0 is worst score, 20 is best.
