@@ -40,19 +40,19 @@ function sortJSON(data, key, way) {
 
 var scatterPlot = function(students){
 var data = [[5,3], [10,17], [15,4], [2,8]];
-   
+
     var margin = {top: 20, right: 15, bottom: 60, left: 60}
       , width = 960 - margin.left - margin.right
       , height = 500 - margin.top - margin.bottom;
-    
+
     var x = d3.scale.linear()
               .domain([0, d3.max(data, function(d) { return d[0]; })])
               .range([ 0, width ]);
-    
+
     var y = d3.scale.linear()
     	      .domain([0, d3.max(data, function(d) { return d[1]; })])
     	      .range([ height, 0 ]);
- 
+
     var chart = d3.select('body')
         .append('svg:svg')
         .attr('width', width + margin.right + margin.left)
@@ -63,8 +63,8 @@ var data = [[5,3], [10,17], [15,4], [2,8]];
 	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 	.attr('width', width)
 	.attr('height', height)
-	.attr('class', 'main')   
-        
+	.attr('class', 'main')
+
     // draw the x axis
     var xAxis = d3.svg.axis()
 	.scale(x)
@@ -85,8 +85,8 @@ var data = [[5,3], [10,17], [15,4], [2,8]];
 	.attr('class', 'main axis date')
 	.call(yAxis);
 
-    var g = main.append("svg:g"); 
-    
+    var g = main.append("svg:g");
+
     g.selectAll("scatter-dots")
       .data(data)
       .enter().append("svg:circle")
@@ -101,7 +101,8 @@ var data = [[5,3], [10,17], [15,4], [2,8]];
 // meta info such id, email, family, etc.
 // $("#button").click( function(){ do this; do that; })
 var sessions = $( "#inputSessions" ).val() || 6,
-    googleSheetKey = '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'; // $( "#inputGoogleSheet" ).val() || '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc' //'1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'
+    googleSheetKey = '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo';
+    // googleSheetKey = '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'; // $( "#inputGoogleSheet" ).val() || '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc' //'1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'
     // '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc';
 var evaluations= [],
     students   = [],
@@ -122,7 +123,7 @@ for (var S = 1; S < sessions + 1; S++) {
   gSheetTerms['S'+S+'group'] = 'Session #'+S+' — group presenting for me'; // 'title '+S+' on google sheet';
   gSheetTerms['S'+S+'grade'] = 'Session #'+S+' — grade you give'; // 'title '+S+' on google sheet';
 };
-// console.log('01/ gTerms: ', JSON.stringify(gSheetTerms)) // google sheet's columns titles and terms
+console.log('01/ gTerms: ', JSON.stringify(gSheetTerms)) // google sheet's columns titles and terms
 
 /* ******************************************************************* */
 /* Data call ********************************************************* */
@@ -151,13 +152,14 @@ function showInfo(data, tabletop) {
   /* ******************************************************************** */
    // flattening the database, showing up each instance of evaluation "A grade B" and metadata.
   var normalizing = function(jsonData, numberOfSessions) {
+    console.log('0. Row JSON data: ',JSON.stringify(jsonData))
     var d = [], S = numberOfSessions;
     jsonData.forEach(function(x){
       var evaluationsByStudentX = {
         indivEmail : x["Email Address"],
         indivFamily: x['Name?'],
         indivGroupId:x['Group?'],
-        indivId    : x['Identifiant?'],	
+        indivId    : x['Identifiant?'],
         indivStatus: x['Group?'].replace(/[0-9]/g,'') === 'Profs'?'professor':'student'
       };
       for (var i=1; i<S+1;i++){
@@ -172,7 +174,7 @@ function showInfo(data, tabletop) {
   var normalized = normalizing(data, 6);
   console.log('3b/ normalized[0] :',JSON.stringify([normalized[0], normalized[1],normalized[2]]));
 
-  
+
   // flattening the database, showing up each instance of evaluation "A grade B" and metadata.
   var flattening = function(jsonData, numberOfSessions) {
     var d = [];
@@ -183,7 +185,7 @@ function showInfo(data, tabletop) {
           indivEmail  : x.indivEmail,
          // indivFamily: x.indivFamily,
           indivGroupId: x.indivGroupId,
-          indivId     : x.indivId,	
+          indivId     : x.indivId,
           indivStatus : x.indivStatus,
           grpEv: x['S'+i+'group'],
           grdEv: x['S'+i+'grade']
@@ -196,6 +198,7 @@ function showInfo(data, tabletop) {
  // console.log('4a/ evaluations[0] premises :',sessions, t, normalized[0]);
   var evaluations = flattening (normalized, sessions, t);
   // console.log('4c/ evaluations[0]: ', JSON.stringify(evaluations[0]) ); // Evaluations
+     console.log('6b/ evaluations ',JSON.stringify(evaluations)); // Students list
 
   /* ******************************************************************** */
   /* STUDENTS *********************************************************** */
@@ -220,13 +223,11 @@ function showInfo(data, tabletop) {
           finalScore  : null
         }
         students.push(student);
-      } 
+      }
     } return students;
   }
   var students = studentsInit(normalized);
  // console.log('6b/ students[0] ',JSON.stringify(students[0])); // Students list
-
-    console.log('6b/ evaluations ',JSON.stringify(evaluations)); // Students list
     console.log('6b/ students ',JSON.stringify(students)); // Students list
 
   /* ******************************************************************** */
@@ -234,13 +235,13 @@ function showInfo(data, tabletop) {
   var getGradesReceived = function(evaluations, students, terms){
     for (var i = 0; i < evaluations.length; i++) {  // add session
       var presenterEval = evaluations[i];
-      if (presenterEval.grdEv == t.presenting) {    
+      if (presenterEval.grdEv == t.presenting) {
         for (var j = 0; j < evaluations.length; j++) {
           var graderEval = evaluations[j];
           if (  graderEval.session == presenterEval.session  // same session
               && graderEval.grpEv  == presenterEval.grpEv // presenting groups are equal
               && graderEval.grdEv !== t.presenting // evaluator NOT presenting
-             ) { 
+             ) {
             for (var k = 0; k < students.length; k++) { // for all students
               if (students[k].indivEmail == presenterEval.indivEmail) { // if presenter equal the evalued
                 graderEval.indivStatus === 'student' ?
@@ -271,14 +272,14 @@ function showInfo(data, tabletop) {
       }
     }
   });
-//  console.log('6d/ students[0] ',JSON.stringify(students[0])); // Students list
+console.log('6d/ students[0] ',JSON.stringify(students[0])); // Students list
 
   /* ******************************************************************** */
   /* 2b) Students average injection ************************************* */
   for (var i = 0; i < students.length; i++) {
     var row = students[i];
     var sumPeers = row.gradesPeers.reduce(function(a, b) { return a + b[1];}, 0);
-    var sumProfs = row.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0); 
+    var sumProfs = row.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0);
     students[i].averagePeers = Math.round((sumPeers) * 10 / row.gradesPeers.length) / 10;
     students[i].averageProfs = Math.round((sumProfs) * 10 / row.gradesProfs.length) / 10;
     students[i].averageAll = Math.round((students[i].averagePeers + students[i].averageProfs) * 10 / 2) / 10;
@@ -343,7 +344,7 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
       averageProfs: x.averageProfs
     };
   });
- 
+
   /* ******************************************************************** */
   /* ADJUSTMENTS ******************************************************** */
   /* ******************************************************************** */
@@ -361,7 +362,7 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
   /* NORMALNESS SCORE *************************************************** */
   /* ******************************************************************** */
   /* SeriousnessAssessment (function) *********************************** */
-  var seriousnessAssessment = function(a, b, bonus, counter){ 
+  var seriousnessAssessment = function(a, b, bonus, counter){
     var distance = Math.abs(a - b),
         bump = 0;
     if      (distance<= 1) { bump=20; }
@@ -382,11 +383,11 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
     var grdGiven = row.gradesGiven,
         name = row.indivEmail;
     for (var j=0;j<grdGiven.length;j++){
-      var grp = grdGiven[j][0], 
+      var grp = grdGiven[j][0],
           grd = grdGiven[j][1];
       for (var k=0;k<groups.length;k++){ //2
         if(grp === groups[k].groupId && typeof grd === 'number'){
-          var avgProfs= groups[k].averageProfs, 
+          var avgProfs= groups[k].averageProfs,
               avgAll  = groups[k].averageAll;
           var res = seriousnessAssessment(avgAll,grd,bonus,counter),
           bonus   = res[0],
@@ -397,9 +398,9 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
       }
     }
     students[i].normalness = ( Math.round((bonus/counter)*10)/10*1);
-  //  console.log('Seriousness overall for',name,bonus,'/',counter,': ',students[i].normalness)
+    console.log('Seriousness overall for',name,bonus,'/',counter,': ',students[i].normalness)
   }
-  
+
   /* ******************************************************************** */
   /* FINAL STUDENT SCORE ************************************************ */
   /* ******************************************************************** */
@@ -409,7 +410,7 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
         sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
     students[i].finalScore = Math.round((sum) * 10) / 10;
   }
-//  console.log('11/ students[0]: ', JSON.stringify(students[0])); // students with grades
+  console.log('11/ students[0]: ', JSON.stringify(students[0])); // students with grades
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
@@ -427,7 +428,7 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
       "indivEmail"  : x.indivEmail
     }
   });
-  //                          console.log('12/ studentsClean[0]: ', JSON.stringify(studentsClean)); // students with grades 
+  //                          console.log('12/ studentsClean[0]: ', JSON.stringify(studentsClean)); // students with grades
 
 
 // Builds the HTML Table out of myList.
@@ -436,7 +437,5 @@ console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // stude
   var cols = Object.keys(studentsClean[0]);
   tabulate(studentsClean, cols);
   scatterPlot(studentsClean);
-  
+
 };
-
-
