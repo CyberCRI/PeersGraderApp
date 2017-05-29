@@ -100,10 +100,13 @@ var data = [[5,3], [10,17], [15,4], [2,8]];
 /* ******************************************************************* */
 // meta info such id, email, family, etc.
 // $("#button").click( function(){ do this; do that; })
-var sessions = $( "#inputSessions" ).val() || 6,
-    googleSheetKey = '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo';
-    // googleSheetKey = '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'; // $( "#inputGoogleSheet" ).val() || '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc' //'1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0'
-    // '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc';
+var sessions = $( "#inputSessions" ).val() || 6;
+var gkeys = {
+    "01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
+    "01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
+    "05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
+    "05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs'
+  }
 var evaluations= [],
     students   = [],
     groupsList = [],
@@ -111,7 +114,7 @@ var evaluations= [],
     studentsClean=[];
 /* Google Terms ****************************************************** */
 var gSheetTerms = { // key : 'actual string on google questionnaire'  <==== !!!!!
-  indivEmail : 'Email Address', // 	Session #1 — group presenting for me	Session #1 — grade you give
+  indivEmail : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
   indivFamily: 'Name?',
   indivId    : 'Identifiant?',
   indivStatus: 'status',
@@ -120,7 +123,7 @@ var gSheetTerms = { // key : 'actual string on google questionnaire'  <==== !!!!
   presenting : 'presenting'
 };
 for (var S = 1; S < sessions + 1; S++) {
-  gSheetTerms['S'+S+'group'] = 'Session #'+S+' — group presenting for me'; // 'title '+S+' on google sheet';
+  gSheetTerms['S'+S+'group'] = 'Session #'+S+' — group presenting to me'; // 'title '+S+' on google sheet';
   gSheetTerms['S'+S+'grade'] = 'Session #'+S+' — grade you give'; // 'title '+S+' on google sheet';
 };
 console.log('01/ gTerms: ', JSON.stringify(gSheetTerms)) // google sheet's columns titles and terms
@@ -134,7 +137,7 @@ window.onload = function() {
 
 function init() {
   Tabletop.init({
-    key: googleSheetKey,
+    key: gkeys['05.29'],
     callback: showInfo,
     simpleSheet: true
   })
@@ -163,7 +166,7 @@ function showInfo(data, tabletop) {
         indivStatus: x['Group?'].replace(/[0-9]/g,'') === 'Profs'?'professor':'student'
       };
       for (var i=1; i<S+1;i++){
-        evaluationsByStudentX['S'+i+'group'] = x['Session #'+i+' — group presenting for me'];
+        evaluationsByStudentX['S'+i+'group'] = x['Session #'+i+' — group presenting to me'];
         evaluationsByStudentX['S'+i+'grade'] = x['Session #'+i+' — grade you give'] === "I'm presenting (no grade)"? t.presenting: +x['Session #'+i+' — grade you give'];
       }
       d.push(evaluationsByStudentX);
