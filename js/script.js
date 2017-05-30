@@ -174,7 +174,7 @@ function showInfo(data, tabletop) {
     return d;
   };
   // console.log('3a/ normalized[0] premise:',sessions, data[0]);
-  var normalized = normalizing(data, 18);
+  var normalized = normalizing(data, sessions);
   console.log('3b/ normalized[0] :',JSON.stringify([normalized[0], normalized[1],normalized[2]]));
 
 
