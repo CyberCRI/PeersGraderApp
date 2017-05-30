@@ -100,7 +100,7 @@ var data = [[5,3], [10,17], [15,4], [2,8]];
 /* ******************************************************************* */
 // meta info such id, email, family, etc.
 // $("#button").click( function(){ do this; do that; })
-var sessions = $( "#inputSessions" ).val() || 6;
+var sessions = $( "#inputSessions" ).val() || 18;
 var gkeys = {
     "01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
     "01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
@@ -174,7 +174,7 @@ function showInfo(data, tabletop) {
     return d;
   };
   // console.log('3a/ normalized[0] premise:',sessions, data[0]);
-  var normalized = normalizing(data, 6);
+  var normalized = normalizing(data, 18);
   console.log('3b/ normalized[0] :',JSON.stringify([normalized[0], normalized[1],normalized[2]]));
 
 
@@ -287,7 +287,7 @@ console.log('6d/ students[0] ',JSON.stringify(students[0])); // Students list
     students[i].averageProfs = Math.round((sumProfs) * 10 / row.gradesProfs.length) / 10;
     students[i].averageAll = Math.round((students[i].averagePeers + students[i].averageProfs) * 10 / 2) / 10;
   }
-console.log('8/ students: ',JSON.stringify([students[0],students[1]])); // students with grades
+console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]])); // students with grades
 
   /* ******************************************************************** */
   /* GROUPS ************************************************************* */
