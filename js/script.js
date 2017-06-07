@@ -105,7 +105,8 @@ var gkeys = {
     "01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
     "01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
     "05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
-    "05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs'
+    "05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
+    "06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA'
   }
 var evaluations= [],
     students   = [],
@@ -137,7 +138,7 @@ window.onload = function() {
 
 function init() {
   Tabletop.init({
-    key: gkeys['05.29'],
+    key: gkeys['06.07'],
     callback: showInfo,
     simpleSheet: true
   })
