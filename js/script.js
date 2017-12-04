@@ -1,12 +1,18 @@
 // http://bl.ocks.org/bunkat/2595950 Scatter plot
 
-function sortJSON(data, key, way) {
+var sortJSON = function (data, key, way) {
     return data.sort(function(a, b) {
         var x = a[key], y = b[key];
         if (way==='123') { return ((x<y)? -1 : ((x>y)?1:0)) ; }
         if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)) ; }
     });
-}
+};
+var individualIdToGroupId = function (string) {
+  var str = string;
+  str.match(/\d/)? str= str.match(/.*\d/)[0]: str=str ;
+  return str
+};
+
 /* ******************************************************************* */
 /* Set up ************************************************************ */
 /* ******************************************************************* */
@@ -14,13 +20,13 @@ function sortJSON(data, key, way) {
 // $("#button").click( function(){ do this; do that; })
 var sessions = $( "#inputSessions" ).val() || 6;
 var gkeys = {
-    "2017.01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
-    "2017.01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
-    "2017.05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
-    "2017.05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
-    "2017.06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
-    "2017.12.01" : '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII'
-  }
+  "2016.11.25" : '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
+  "2017.01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
+  "2017.05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
+  "2017.05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
+  "2017.06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
+  "2017.12.01" : '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII'
+}
 var evaluations= [],
     students   = [],
     groupsList = [],
@@ -51,7 +57,7 @@ window.onload = function() {
 
 function init() {
   Tabletop.init({
-    key: gkeys['2017.12.01'],
+    key: gkeys['2016.11.25'],
     callback: showInfo,
     simpleSheet: true
   })
@@ -72,17 +78,19 @@ function showInfo(data, tabletop) {
     console.log('0. Row JSON data: ',JSON.stringify(jsonData))
     var d = [], S = numberOfSessions;
     jsonData.forEach(function(x){
-      var group = function (string) { var str = string; str.match(/\d/)? str= str.match(/.*\d/)[0]: str=str ; return str } ;
       var evaluationsByStudentX = {
-        indivEmail : x["Email Address"],
-        indivFamily: x['Name?'],
-        indivGroupId: group(x['Identifiant?']),
-        indivId    : x['Identifiant?'],
-        indivStatus: group(x['Identifiant?']) === 'Profs'?'professor':'student'
+        indivEmail : x[t.indivEmail],
+        indivFamily: x[t.indivFamily],
+        indivGroupId: individualIdToGroupId(x[t.indivId]),
+        indivId    : x[t.indivId],
+        indivStatus:
+          individualIdToGroupId(x[t.indivId]).match('Prof')?'professor':
+          individualIdToGroupId(x[t.indivId]).match('G')?'student':'observator'
       };
       for (var i=1; i<S+1;i++){
-        evaluationsByStudentX['S'+i+'group'] = x['Session #'+i+' — group presenting to me'];
-        evaluationsByStudentX['S'+i+'grade'] = x['Session #'+i+' — grade you give'] === "I'm presenting (no grade)"? t.presenting: +x['Session #'+i+' — grade you give'];
+        console.log('Troll!',t['S'+i+'grade'])
+        evaluationsByStudentX['S'+i+'group'] = individualIdToGroupId(x[t['S'+i+'group']]);
+        evaluationsByStudentX['S'+i+'grade'] = x[t['S'+i+'grade']] === "I'm presenting (no grade)"? t.presenting: +x[t['S'+i+'grade']];
       }
       d.push(evaluationsByStudentX);
     })
@@ -123,7 +131,7 @@ function showInfo(data, tabletop) {
   /* ******************************************************************** */
   /* 1) Students listing ************************************************ */
   var studentsInit = function(d){
-    var students =[], toto=0;
+    var students =[];
     for (var i = 0; i < d.length; i++) {
       if (d[i].indivStatus === 'student') {
         var student = {
@@ -162,7 +170,7 @@ function showInfo(data, tabletop) {
              ) {
             for (var k = 0; k < students.length; k++) { // for all students
               if (students[k].indivEmail == presenterEval.indivEmail) { // if presenter equal the evalued
-                graderEval.indivStatus === 'student' ?
+                graderEval.indivStatus === 'student' || graderEval.indivStatus === 'observator' ?
                   students[k].gradesPeers.push([graderEval.indivGroupId, +graderEval.grdEv]):
                   students[k].gradesProfs.push([graderEval.indivGroupId, +graderEval.grdEv]); // in var student, collect grade
               }
@@ -219,7 +227,7 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
   /* ******************************************************************** */
   /* Groups table creation ********************************************** */
   for (var i = 0; i < groupsList.length; i++) {
-    if (groupsList[i] !== 'Profs') {
+    if (!groupsList[i].match('Prof') ) {
       groups.push({
         groupId: groupsList[i],
         gradesPeers: [],
@@ -329,7 +337,8 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
         sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
     students[i].finalScore = Math.round((sum) * 10) / 10;
   }
-  console.log('11/ students[0]: ', JSON.stringify(students[0])); // students with grades
+  var sample = [ students[0],students[1],students[2] ];
+  console.log('11/ students[0]: ', JSON.stringify(sample)); // students with grades
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
