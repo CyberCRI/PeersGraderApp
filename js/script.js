@@ -7,106 +7,19 @@ function sortJSON(data, key, way) {
         if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)) ; }
     });
 }
-/* */
-  function tabulate(data, columns) {
-    var container = d3.select('body').append('div').attr('class','container')
-    var table = container.append('table').attr("class", "table table-striped");
-    var thead = table.append('thead')
-    var	tbody = table.append('tbody');
-    // append the header row
-    thead.append('tr')
-      .selectAll('th')
-      .data(columns).enter()
-      .append('th')
-      .text(function (column) { return column; });
-    // create a row for each object in the data
-    var rows = tbody.selectAll('tr')
-      .data(data)
-      .enter()
-      .append('tr');
-    // create a cell in each row for each column
-    var cells = rows.selectAll('td')
-      .data(function (row) {
-        return columns.map(function (column) {
-          return {column: column, value: row[column]};
-        });
-      })
-      .enter()
-      .append('td')
-      .text(function (d) { return d.value; });
-    return table;
-  }
-
-
-var scatterPlot = function(students){
-var data = [[5,3], [10,17], [15,4], [2,8]];
-
-    var margin = {top: 20, right: 15, bottom: 60, left: 60}
-      , width = 960 - margin.left - margin.right
-      , height = 500 - margin.top - margin.bottom;
-
-    var x = d3.scale.linear()
-              .domain([0, d3.max(data, function(d) { return d[0]; })])
-              .range([ 0, width ]);
-
-    var y = d3.scale.linear()
-    	      .domain([0, d3.max(data, function(d) { return d[1]; })])
-    	      .range([ height, 0 ]);
-
-    var chart = d3.select('body')
-        .append('svg:svg')
-        .attr('width', width + margin.right + margin.left)
-        .attr('height', height + margin.top + margin.bottom)
-        .attr('class', 'chart')
-
-    var main = chart.append('g')
-	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-	.attr('width', width)
-	.attr('height', height)
-	.attr('class', 'main')
-
-    // draw the x axis
-    var xAxis = d3.svg.axis()
-	.scale(x)
-	.orient('bottom');
-
-    main.append('g')
-	.attr('transform', 'translate(0,' + height + ')')
-	.attr('class', 'main axis date')
-	.call(xAxis);
-
-    // draw the y axis
-    var yAxis = d3.svg.axis()
-	.scale(y)
-	.orient('left');
-
-    main.append('g')
-	.attr('transform', 'translate(0,0)')
-	.attr('class', 'main axis date')
-	.call(yAxis);
-
-    var g = main.append("svg:g");
-
-    g.selectAll("scatter-dots")
-      .data(data)
-      .enter().append("svg:circle")
-          .attr("cx", function (d,i) { return x(d[0]); } )
-          .attr("cy", function (d) { return y(d[1]); } )
-          .attr("r", 8);
-}
-
 /* ******************************************************************* */
 /* Set up ************************************************************ */
 /* ******************************************************************* */
 // meta info such id, email, family, etc.
 // $("#button").click( function(){ do this; do that; })
-var sessions = $( "#inputSessions" ).val() || 18;
+var sessions = $( "#inputSessions" ).val() || 6;
 var gkeys = {
-    "01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
-    "01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
-    "05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
-    "05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
-    "06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA'
+    "2017.01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
+    "2017.01.10b": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
+    "2017.05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
+    "2017.05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
+    "2017.06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
+    "2017.12.01" : '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII'
   }
 var evaluations= [],
     students   = [],
@@ -138,7 +51,7 @@ window.onload = function() {
 
 function init() {
   Tabletop.init({
-    key: gkeys['06.07'],
+    key: gkeys['2017.12.01'],
     callback: showInfo,
     simpleSheet: true
   })
@@ -159,12 +72,13 @@ function showInfo(data, tabletop) {
     console.log('0. Row JSON data: ',JSON.stringify(jsonData))
     var d = [], S = numberOfSessions;
     jsonData.forEach(function(x){
+      var group = function (string) { var str = string; str.match(/\d/)? str= str.match(/.*\d/)[0]: str=str ; return str } ;
       var evaluationsByStudentX = {
         indivEmail : x["Email Address"],
         indivFamily: x['Name?'],
-        indivGroupId:x['Group?'],
+        indivGroupId: group(x['Identifiant?']),
         indivId    : x['Identifiant?'],
-        indivStatus: x['Group?'].replace(/[0-9]/g,'') === 'Profs'?'professor':'student'
+        indivStatus: group(x['Identifiant?']) === 'Profs'?'professor':'student'
       };
       for (var i=1; i<S+1;i++){
         evaluationsByStudentX['S'+i+'group'] = x['Session #'+i+' — group presenting to me'];
@@ -284,8 +198,9 @@ console.log('6d/ students[0] ',JSON.stringify(students[0])); // Students list
     var row = students[i];
     var sumPeers = row.gradesPeers.reduce(function(a, b) { return a + b[1];}, 0);
     var sumProfs = row.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0);
+    // Summing and rounding :
     students[i].averagePeers = Math.round((sumPeers) * 10 / row.gradesPeers.length) / 10;
-    students[i].averageProfs = Math.round((sumProfs) * 10 / row.gradesProfs.length) / 10;
+    students[i].averageProfs = sumProfs ? Math.round((sumProfs) * 10 / row.gradesProfs.length) / 10 : students[i].averagePeers; // if no teachers, then use gradesPeers
     students[i].averageAll = Math.round((students[i].averagePeers + students[i].averageProfs) * 10 / 2) / 10;
   }
 console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]])); // students with grades
@@ -333,10 +248,10 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
   for (var i = 0; i < groups.length; i++) {
     var rowGrp = groups[i];
     var sumPeers = rowGrp.gradesPeers.reduce(function(a, b) { return a + b; }, 0),
-      sumProfs = rowGrp.gradesProfs.reduce(function(a, b) { return a + b; }, 0);
-    var avgPeers = Math.round((sumPeers) * 10 / rowGrp.gradesPeers.length) / 10,
-      avgProfs = Math.round((sumProfs) * 10 / rowGrp.gradesProfs.length) / 10,
-      avgAll = Math.round((avgPeers + avgProfs) / 2 * 10) / 10;
+        sumProfs = rowGrp.gradesProfs.reduce(function(a, b) { return a + b; }, 0);
+    avgPeers = Math.round((sumPeers) * 10 / rowGrp.gradesPeers.length) / 10 ;
+    avgProfs = sumProfs ? Math.round((sumProfs) * 10 / rowGrp.gradesProfs.length) / 10 : avgPeers,
+    avgAll = Math.round((avgPeers + avgProfs) / 2 * 10) / 10;
     groups[i].averagePeers = avgPeers;
     groups[i].averageProfs = avgProfs;
     groups[i].averageAll = avgAll;
@@ -439,7 +354,7 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
   // render the table(s)
   studentsClean = sortJSON(studentsClean,'indivId', '123'); // 123 or 321
   var cols = Object.keys(studentsClean[0]);
-  tabulate(studentsClean, cols);
+  tablify(studentsClean, cols);
   scatterPlot(studentsClean);
 
 };
