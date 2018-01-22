@@ -1,11 +1,12 @@
 // http://bl.ocks.org/bunkat/2595950 Scatter plot
 
 var sortJSON = function (data, key, way) {
-    return data.sort(function(a, b) {
-        var x = a[key], y = b[key];
-        if (way==='123') { return ((x<y)? -1 : ((x>y)?1:0)) ; }
-        if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)) ; }
-    });
+  console.log("sort",data);
+  return data.sort(function(a, b) {
+    var x = a[key], y = b[key];
+    if (way==='123') { return ((x<y)? -1 : ((x>y)?1:0)) ; }
+    if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)) ; }
+  });
 };
 var individualIdToGroupId = function (string) {
   var str = string;
@@ -20,12 +21,13 @@ var individualIdToGroupId = function (string) {
 // $("#button").click( function(){ do this; do that; })
 var sessions = $( "#inputSessions" ).val() || 6;
 var gkeys = {
-  "2016.11.25" : '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
-  "2017.01.10" : '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
-  "2017.05.12" : '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
-  "2017.05.29" : '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
-  "2017.06.07" : '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
-  "2017.12.01" : '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII'
+  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
+  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
+  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
+  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
+  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
+  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII',
+  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4'
 }
 var evaluations= [],
     students   = [],
@@ -57,7 +59,7 @@ window.onload = function() {
 
 function init() {
   Tabletop.init({
-    key: gkeys['2016.11.25'],
+    key: gkeys['2018.01.12'],
     callback: showInfo,
     simpleSheet: true
   })
@@ -88,7 +90,10 @@ function showInfo(data, tabletop) {
           individualIdToGroupId(x[t.indivId]).match('G')?'student':'observator'
       };
       for (var i=1; i<S+1;i++){
-        console.log('Troll!',t['S'+i+'grade'])
+        console.log('Troll1!',t['S'+i+'grade']);
+        console.log('Troll1a!','S'+i+'group'||"fails1",t['S'+i+'group']||"fails2",individualIdToGroupId(x[t['S'+i+'group']]||"fails3") );
+        console.log('Troll2!',individualIdToGroupId(x[t['S'+i+'group']]) );
+        console.log('Troll3!');
         evaluationsByStudentX['S'+i+'group'] = individualIdToGroupId(x[t['S'+i+'group']]);
         evaluationsByStudentX['S'+i+'grade'] = x[t['S'+i+'grade']] === "I'm presenting (no grade)"? t.presenting: +x[t['S'+i+'grade']];
       }
@@ -343,27 +348,28 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
   /* ******************************************************************** */
-  studentsClean = students.map(function(x){
-   // console.log(x)
+  var newDataForm = function(item){
     return {
-      // "indivGrp": x.indivGroupId,
-      "indivId"     : x.indivId,
-      "averagePeers": x.averagePeers,
-      "averageProfs": x.averageProfs,
-      "normalness"  : x.normalness,
-      "finalGrade"  : x.finalScore,
-      "indivFamily" : x.indivFamily,
-      "indivEmail"  : x.indivEmail
+      "indivId"     : item.indivId,
+      "averageProfs": item.averageProfs,
+      "averagePeers": item.averagePeers,
+      "normalness"  : item.normalness,
+      "finalGrade"  : item.finalScore,
+      "indivFamily" : item.indivFamily,
+      "indivEmail"  : item.indivEmail
     }
-  });
-  //                          console.log('12/ studentsClean[0]: ', JSON.stringify(studentsClean)); // students with grades
+  }
+  console.log("students[0],students[1]")
+  console.log(students[0],students[1])
+  var studentsClean = students.map(newDataForm);
+  //  console.log('12/ studentsClean[0]: ', JSON.stringify(studentsClean)); // students with grades
 
 
 // Builds the HTML Table out of myList.
   // render the table(s)
-  studentsClean = sortJSON(studentsClean,'indivId', '123'); // 123 or 321
-  var cols = Object.keys(studentsClean[0]);
-  tablify(studentsClean, cols);
-  scatterPlot(studentsClean);
+  var studentsCleaned = sortJSON(studentsClean,'indivId', '123'); // 123 or 321
+  var cols = Object.keys(studentsCleaned[0]);
+  tablify(studentsCleaned, cols);
+  scatterPlot(studentsCleaned);
 
 };
