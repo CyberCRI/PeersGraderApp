@@ -10,6 +10,7 @@ var sortJSON = function (data, key, way) {
 };
 var individualIdToGroupId = function (string) {
   var str = string;
+  console.log("individualIdToGroupIdString", string)
   str.match(/\d/)? str= str.match(/.*\d/)[0]: str=str ;
   return str
 };
@@ -27,7 +28,9 @@ var gkeys = {
   "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
   "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
   "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII',
-  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4'
+  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4',
+  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo',
+  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg'
 }
 var evaluations= [],
     students   = [],
@@ -53,13 +56,11 @@ console.log('01/ gTerms: ', JSON.stringify(gSheetTerms)) // google sheet's colum
 /* ******************************************************************* */
 /* Data call ********************************************************* */
 /* ******************************************************************* */
-window.onload = function() {
-  init()
-};
+window.onload = function() { init() };
 
 function init() {
   Tabletop.init({
-    key: gkeys['2018.01.12'],
+    key: gkeys['2018.05.03'],
     callback: showInfo,
     simpleSheet: true
   })
@@ -91,7 +92,8 @@ function showInfo(data, tabletop) {
       };
       for (var i=1; i<S+1;i++){
         console.log('Troll1!',t['S'+i+'grade']);
-        console.log('Troll1a!','S'+i+'group'||"fails1",t['S'+i+'group']||"fails2",individualIdToGroupId(x[t['S'+i+'group']]||"fails3") );
+        console.log("JSON.stringify(x)",JSON.stringify(x))
+        console.log('Troll1a!','1/'+'S'+i+'group'||"fails1",'2/'+t['S'+i+'group']||"fails2",'3/'+individualIdToGroupId(x[t['S'+i+'group']]||"fails3") );
         console.log('Troll2!',individualIdToGroupId(x[t['S'+i+'group']]) );
         console.log('Troll3!');
         evaluationsByStudentX['S'+i+'group'] = individualIdToGroupId(x[t['S'+i+'group']]);
@@ -342,8 +344,7 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
         sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
     students[i].finalScore = Math.round((sum) * 10) / 10;
   }
-  var sample = [ students[0],students[1],students[2] ];
-  console.log('11/ students[0]: ', JSON.stringify(sample)); // students with grades
+  console.log('11/ students[0]: ', JSON.stringify([ students[0],students[1],students[2] ])); // students with grades
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
@@ -361,15 +362,16 @@ console.log('8/ students: ',JSON.stringify([students[4],students[5],students[6]]
   }
   console.log("students[0],students[1]")
   console.log(students[0],students[1])
-  var studentsClean = students.map(newDataForm);
+  var studentsSort = sortJSON(students,'indivId', '123')
+  console.log('12/ students[0]: ',[studentsSort[0].indivId,studentsSort[1].indivId,studentsSort[2].indivId,studentsSort[3].indivId])
+  var studentsSortAverages = studentsSort.map(newDataForm);
   //  console.log('12/ studentsClean[0]: ', JSON.stringify(studentsClean)); // students with grades
 
 
 // Builds the HTML Table out of myList.
   // render the table(s)
-  var studentsCleaned = sortJSON(studentsClean,'indivId', '123'); // 123 or 321
-  var cols = Object.keys(studentsCleaned[0]);
-  tablify(studentsCleaned, cols);
-  scatterPlot(studentsCleaned);
-
+  var cols = Object.keys(studentsSortAverages[0]);
+  tablify(studentsSortAverages, cols);
+  // scatterPlot(studentsCleaned);
+  violinPlot(studentsSort,"hook-violin");
 };

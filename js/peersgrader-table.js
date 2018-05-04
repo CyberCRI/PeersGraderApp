@@ -1,7 +1,8 @@
 /* */
   function tablify(data, columns) {
-console.log ("Tablify")
-    var container = d3.select('body').append('div').attr('class','container')
+console.log ("/* Tablify ***************************** /")
+    var container = d3.select('#hook-table').append('div')
+      .attr('class','container')
     var table = container.append('table').attr("class", "table table-striped");
     var thead = table.append('thead')
     var	tbody = table.append('tbody');
@@ -31,7 +32,7 @@ console.log ("Tablify")
 
 
 var scatterPlot = function(students){
-console.log ("ScatterPlot")
+console.log ("/* ScatterPlot ************************************* /")
 var data = [[5,3], [10,17], [15,4], [2,8]];
 
     var margin = {top: 20, right: 15, bottom: 60, left: 60}
