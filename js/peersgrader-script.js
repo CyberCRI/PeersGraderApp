@@ -42,10 +42,13 @@ var gSheetTerms = { // key : 'actual string on google questionnaire'  <==== !!!!
   indivEmail : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
   indivFamily: 'Name?',
   indivId    : 'Identifiant?',
-  indivStatus: 'status',
-  groupId    : 'Group?',
+  country    : 'Country of education?',
+  city       : 'City of education?',
+  gender     : 'Gender?',
+  indivStatus: 'status',  // THIS CAN BE DELETED?
+  groupId    : 'Group?', // THIS CAN BE DELETED?
   session    : 'session',
-  presenting : 'presenting'
+  presenting : 'presenting',
 };
 for (var S = 1; S < sessions + 1; S++) {
   gSheetTerms['S'+S+'group'] = 'Session #'+S+' — group presenting to me'; // 'title '+S+' on google sheet';
