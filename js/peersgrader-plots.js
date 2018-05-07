@@ -63,7 +63,6 @@ var dataForViolins = function(studentsRawData, template) {
     trace.text = student.gradesGiven.join("; ").replace(/,/g,":")
     trace.y0   = student.indivId; //+" "+student.indivFamily ;
     trace.x    = student.gradesGiven.map(function(a) { return a[1] }).filter(Number);
-alert(trace.x)
     trace.side = "negative";
     trace.line.color = '#d38dc7';
 	  trace.marker.line.color = '#d38dc7';
