@@ -91,18 +91,19 @@ console.log(JSON.stringify(vizdata)); */
 var layout = {
   hovermode: "closest",
   width: 900,
+  height: 1600,
   yaxis: { showgrid: true },
   title: "Students grades",
   legend: { tracegroupgap: 0 },
   violingap: 0,
   violingroupgap: 0,
-  violinmode: "overlay",
-  height: 1600
+  violinmode: "overlay"
 }
 // Runs violin dataviz
 var violinPlot = function(data,hook){
   console.log ("/* ViolinPlot ************************************* /")
   console.log(JSON.stringify(data[0]));
+  layout.height= data.length * 120;
   var vizdata = dataForViolins(data,violinTemplate);
   console.log(JSON.stringify("vizdata[0]",vizdata[0]))
   Plotly.plot(hook, vizdata, layout) // moved to script

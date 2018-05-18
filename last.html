@@ -11,7 +11,7 @@
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
     <script src="./js/peersgrader-table.js"></script>
     <script src="./js/peersgrader-plots.js"></script>
-   <script src="./js/peersgrader-script.js"></script>
+    <script src="./js/peersgrader-script.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/style.css">
   </head>
@@ -19,7 +19,7 @@
 
   <div class="container">
     <h2>Poster peer-review project</h2>
-    <span class="btn btn-success success"><i class="glyphicon glyphicon-time"></i> V.0.3.0 (Canada rainbow)</span>
+    <span id="run" class="btn btn-success success"><i class="glyphicon glyphicon-time"></i> V.0.3.0 (Canada rainbow)</span>
     <span class="btn btn-alert alert"><i class="glyphicon glyphicon-info-sign"></i> Note : code editing ongoing (May 5th)</span>
     <p>This table summarize grades of the L1 students for the PeerPoster day.
     <div class="legend">
@@ -51,4 +51,7 @@
   <div class="container" id="hook-table"></div>
   <div class="container" id="hook-violin"></div>
 </body>
+<script>
+$('#run').on('click', function(){ init() });
+</script>
 </html>
