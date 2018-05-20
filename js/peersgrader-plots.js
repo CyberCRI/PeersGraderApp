@@ -46,23 +46,35 @@ var dataForViolins = function(studentsRawData, template) {
   for (var i=0; i<studentsRawData.length;i++){
     var trace  = template(),
         student= studentsRawData[i];
+    trace.y0   = student.indivId; //+" "+student.indivFamily ;
     trace.showlegend = i==0?true:false;
     trace.legendgroup= "Got";
     trace.name = "Grades received by this student";
     trace.text = student.gradesPeers.join("; ").replace(/,/g,":")
-    trace.y0   = student.indivId; //+" "+student.indivFamily ;
-    trace.x    = student.gradesPeers.map(function(a) {return a[1];});
+    var grades = student.gradesPeers.map(function(a) { return a[1] }).filter(Number),
+        l = grades.length;
+        if(l == 1){ grades[1] = grades[0]+.1 }
+        if(grades[0] == grades[1]){ grades[1] = grades[1]+.1 }
+    trace.x    = grades;
     trace.side = "positive";
     trace.line.color = '#8dc7d3';
     trace.pointpos= 0.2;
     traces.push({...trace});
     var trace  = template();
-    trace.showlegend = i==0?true:false;
-    trace.legendgroup= "Gave";
-    trace.name = "Grades given by this student";
-    trace.text = student.gradesGiven.join("; ").replace(/,/g,":")
     trace.y0   = student.indivId; //+" "+student.indivFamily ;
-    trace.x    = student.gradesGiven.map(function(a) { return a[1] }).filter(Number);
+    trace.showlegend = i==0?true:false;
+    // trace.legendgroup= "Gave";
+    // trace.name = "Grades given by this student";
+    // trace.text = student.gradesGiven.join("; ").replace(/,/g,":")
+    // trace.x    = student.gradesGiven.map(function(a) { return a[1] }).filter(Number);
+    trace.legendgroup= "by Profs";
+    trace.name = "GradesProfs received by this student";
+    trace.text = student.gradesProfs.join("; ").replace(/,/g,":")
+    var grades = student.gradesProfs.map(function(a) { return a[1] }).filter(Number),
+        l = grades.length;
+        if(l == 1){ grades[1] = grades[0]+.1 }
+        if(grades[0] == grades[1]){ grades[1] = grades[1]+.1 }
+    trace.x    = grades; // .length>1 ? gradesProfs: [ gradesProfs[0],gradesProfs[0]+0.1];  /**************************** fails on [15], on [15,15]. On [] ? ************************
     trace.side = "negative";
     trace.line.color = '#d38dc7';
 	  trace.marker.line.color = '#d38dc7';
@@ -105,6 +117,6 @@ var violinPlot = function(data,hook){
   console.log(JSON.stringify(data[0]));
   layout.height= data.length * 120;
   var vizdata = dataForViolins(data,violinTemplate);
-  console.log(JSON.stringify("vizdata[0]",vizdata[0]))
+  console.log("vizdata: ",vizdata.length,vizdata)
   Plotly.plot(hook, vizdata, layout) // moved to script
 }
