@@ -1,12 +1,22 @@
 const Activity = require('../models/activity.schema'),
 	nanoid = require('nanoid');
 module.exports = {
+	getParticipants : function(req,res){
+		var activityKey = req.params.id;
+		console.log('key getParticipants')
+		console.log(activityKey)
+		Activity.findOne({urlId:activityKey}).then(function(activity){
+			console.log('activityKey',activityKey)			
+			console.log('participants');
+			console.log(activity.participants)
+			res.send({success:true,participants:activity.participants});
+		});	
+	},
 	getActivity : function(req,res){
 		var activityKey = req.params.id;
 		console.log('key')
 		console.log(activityKey)
-		Activity.findOne({$or:[{smallPwd:activityKey},
-			{teacherPwd:activityKey},
+		Activity.findOne({$or:[{teacherPwd:activityKey},
 			{urlId:activityKey}]
 		}).then(function(activity){
 			console.log('getActivity')
@@ -18,9 +28,8 @@ module.exports = {
 
 		var sentActivity = req.body.activity;
 
-		sentActivity.urlId = nanoid(10);
+		sentActivity.urlId = nanoid(5);
 		sentActivity.teacherPwd = nanoid(10)+nanoid(10);
-		sentActivity.smallPwd = sentActivity.teacherPwd.substring(0,10);
 
 		console.log('sent')
 		console.log(sentActivity)

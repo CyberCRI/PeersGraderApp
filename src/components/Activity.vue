@@ -1,24 +1,6 @@
 <template>
 	<div>
-		<div v-if="showPassword && withId">
-			<notifications group="password" />
-			<div class="content-pg">
-				<div class="field">
-				  <label class="label">Password</label>
-				  <div class="control">
-				    <input class="input" v-model="password" type="text" placeholder="Text input">
-				  </div>
-				  <p v-if="errorMessage!=''" class="help is-error">{{errorMessage}}</p>
-				</div>
-				<div class="field">
-				  <div class="control">
-				    <button class="button is-link" @click="checkPassword">Submit</button>
-				  </div>
-				</div>
-			</div>
-		</div>
-		<div v-else>
-			<div v-if="withId && canReadOnly">
+			<div v-if="withId && !isAdmin">
 				<read-activity></read-activity>
 			</div>
 			<div v-else>
@@ -57,7 +39,7 @@
 					    </div>		
 						</div>
 					</div>
-					<div class="field is-horizontal">
+					<!-- <div class="field is-horizontal">
 						<div class="field-label is-normal">
 							<label class="label">Presentations</label>
 						</div>
@@ -66,11 +48,12 @@
 					       <input class="input" type="number" v-model="activity.presentations" placeholder="How many presentations per sessions will there be ?">
 					    </div>		
 						</div>
-					</div>
+					</div> -->
 				</div>
 				<div v-show="showStep === 2 " class="content-pg">
 					<h2>Create activity 2/2</h2>
-					<div class="level participants-label">
+					<participants-acitivity></participants-acitivity>
+					<!--<div class="level participants-label">
 						<label class="label">Participants</label>
 					</div>
 					<div v-for="(participant,i) in activity.participants" class="row-participant">
@@ -107,7 +90,7 @@
 						<div class="remove-participant" @click="removeParticipant(i)">
 							<i class="far fa-minus-square"></i>
 						</div>
-					</div>				
+					</div> -->				
 				</div>
 				<div id="stepper" class="container is-fluid">
 					<div id="level">
@@ -122,14 +105,14 @@
 									<span v-if="activity.urlId!=undefined">Update</span>
 									<span v-else>Save</span>
 								</a>
-								<a v-if="activity.urlId!=undefined" @click="deleteActivity" class="button level-item">
+								<a v-if="activity.urlId!=undefined" @click="delActivity" class="button level-item">
 									Delete
 								</a>
 						</p>
 					</div>
 				</div>
 			</div>
-		</div>
+		
 	</div>
 </template>
 
@@ -137,81 +120,47 @@
 	import axios from 'axios'
 	//import store from '@/store/modules/activity'
 	import ActivityRead from '@/components/ActivityRead'
+	import ActivityParticipants from '@/components/ActivityParticipants'
+
 	import {mapState, mapActions} from 'vuex'
 
 	export default {
 		name : 'Activity',
 		components:{
-			'read-activity' : ActivityRead
+			'read-activity' : ActivityRead,
+			'participants-acitivity' : ActivityParticipants
 		},
 		data(){
 			return {
-				password: '',
-				showStep : 1,
-				errorMessage : ''
+				showStep : 1
 			};
 		},
 		computed : {
 			...mapState('activity',{
-      	activity:'activity',
-      	showPassword : 'showPassword',
-      	canReadOnly : 'canReadOnly',
-      	withId : 'withId',
-      	userSession:'userSession'
+      	activity : 'activity',
+      	withId   : 'withId',
+ 				isAdmin  : 'isAdmin'
     	}),
 			checkFirstStepCompletion(){
-				return this.activity.title && this.activity.guidelines && this.activity.sessions && this.activity.presentations;
+				return this.activity.title && this.activity.guidelines && this.activity.sessions;
 			}
 		},
 		methods: {
 			...mapActions('activity',{
-      	saveActivity:'saveActivity',
+      	setActivity:'setActivity',
       	resetActivitySession : 'resetActivitySession',
       	getAuthActivity : 'getAuthActivity',
-      	setShowPassword: 'setShowPassword',
       	setWithId:'setWithId',
+      	lookForActivity: 'lookForActivity',
       	deleteActivity: 'deleteActivity'
     	}),
-    	checkPassword(){
-    		console.log('passed pwd')
-    		console.log(this.password)
-    		this.getAuthActivity(this.password).then(function(response){
-
-    		});
-    	},
-    	deleteActivity()//put it back in store, change name
+    	delActivity()//put it back in store, change name
     	{
-    		axios.delete('http://localhost:5001/activity/'+this.activity.urlId).then(response=>{
-                if(response.data.success){
-
-                    this.$notify({
-                        group: 'activity',
-                        title:'Activity deleted',
-                        text: `This activity ${response.data.activity.title} have been deleted with success.`,
-                        type : 'success'
-                    });
-                    console.log('there there')
-                    this.resetActivitySession();
-                    this.showStep = 1;
-                    this.$router.push({path:'/activity'})
-                }
-            })
+    		this.deleteActivity(this.activity.urlId);
     	},
 			postActivity(){
-				console.log('launch save')
-				this.saveActivity(this.activity);
-			},
-			addParticipant(i){
-				this.activity.participants.splice(i+1,0,{
-					firstname:'',
-					name:'',
-					email:'',
-					role:''
-				});
-			},
-			removeParticipant(i){
-				if(this.activity.participants.length>1)
-					this.activity.participants.splice(i,1);
+				console.log('launch save');
+				this.setActivity(this.activity);
 			},
 			goStep1(e){
 				this.showStep = 1;
@@ -221,6 +170,18 @@
 				else this.showStep = 2;
 			}
 		},
+		beforeRouteUpdate (to, from, next) {
+		  console.log('beforeRouteUpdate')
+		  this.goStep1();
+		  if(!to.params.id){
+		  	console.log('here in update');
+		  	this.resetActivitySession();
+		  	console.log('reset ?');
+		  } else {
+		  	this.setWithId(true);
+		  }
+		  next()
+		},
 		beforeRouteEnter(to,from,next){
 			console.log('to then from')
 			console.log(to);
@@ -229,13 +190,15 @@
 
 			if(!to.params.id){
 				console.log('here in route')
-				next(vm=>{
+				next((vm)=>{
+					console.log('before reset')
 					vm.resetActivitySession();
+					console.log('after reset, has it reset')
 				});
 			} else {
-				 next(vm=>{
-				 	vm.setShowPassword(true);
+				 next((vm)=>{
 					vm.setWithId(true);
+					vm.lookForActivity(to.params.id)
 				 });
 			} 
 			//else fetchData();

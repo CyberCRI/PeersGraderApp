@@ -16,7 +16,6 @@ const activitySchema = new Schema({
 	}],
 	urlId: 'String',
 	teacherPwd : 'String',
-	smallPwd : 'String',
 	guidelines: 'String'
 },{
 	timestamps:true

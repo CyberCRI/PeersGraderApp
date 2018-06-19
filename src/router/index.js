@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Activity from '@/components/Activity'
 import ActivityRead from '@/components/ActivityRead'
 import FindActivity from '@/components/FindActivity'
+import ActivityParticipants from '@/components/ActivityParticipants'
 
 Vue.use(Router)
 
@@ -14,19 +15,14 @@ export default new Router({
   	  redirect:'/activity'
   	},
   	{
-  		path: '/activity',
-  		name:'createActivity',
+  		path: '/activity/:id?',
+  		name:'crudActivity',
   		component : Activity
   	},
     {
-      path: '/activity/:id',
-      name: 'updateActivity',
-      component : Activity
-    },
-    {
-      path: '/activity/:id',
-      name: 'readActivity',
-      component : ActivityRead
+      path: '/activity/:id/participants',
+      name: 'activityParticipants',
+      component : ActivityParticipants
     },
     {
       path: '/find/activity',

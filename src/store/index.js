@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 
 import activity from './modules/activity'
+import participants from './modules/participants'
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
 export default new Vuex.Store({
     modules : {
-        activity
+        activity,
+        participants
     }
 });

@@ -11,6 +11,9 @@
       <router-link to="/find/activity" class="navbar-item" >
          Find an activity
       </router-link >
+      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+         Participants
+      </router-link >
 
 	    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
 	      <span aria-hidden="true"></span>
@@ -22,7 +25,20 @@
 </template>
 
 <script>
-	
+	import {mapState} from 'vuex'
+
+	export default {
+		computed : {
+			...mapState('activity',{
+      	activity : 'activity',
+      	withId   : 'withId',
+ 				isAdmin  : 'isAdmin'
+    	}),
+    	participantsUrl(){
+    		return `/activity/${this.activity.urlId}/participants`;
+    	}
+		}
+	};	
 </script>
 
 <style scoped>
