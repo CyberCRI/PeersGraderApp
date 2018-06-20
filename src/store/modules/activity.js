@@ -9,9 +9,11 @@ export default {
             sessions : 0,
             title : '',
             participants:[{
-                firstname : '',
-                name : '',
                 email : '',
+                name : '',
+                group: '',
+                cohort : 0,
+                ine : '',
                 role : ''
             }],
             guidelines : ''
@@ -85,9 +87,11 @@ export default {
                 sessions : 0,
                 title : '',
                 participants:[{
-                    firstname : '',
-                    name : '',
                     email : '',
+                    name : '',
+                    group: '',
+                    cohort : 0,
+                    ine : '',
                     role : ''
                 }],
                 guidelines : ''

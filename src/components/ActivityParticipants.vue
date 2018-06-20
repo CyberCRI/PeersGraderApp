@@ -1,15 +1,21 @@
 <template>
-	<div class="content-pg">
+	<div>
 		<a v-if="participantRoute" @click="postActivity" class="button level-item" >
 				<span>Update</span>
 		</a>
 		<div class="level participants-label">
 			<label class="label">Participants</label>
 		</div>
+		<div class="level participants-label">
+			<label class="label">CSV Insertion</label>
+		</div>
+		<div class="field participants-label">
+			<textarea @blur="convertCSV" id="textarea" class="textarea" placeholder="Textarea"></textarea>
+		</div>
 		<div v-for="(participant,i) in activity.participants" class="row-participant">
 			<div class="">
 		    <div class="field">
-		       <input class="input" type="text" v-model="participant.firstname" placeholder="Participant's firstname">
+		       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
 		    </div>		
 			</div>
 			<div class="">
@@ -19,7 +25,17 @@
 			</div>
 			<div class="">
 		    <div class="field">
-		       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
+		       <input class="input" type="text" v-model="participant.group" placeholder="Participant's group">
+		    </div>		
+			</div>
+			<div class="">
+		    <div class="field">
+		       <input class="input" type="number" v-model="participant.cohort" placeholder="Participant's cohort">
+		    </div>		
+			</div>
+			<div class="">
+		    <div class="field">
+		       <input class="input" type="text" v-model="participant.ine" placeholder="Participant's ine">
 		    </div>		
 			</div>
 			<div class="">
@@ -59,6 +75,43 @@
 			})
 		},
 		methods: {
+			convertCSV(){
+				var lines = document.getElementById("textarea").value.split("\n"),
+						participantKeys = Object.keys(this.activity.participants[0]),
+						dataCSV = [],
+						errors = [];
+      	
+      	for(var i=0,dataSize=0;i<lines.length;i++){
+      		if(i==0){
+      			dataSize = lines[i].split(',').length;
+      		} else{
+      			if(lines[i].split(',').length == dataSize){
+      				dataCSV.push(lines[i].split(','));
+      			} else{
+      				errors.push('The line ' + (i+1) +' is not matching the required data format.');
+      			}
+      		}
+      	}
+
+      	if(errors.length == 0){
+      		for(var i=0;i<dataCSV.length;i++){
+      			var people = dataCSV[i];
+      			if(this.activity.participants.length-1 < i) this.addParticipant(i)
+      			for(var j=0; j<people.length;j++){
+      				console.log('key')
+      				console.log(participantKeys[j])
+      				console.log('people')
+      				console.log(people[j])
+      				if(participantKeys[j]=='role'){
+      					var value = people[j];
+      					people[j] = value.charAt(0).toUpperCase() + value.slice(1);
+      				}
+
+      				this.activity.participants[i][participantKeys[j]] = people[j];
+      			}
+      		}
+      	}
+			},
 			...mapActions('participants',{
 				getParticipants:'getParticipants',
 				setParticipants:'setParticipants',

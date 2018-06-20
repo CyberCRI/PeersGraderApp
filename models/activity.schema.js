@@ -9,9 +9,11 @@ const activitySchema = new Schema({
 	sessions : Number,
 	title : 'String',
 	participants : [{
-		firstname : 'String',
-		name: 'String',
 		email : 'String',
+		name: 'String',
+		group : 'String',
+		cohort : Number,
+		ine : 'String',
 		role : 'String'
 	}],
 	urlId: 'String',
