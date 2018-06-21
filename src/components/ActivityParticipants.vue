@@ -10,7 +10,7 @@
 			<label class="label">CSV Insertion</label>
 		</div>
 		<div class="field participants-label">
-			<textarea @blur="convertCSV" id="textarea" class="textarea" placeholder="Textarea"></textarea>
+			<textarea @blur="convertCSV" id="textarea" v-model="csvInsertion" class="textarea" placeholder="Textarea"></textarea>
 		</div>
 		<div v-if="errors.length>0" class="">
 			<p class="help is-danger" v-for="error in errors"><span v-if="error.message">{{error.message}}</span></p>
@@ -69,6 +69,7 @@
 		name : 'ActivityParticipants',
 		data(){
 			return {
+				csvInsertion : '',
 				errors: [],
 				participantRoute: false
 			};
@@ -106,7 +107,7 @@
 				if(document.getElementById('textarea').value=='')return;
 
 				var lines = document.getElementById("textarea").value.split("\n"),
-						participantKeys = Object.keys(this.activity.participants[0]).filter(e=>e!="_id"),
+						participantKeys = [],
 						dataCSV = [];
 
 				//reset errors tabs
@@ -115,8 +116,9 @@
       	for(var i=0,dataSize=0,dataFormat=[];i<lines.length;i++){
       		if(i==0){
       			dataFormat = lines[i].split(',');
+      			participantKeys = dataFormat.filter(e=>e!="_id"),
       			dataSize = dataFormat.length;
-      			
+
       			if(!dataFormat.find(e=>e=='email') || !dataFormat.find(e=>e=='group') || !dataFormat.find(e=>e=='role')){
       				this.errors.push({
       					line: i,
@@ -154,14 +156,8 @@
       			}
       		}
 
-      		
-					console.log('participants email')
-					console.log(this.activity.participants.map(e=>e.email));
-					console.log('email');
-					console.log(people[j]);
-
 					this.isThereDuplicate();
-      				
+ 
       	}
 			},
 			...mapActions('participants',{
