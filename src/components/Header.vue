@@ -14,6 +14,15 @@
       <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
          Participants
       </router-link >
+      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+         Planning
+      </router-link >
+      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+         Rubric
+      </router-link >
+      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+         Review
+      </router-link >
 
 	    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
 	      <span aria-hidden="true"></span>

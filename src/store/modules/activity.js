@@ -64,16 +64,16 @@ export default {
             axios.delete('http://localhost:5001/activity/'+activityId).then(response=>{
                 if(response.data.success){
 
-                    this.$notify({
+                    this._vm.$notify({
                         group: 'activity',
                         title:'Activity deleted',
                         text: `This activity ${response.data.activity.title} have been deleted with success.`,
                         type : 'success'
                     });
                     console.log('there there')
-                    this.resetActivitySession();
+                    context.dispatch('resetActivitySession');
                     this.showStep = 1;
-                    this.$router.push({path:'/activity'})
+                    router.push({path:'/activity'})
                 }
             });
             

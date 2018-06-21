@@ -12,7 +12,10 @@
 		<div class="field participants-label">
 			<textarea @blur="convertCSV" id="textarea" class="textarea" placeholder="Textarea"></textarea>
 		</div>
-		<div v-for="(participant,i) in activity.participants" class="row-participant">
+		<div v-if="errors.length>0" class="">
+			<p class="help is-danger" v-for="error in errors"><span v-if="error.message">{{error.message}}</span></p>
+		</div>
+		<div :class="{'row-error': isRowError(i)}" v-for="(participant,i) in activity.participants" class="row-participant">
 			<div class="">
 		    <div class="field">
 		       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
@@ -66,6 +69,7 @@
 		name : 'ActivityParticipants',
 		data(){
 			return {
+				errors: [],
 				participantRoute: false
 			};
 		},
@@ -75,33 +79,72 @@
 			})
 		},
 		methods: {
+			isRowError(i){
+				return this.errors.find(e=>e.line-1 == i);
+			},
+			isThereDuplicate(){
+				this.errors = [];
+
+				var emailsEntered = this.activity.participants.map(e=>e.email);
+
+					for(var k=0,lineDuplicate=-1;k<emailsEntered.length;k++){
+						lineDuplicate = emailsEntered.indexOf(emailsEntered[k],k+1);
+						
+						if(lineDuplicate > - 1){
+							this.errors.push({
+								line : lineDuplicate+1,
+								message : `Duplicate email line ${k} on line ${lineDuplicate}.`
+							},{
+								line : k+1
+							});
+						}
+					}
+			},
 			convertCSV(){
+				this.errors = [];
+
+				if(document.getElementById('textarea').value=='')return;
+
 				var lines = document.getElementById("textarea").value.split("\n"),
-						participantKeys = Object.keys(this.activity.participants[0]),
-						dataCSV = [],
-						errors = [];
-      	
-      	for(var i=0,dataSize=0;i<lines.length;i++){
+						participantKeys = Object.keys(this.activity.participants[0]).filter(e=>e!="_id"),
+						dataCSV = [];
+
+				//reset errors tabs
+				
+
+      	for(var i=0,dataSize=0,dataFormat=[];i<lines.length;i++){
       		if(i==0){
-      			dataSize = lines[i].split(',').length;
+      			dataFormat = lines[i].split(',');
+      			dataSize = dataFormat.length;
+      			
+      			if(!dataFormat.find(e=>e=='email') || !dataFormat.find(e=>e=='group') || !dataFormat.find(e=>e=='role')){
+      				this.errors.push({
+      					line: i,
+      					message : 'The fiels does not contain the minimum required field (email,group,role).'
+      				});
+      			}
+
       		} else{
       			if(lines[i].split(',').length == dataSize){
       				dataCSV.push(lines[i].split(','));
       			} else{
-      				errors.push('The line ' + (i+1) +' is not matching the required data format.');
+      				this.errors.push({
+      					message : 'The line ' + i +' is not matching the format set in header.',
+      					line : i
+      				});
       			}
       		}
       	}
 
-      	if(errors.length == 0){
+      	if(this.errors.length == 0){
       		for(var i=0;i<dataCSV.length;i++){
+
       			var people = dataCSV[i];
+      			
       			if(this.activity.participants.length-1 < i) this.addParticipant(i)
+      			
       			for(var j=0; j<people.length;j++){
-      				console.log('key')
-      				console.log(participantKeys[j])
-      				console.log('people')
-      				console.log(people[j])
+      				
       				if(participantKeys[j]=='role'){
       					var value = people[j];
       					people[j] = value.charAt(0).toUpperCase() + value.slice(1);
@@ -110,6 +153,15 @@
       				this.activity.participants[i][participantKeys[j]] = people[j];
       			}
       		}
+
+      		
+					console.log('participants email')
+					console.log(this.activity.participants.map(e=>e.email));
+					console.log('email');
+					console.log(people[j]);
+
+					this.isThereDuplicate();
+      				
       	}
 			},
 			...mapActions('participants',{
@@ -132,10 +184,16 @@
 					email:'',
 					role:''
 				});
+
+				this.isThereDuplicate();
+				//this.setActivity(this.activity);
 			},
 			removeParticipant(i){
 				if(this.activity.participants.length>1)
 					this.activity.participants.splice(i,1);
+
+				this.isThereDuplicate();
+				//this.setActivity(this.activity)
 			}
 		},
 		beforeRouteEnter(to,from,next){
@@ -151,6 +209,9 @@
 </script>
 
 <style scoped>
+	.row-error{
+		border-bottom: solid red 1px;
+	}
 	.participants-label{
 		display: flex;
 		justify-content: space-around;
