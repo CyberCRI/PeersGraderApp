@@ -141,6 +141,9 @@
       	withId   : 'withId',
  				isAdmin  : 'isAdmin'
     	}),
+    	...mapState('participants',{
+      	errors : 'errors'
+    	}),
 			checkFirstStepCompletion(){
 				return this.activity.title && this.activity.guidelines && this.activity.sessions;
 			}
@@ -154,13 +157,17 @@
       	lookForActivity: 'lookForActivity',
       	deleteActivity: 'deleteActivity'
     	}),
+    	...mapActions('participants',{
+      	setErrors : 'setErrors'
+    	}),
     	delActivity()//put it back in store, change name
     	{
     		this.deleteActivity(this.activity.urlId);
     	},
 			postActivity(){
 				console.log('launch save');
-				this.setActivity(this.activity);
+				if(this.errors.length == 0)
+					this.setActivity(this.activity);
 			},
 			goStep1(e){
 				this.showStep = 1;
@@ -176,6 +183,7 @@
 		  if(!to.params.id){
 		  	console.log('here in update');
 		  	this.resetActivitySession();
+		  	this.setErrors([]);
 		  	console.log('reset ?');
 		  } else {
 		  	this.setWithId(true);
@@ -193,6 +201,7 @@
 				next((vm)=>{
 					console.log('before reset')
 					vm.resetActivitySession();
+					this.setErrors([]);
 					console.log('after reset, has it reset')
 				});
 			} else {

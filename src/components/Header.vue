@@ -14,7 +14,7 @@
       <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
          Participants
       </router-link >
-      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+      <router-link v-if="activity.urlId" :to="planningUrl" class="navbar-item" >
          Planning
       </router-link >
       <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
@@ -45,6 +45,9 @@
     	}),
     	participantsUrl(){
     		return `/activity/${this.activity.urlId}/participants`;
+    	},
+    	planningUrl(){
+    		return `/activity/${this.activity.urlId}/Planning`;
     	}
 		}
 	};	

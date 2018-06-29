@@ -6,9 +6,13 @@ export default {
     state : {
         activityId: 0,
         activityUrlId : 0,
-        participants : []
+        participants : [],
+        errors : []
     },
     actions : {
+        setErrors(context,errors){
+            context.commit('setErrors',errors);
+        },
         getParticipants(context,activityId){
             axios.get('http://localhost:5001/activity/'+activityId+'/participants').then(function(response){
                 if(response.data.success){
@@ -29,6 +33,9 @@ export default {
     getters : {
     },
     mutations : {
+        setErrors(state,errors){
+           state.errors = errors;
+        },
         setActivityId(state,activityId){
             state.activityId = activityId;
         },

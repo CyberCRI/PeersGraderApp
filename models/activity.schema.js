@@ -10,17 +10,18 @@ const activitySchema = new Schema({
 	title : 'String',
 	participants : [{
 		email : 'String',
-		name: 'String',
+		//name: 'String',
 		group : 'String',
-		cohort : Number,
-		ine : 'String',
+		//cohort : Number,
+		//ine : 'String',
 		role : 'String'
 	}],
 	urlId: 'String',
 	teacherPwd : 'String',
 	guidelines: 'String'
 },{
-	timestamps:true
+	timestamps:true,
+	strict:false
 });
 
 const activityModel = mongoose.model('Activity', activitySchema);

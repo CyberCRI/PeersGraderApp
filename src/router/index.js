@@ -4,6 +4,7 @@ import Activity from '@/components/Activity'
 import ActivityRead from '@/components/ActivityRead'
 import FindActivity from '@/components/FindActivity'
 import ActivityParticipants from '@/components/ActivityParticipants'
+import Planning from '@/components/ActivityPlanning'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/activity/:id/participants',
       name: 'activityParticipants',
       component : ActivityParticipants
+    },
+    {
+      path: '/activity/:id/Planning',
+      name: 'activityPlanning',
+      component : Planning
     },
     {
       path: '/find/activity',

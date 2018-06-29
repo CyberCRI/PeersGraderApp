@@ -13,34 +13,42 @@
 			<textarea @blur="convertCSV" id="textarea" v-model="csvInsertion" class="textarea" placeholder="Textarea"></textarea>
 		</div>
 		<div v-if="errors.length>0" class="">
-			<p class="help is-danger" v-for="error in errors"><span v-if="error.message">{{error.message}}</span></p>
+			<p v-for="error in errors"><span class="help" :class="{'is-warning':error.type=='warning','is-danger':error.type== 'error'}" v-if="error.message">{{error.message}}</span></p>
+		</div>
+		<div v-else>
+			<p v-if="csvInsertion!='' && check" class="help is-success">Form is valid</p>
 		</div>
 		<div :class="{'row-error': isRowError(i)}" v-for="(participant,i) in activity.participants" class="row-participant">
+			<div v-for="key in Object.keys(participant)" class="">
+		    <div v-if="isNotDynamicKey(key)" class="field">
+		       <input class="input" type="text" v-model="participant[key]" :placeholder="'Participant\'s ' + key">
+		    </div>		
+			</div>
 			<div class="">
 		    <div class="field">
 		       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
 		    </div>		
 			</div>
-			<div class="">
+			<!-- <div class="">
 		    <div class="field">
 		       <input class="input" type="text" v-model="participant.name" placeholder="Participant's name">
 		    </div>		
-			</div>
+			</div> -->
 			<div class="">
 		    <div class="field">
 		       <input class="input" type="text" v-model="participant.group" placeholder="Participant's group">
 		    </div>		
 			</div>
-			<div class="">
+			<!-- <div class="">
 		    <div class="field">
 		       <input class="input" type="number" v-model="participant.cohort" placeholder="Participant's cohort">
 		    </div>		
-			</div>
-			<div class="">
+			</div> -->
+			<!-- <div class="">
 		    <div class="field">
 		       <input class="input" type="text" v-model="participant.ine" placeholder="Participant's ine">
 		    </div>		
-			</div>
+			</div> -->
 			<div class="">
 		    <div class="field">
 		    	<div class="select">
@@ -70,21 +78,27 @@
 		data(){
 			return {
 				csvInsertion : '',
-				errors: [],
-				participantRoute: false
+				participantRoute: false,
+				check : false
 			};
 		},
 		computed : {
 			...mapState('activity',{
 				activity : 'activity'
+			}),
+			...mapState('participants',{
+				errors : 'errors'
 			})
 		},
 		methods: {
+			isNotDynamicKey(key){
+				return key!= 'email' && key!= '_id' && key!='group' && key!='role' && key!='reviewed'
+			},
 			isRowError(i){
 				return this.errors.find(e=>e.line-1 == i);
 			},
 			isThereDuplicate(){
-				this.errors = [];
+				this.setErrors([]);
 
 				var emailsEntered = this.activity.participants.map(e=>e.email);
 
@@ -94,7 +108,8 @@
 						if(lineDuplicate > - 1){
 							this.errors.push({
 								line : lineDuplicate+1,
-								message : `Duplicate email line ${k} on line ${lineDuplicate}.`
+								message : `Duplicate email line ${k} on line ${lineDuplicate}.`,
+								type: 'error'
 							},{
 								line : k+1
 							});
@@ -102,7 +117,7 @@
 					}
 			},
 			convertCSV(){
-				this.errors = [];
+				this.setErrors([]);
 
 				if(document.getElementById('textarea').value=='')return;
 
@@ -111,16 +126,26 @@
 						dataCSV = [];
 
 				//reset errors tabs
-				
 
       	for(var i=0,dataSize=0,dataFormat=[];i<lines.length;i++){
       		if(i==0){
-      			dataFormat = lines[i].split(',');
+      			dataFormat = lines[i].split(',').map(e=>e.trim());
       			participantKeys = dataFormat.filter(e=>e!="_id"),
       			dataSize = dataFormat.length;
 
+      			for(var j=0;j<dataFormat.length;j++){
+      				let dataFormatDuplicate = dataFormat.indexOf(dataFormat[j],j+1);
+      				if(dataFormatDuplicate>1){
+      					this.errors.push({
+      						type: 'warning',
+      						message: 'Header contains duplicate field. Last value will count.'
+      					})
+      				}
+      			}
+
       			if(!dataFormat.find(e=>e=='email') || !dataFormat.find(e=>e=='group') || !dataFormat.find(e=>e=='role')){
       				this.errors.push({
+      					type: 'error',
       					line: i,
       					message : 'The fiels does not contain the minimum required field (email,group,role).'
       				});
@@ -131,13 +156,14 @@
       				dataCSV.push(lines[i].split(','));
       			} else{
       				this.errors.push({
+      					type : 'error',
       					message : 'The line ' + i +' is not matching the format set in header.',
       					line : i
       				});
       			}
       		}
       	}
-
+      	//dataCSV.map(e=>)
       	if(this.errors.length == 0){
       		for(var i=0;i<dataCSV.length;i++){
 
@@ -157,7 +183,7 @@
       		}
 
 					this.isThereDuplicate();
- 
+ 					this.check = true;
       	}
 			},
 			...mapActions('participants',{
@@ -167,18 +193,23 @@
 				setActivityUrlId : 'setActivityUrlId'
 			}),
 			...mapActions('activity',{
-				setActivity:'setActivity'
+				setActivity:'setActivity',
+			}),
+			...mapActions('participants',{
+				setErrors : 'setErrors'
 			}),
 			postActivity(){
 				console.log('launch save');
-				this.setActivity(this.activity);
+				if(this.errors.length == 0)
+					this.setActivity(this.activity);
 			},
 			addParticipant(i){
 				this.activity.participants.splice(i+1,0,{
-					firstname:'',
-					name:'',
+					//firstname:'',
+					group:'',
 					email:'',
-					role:''
+					role:'',
+					reviewed:[]
 				});
 
 				this.isThereDuplicate();

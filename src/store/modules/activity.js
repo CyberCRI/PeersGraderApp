@@ -10,11 +10,12 @@ export default {
             title : '',
             participants:[{
                 email : '',
-                name : '',
+                //name : '',
                 group: '',
                 cohort : 0,
-                ine : '',
-                role : ''
+                //ine : '',
+                role : '',
+                reviewed:[]
             }],
             guidelines : ''
         },
@@ -48,14 +49,14 @@ export default {
             });
         },
         lookForActivity(context,key){
-            axios.get('http://localhost:5001/activity/'+key).then((response)=>{
+            return axios.get('http://localhost:5001/activity/'+key).then((response)=>{
                 if(response.data.success){
                     console.log('found smthg')
                     console.log(response.data.activity);
                     context.state.userSession = false;
                     context.commit('setActivity',response.data.activity);
-                    router.push({path:'/activity/'+response.data.activity.urlId});
-
+                    //router.push({path:'/activity/'+response.data.activity.urlId});
+                    return new Promise((resolve,reject)=>resolve({url:response.data.activity.urlId}));
                 }
             });
         },
@@ -88,11 +89,12 @@ export default {
                 title : '',
                 participants:[{
                     email : '',
-                    name : '',
+                    //name : '',
                     group: '',
-                    cohort : 0,
-                    ine : '',
-                    role : ''
+                    //cohort : 0,
+                    //ine : '',
+                    role : '',
+                    reviewed:[]
                 }],
                 guidelines : ''
             });

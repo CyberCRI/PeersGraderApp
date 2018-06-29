@@ -38,7 +38,9 @@
 			findActivity(){
 				console.log('looking for')
 				console.log(this.activityKey)
-				this.lookForActivity(this.activityKey).catch(function(error){
+				this.lookForActivity(this.activityKey).then(response=>{
+					this.$router.push({path:`/activity/${response.url}`});
+				}).catch(error=>{
 					this.errorMessage = error;
 				});
 			}
