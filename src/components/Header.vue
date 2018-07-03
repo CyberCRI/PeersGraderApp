@@ -11,16 +11,16 @@
       <router-link to="/find/activity" class="navbar-item" >
          Find an activity
       </router-link >
-      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+      <router-link v-if="activity.urlId" :to="activityUrl+'/participants'" class="navbar-item" >
          Participants
       </router-link >
-      <router-link v-if="activity.urlId" :to="planningUrl" class="navbar-item" >
+      <router-link v-if="activity.urlId" :to="activityUrl+'/planning'" class="navbar-item" >
          Planning
       </router-link >
-      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+      <router-link v-if="activity.urlId" :to="activityUrl+'/rubric'" class="navbar-item" >
          Rubric
       </router-link >
-      <router-link v-if="activity.urlId" :to="participantsUrl" class="navbar-item" >
+      <router-link v-if="activity.urlId" :to="activityUrl+'/review'" class="navbar-item" >
          Review
       </router-link >
 
@@ -43,22 +43,15 @@
       	withId   : 'withId',
  				isAdmin  : 'isAdmin'
     	}),
-    	participantsUrl(){
-    		return `/activity/${this.activity.urlId}/participants`;
-    	},
-    	planningUrl(){
-    		return `/activity/${this.activity.urlId}/Planning`;
-    	}
+      activityUrl(){
+        return '/activity/'+this.activity.urlId;
+      }
 		}
 	};	
 </script>
 
 <style scoped>
-	nav {
-		border:solid 1px black;
-		height: 7%;
-		margin-bottom: 1vh;
-	}
+	
 
 
 </style>

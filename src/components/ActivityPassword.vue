@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<notifications group="password" />
 		<div class="">
 			<div class="field">
 			  <label class="label">Password</label>
@@ -35,8 +34,12 @@
 	    checkPassword(){
     		console.log('passed pwd')
     		console.log(this.password)
-    		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(function(response){
-    			
+    		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(()=>{
+    			this.$notify({
+    				 group: 'notifications',
+             title:'Access granted',
+             type : 'success'
+    			})
     		});
     	}
 		}

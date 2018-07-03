@@ -5,7 +5,7 @@
 			</div>
 			<div v-else>
 				<notifications group="activity" />
-				<div v-show="showStep === 1 " class="content-pg">
+				<div v-show="showStep === 1 " class="">
 					<h2>Create activity 1/2</h2>
 					<div class="field is-horizontal">
 						<div class="field-label is-normal">
@@ -50,7 +50,7 @@
 						</div>
 					</div> -->
 				</div>
-				<div v-show="showStep === 2 " class="content-pg">
+				<div v-show="showStep === 2 " class="">
 					<h2>Create activity 2/2</h2>
 					<participants-acitivity></participants-acitivity>
 					<!--<div class="level participants-label">
@@ -221,7 +221,7 @@
 		top:85%;
 	}*/
 
-	.participants-label{
+/*	.participants-label{
 		display: flex;
 		justify-content: space-around;
 	}
@@ -251,6 +251,6 @@
 
 	.remove-participant{
 		cursor: pointer;
-	}
+	}*/
 
 </style>

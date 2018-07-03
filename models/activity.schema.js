@@ -16,6 +16,15 @@ const activitySchema = new Schema({
 		//ine : 'String',
 		role : 'String'
 	}],
+	rubrics:[{
+      name:'',
+      points:0,
+      descriptors:[{
+          content:'',
+          level: 0,
+          points:0
+      }]
+  }],
 	urlId: 'String',
 	teacherPwd : 'String',
 	guidelines: 'String'

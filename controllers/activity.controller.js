@@ -28,11 +28,14 @@ module.exports = {
 
 		var sentActivity = req.body.activity;
 
-		sentActivity.urlId = nanoid(5);
-		sentActivity.teacherPwd = nanoid(10)+nanoid(10);
-
 		console.log('sent')
 		console.log(sentActivity)
+
+		if(!sentActivity.urlId && !sentActivity.teacherPwd){
+			sentActivity.urlId = nanoid(5);
+			sentActivity.teacherPwd = nanoid(10)+nanoid(10);	
+		}
+	
 		var	newActivity = new Activity(sentActivity);
 
 		newActivity.save().then(function(response){

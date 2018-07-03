@@ -17,6 +17,15 @@ export default {
                 role : '',
                 reviewed:[]
             }],
+            rubrics:[{
+                name:'',
+                points:0,
+                descriptors:[{
+                    content:'',
+                    level:-1,
+                    points:0
+                }]
+            }],
             guidelines : ''
         },
         isAdmin : false,
@@ -46,6 +55,8 @@ export default {
                         //router.push({path:'/activity/'+response.data.activity.urlId});
                     }    
                 }
+            }).catch(error=>{
+                console.log('error',error);
             });
         },
         lookForActivity(context,key){
@@ -66,7 +77,7 @@ export default {
                 if(response.data.success){
 
                     this._vm.$notify({
-                        group: 'activity',
+                        group: 'notifications',
                         title:'Activity deleted',
                         text: `This activity ${response.data.activity.title} have been deleted with success.`,
                         type : 'success'
@@ -96,6 +107,15 @@ export default {
                     role : '',
                     reviewed:[]
                 }],
+                rubrics:[{
+                    name:'',
+                    points:0,
+                    descriptors:[{
+                        content:'',
+                        level:-1,
+                        points:0
+                    }]
+                }],
                 guidelines : ''
             });
 
@@ -110,7 +130,7 @@ export default {
                     console.log(response)
                     if(response.data.success){
                         this._vm.$notify({
-                            group: 'activity',
+                            group: 'notifications',
                             title:'Activity updated',
                             text: 'This activity have been updated with success.',
                             type : 'success'
@@ -128,7 +148,7 @@ export default {
 
                     if(response.data.success){
                         this._vm.$notify({
-                            group: 'activity',
+                            group: 'notifications',
                             title:'Activity saved',
                             text: 'This activity have been saved with success.',
                             type : 'success'

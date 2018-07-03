@@ -54,10 +54,5 @@
 </script>
 
 <style>
-	.content-pg{
-		position: absolute;
-    transform: translateY(-50%);
-    top: 50%;
-    width: 100%;
-	}
+	
 </style>
