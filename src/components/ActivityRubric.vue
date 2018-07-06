@@ -4,6 +4,14 @@
 			<a @click="postActivity" class="button level-item" >
 				<span>Save</span>
 			</a>
+			<div class="level">
+				<div class="field">
+				  <label class="label">Basis</label>
+				  <div class="control">
+				    <input class="input" type="number" v-model="activity.basis" placeholder="Activity's basis">
+				  </div>
+				</div>
+			</div>
 			<div v-for="(rubric,i) of activity.rubrics" :key="i">
 				<div class="columns">
 					<div class="column">
@@ -26,7 +34,7 @@
 						    </a>
 						  </div>
 						  <div class="control">
-						    <input v-model="rubric.points" class="input" type="number" placeholder="Skill's name">
+						    <input v-model="rubric.points" class="input" type="number" placeholder="Skill's points">
 						  </div>
 						</div>
 					</div>
@@ -50,10 +58,10 @@
 						    	<div class="select">
 							    	<select v-on:change="changeLevel(i,j) "v-model="descriptor.level">
 										  <option disabled value="">Level</option>
-										  <option :value="Number(1)">Easy</option>
-										  <option :value="Number(2)">Medium</option>
-										  <option :value="Number(3)">Hard</option>
-										  <option :value="Number(4)">Expert</option>
+										  <option :value="1">Easy</option>
+										  <option :value="2">Medium</option>
+										  <option :value="3">Hard</option>
+										  <option :value="4">Expert</option>
 										</select>
 									</div>
 						    </div>	
@@ -66,7 +74,7 @@
 								    </a>
 								  </div>
 								  <div class="control">
-								    <input v-model="descriptor.points" class="input" type="number" placeholder="Point' descriptor">
+								    <input v-model="descriptor.points" class="input" type="number" placeholder="descriptor's point">
 								  </div>
 								</div>
 				    	</div>

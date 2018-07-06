@@ -5,7 +5,6 @@ export default {
     namespaced : true,
     state : {
         activity : {
-            /*presentations:0,*/
             sessions : 0,
             title : '',
             participants:[{
@@ -22,10 +21,11 @@ export default {
                 points:0,
                 descriptors:[{
                     content:'',
-                    level:-1,
+                    level:'',
                     points:0
                 }]
             }],
+            basis:20,
             guidelines : ''
         },
         isAdmin : false,
@@ -112,10 +112,11 @@ export default {
                     points:0,
                     descriptors:[{
                         content:'',
-                        level:-1,
+                        level:'',
                         points:0
                     }]
                 }],
+                basis : 20,
                 guidelines : ''
             });
 

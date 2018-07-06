@@ -6,6 +6,7 @@ import FindActivity from '@/components/FindActivity'
 import ActivityParticipants from '@/components/ActivityParticipants'
 import Planning from '@/components/ActivityPlanning'
 import ActivityRubric from '@/components/ActivityRubric'
+import Review from '@/components/Review'
 
 Vue.use(Router)
 
@@ -21,6 +22,16 @@ export default new Router({
   		name:'crudActivity',
   		component : Activity
   	},
+    {
+      path:'/activity/:id/review',
+      name:'review',
+      component: Review
+    },
+    {
+      path:'/activity/:id/review/:reviewId',
+      name:'crudReview',
+      component:Review
+    },
     {
       path: '/activity/:id/participants',
       name: 'activityParticipants',

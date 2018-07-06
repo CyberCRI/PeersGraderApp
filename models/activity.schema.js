@@ -18,13 +18,14 @@ const activitySchema = new Schema({
 	}],
 	rubrics:[{
       name:'',
-      points:0,
+      points:Number,
       descriptors:[{
           content:'',
-          level: 0,
-          points:0
+          level: Number,
+          points: Number
       }]
   }],
+  basis:Number,
 	urlId: 'String',
 	teacherPwd : 'String',
 	guidelines: 'String'
