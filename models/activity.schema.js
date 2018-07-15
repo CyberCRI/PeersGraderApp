@@ -14,7 +14,13 @@ const activitySchema = new Schema({
 		group : 'String',
 		//cohort : Number,
 		//ine : 'String',
-		role : 'String'
+		role : 'String',
+		reviewed : [{
+			email:'String',
+			group:'String',
+			role : 'String',
+			graded : Boolean
+		}]
 	}],
 	rubrics:[{
       name:'',

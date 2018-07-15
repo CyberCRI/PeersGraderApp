@@ -20,6 +20,8 @@ router.delete('/activity/:id',activityController.deleteActivity);
 //Reviews
 router.get('/activity/:id/review/:reviewId',reviewController.getReview);
 
+router.get('/activity/:id/review/grader/:graderEmail',reviewController.getReviewFromParticipantEmail)
+
 router.put('/activity/:id/review/:reviewId',reviewController.updateReview);
 
 router.post('/activity/:id/review',reviewController.saveReview);
