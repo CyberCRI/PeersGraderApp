@@ -50,7 +50,7 @@ export default {
             context.commit('setWithId',withId)
         },
         getAuthActivity(context,specifier){//certainement refacto les bails ici
-            axios.get('http://localhost:5001/activity/'+specifier.urlId).then((response)=>{
+            axios.get('/api/activity/'+specifier.urlId).then((response)=>{
                 if(response.data.success){
                     console.log('auth activity')
                     if(specifier.pwd.length==20 && specifier.pwd == response.data.activity.teacherPwd){
@@ -65,7 +65,7 @@ export default {
             });
         },
         lookForActivity(context,key){
-            return axios.get('http://localhost:5001/activity/'+key).then((response)=>{
+            return axios.get('/api/activity/'+key).then((response)=>{
                 if(response.data.success){
                     console.log('found smthg')
                     console.log(response.data.activity);
@@ -78,7 +78,7 @@ export default {
         },
         deleteActivity(context,activityId){
             
-            axios.delete('http://localhost:5001/activity/'+activityId).then(response=>{
+            axios.delete('/api/activity/'+activityId).then(response=>{
                 if(response.data.success){
 
                     this._vm.$notify({
@@ -133,7 +133,7 @@ export default {
         },
         setActivity(context,activity){
             if(activity.urlId)
-                return axios.put('http://localhost:5001/activity/'+activity.urlId,{activity:context.state.activity}).then((response)=>{
+                return axios.put('/api/activity/'+activity.urlId,{activity:context.state.activity}).then((response)=>{
                     console.log('there');   
                     console.log(response)
                     if(response.data.success){
@@ -151,7 +151,7 @@ export default {
 
 
                 });
-            else return axios.post('http://localhost:5001/activity',{activity:context.state.activity}).then((response)=>{
+            else return axios.post('/api/activity',{activity:context.state.activity}).then((response)=>{
                     console.log('here')
 
                     if(response.data.success){

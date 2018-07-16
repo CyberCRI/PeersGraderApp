@@ -6,22 +6,22 @@ const express = require('express'),
 module.exports = router;
 
 //Activities
-router.post('/activity',activityController.saveActivity);
+router.post('/api/activity',activityController.saveActivity);
 
-router.get('/activity/:id',activityController.getActivity)
+router.get('/api/activity/:id',activityController.getActivity)
 
-router.get('/activity/:id/participants',activityController.getParticipants);
+router.get('/api/activity/:id/participants',activityController.getParticipants);
 
-router.put('/activity/:id',activityController.updateActivity);
+router.put('/api/activity/:id',activityController.updateActivity);
 
-router.delete('/activity/:id',activityController.deleteActivity);
+router.delete('/api/activity/:id',activityController.deleteActivity);
 
 
 //Reviews
-router.get('/activity/:id/review/:reviewId',reviewController.getReview);
+router.get('/api/activity/:id/review/:reviewId',reviewController.getReview);
 
-router.get('/activity/:id/review/grader/:graderEmail',reviewController.getReviewFromParticipantEmail);
+router.get('/api/activity/:id/review/grader/:graderEmail',reviewController.getReviewFromParticipantEmail);
 
-router.put('/activity/:id/review/:reviewId',reviewController.updateReview);
+router.put('/api/activity/:id/review/:reviewId',reviewController.updateReview);
 
-router.post('/activity/:id/review',reviewController.saveReview);
+router.post('/api/activity/:id/review',reviewController.saveReview);

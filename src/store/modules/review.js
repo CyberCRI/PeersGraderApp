@@ -39,7 +39,7 @@ export default {
         },
         lookForReviewFromParticipant(context,review){
             //might have to try with weird  caracters in mail 
-            return axios.get('/activity/'+review.activityUrlId+'/review/grader/'+review.grader.email).then(response=>{
+            return axios.get('/api/activity/'+review.activityUrlId+'/review/grader/'+review.grader.email).then(response=>{
                 if(response.data.hasReview){
                     console.log('getReviewFromParticipant')
                     context.state.review.grader = response.data.grader;
@@ -58,7 +58,7 @@ export default {
         },
         lookForReview(context,review){
 
-            return axios.get('/activity/'+review.activityUrlId+'/review/'+review.urlId).then((response)=>{
+            return axios.get('/api/activity/'+review.activityUrlId+'/review/'+review.urlId).then((response)=>{
                 if(response.data.success){
                    console.log('getReview');
                    console.log(response.data.review)
@@ -73,7 +73,7 @@ export default {
 
             if(context.state.hasPushedSave){
                 if(!review.urlId){
-                    return axios.post('http://localhost:5001/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
+                    return axios.post('/api/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
                         if(response.data.success){
                             this._vm.$notify({
                                 group : 'notifications',
@@ -88,7 +88,7 @@ export default {
                         }
                     });
                 } else {
-                    axios.put('http://localhost:5001/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
+                    axios.put('/api/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
                         if(response.data.success){
                             this._vm.$notify({
                                 group: 'notifications',
