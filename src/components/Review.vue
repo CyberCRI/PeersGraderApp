@@ -155,10 +155,20 @@
 			showReview(indexReviewed){
 				this.indexReviewed = indexReviewed > this.review.grader.reviewed.length ? 
 																this.review.grader.reviewed.length : indexReviewed;
-				if(this.grader.reviewed[indexReviewed].urlId)
+				if(this.review.grader.reviewed[indexReviewed].urlId){
+					
+					this.review.urlId = this.review.grader.reviewed[indexReviewed].urlId;
+					this.review.reviewed = this.review.grader.reviewed[indexReviewed].email;
+
+					delete this.review.__v;
+					delete this.review._id;
+					delete this.review.createdAt;
+					delete this.review.updatedAt;
+					
 					this.$router.push({
 						path:'/activity/'+this.review.activityUrlId+'/review/'+this.review.grader.reviewed[this.indexReviewed].urlId
 					});
+				}
 				else this.$router.push({path:'/activity/'+this.review.activityUrlId+'/review/'});
 			},
 			getNewReview(activity,grader){
@@ -216,6 +226,8 @@
 						grader : this.grader,
 						activityUrlId : this.review.activityUrlId,
 						reviewed : this.grader.reviewed[this.indexReviewed].email
+					}).then(()=>{
+						this.grader = this.review.grader;
 					});
 				 }
 				}
@@ -240,7 +252,7 @@
 			});
 		},
 		async beforeRouteUpdate(to,from,next){
-			if(to.params.reviewId && to.params.reviewId != this.review.urlId){
+			if(to.params.reviewId){
 				console.log('here i am :(')
 				await this.lookForActivity(to.params.id)
 				await this.lookForReview({
