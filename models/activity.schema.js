@@ -10,6 +10,7 @@ const activitySchema = new Schema({
 	title : 'String',
 	participants : [{
 		email : 'String',
+		token : 'String',
 		//name: 'String',
 		group : 'String',
 		//cohort : Number,
@@ -34,7 +35,8 @@ const activitySchema = new Schema({
   basis:Number,
 	urlId: 'String',
 	teacherPwd : 'String',
-	guidelines: 'String'
+	guidelines: 'String',
+	invitationsSent : Boolean
 },{
 	timestamps:true,
 	strict:false

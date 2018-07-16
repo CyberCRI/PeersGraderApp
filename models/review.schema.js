@@ -17,32 +17,27 @@ const reviewSchema = new Schema({
 			name : 'String',
 			role : 'String',
 			graded : Boolean,
-			group : 'String'
+			group : 'String',
+			skills : [{
+				rubricId : {
+					type : Schema.Types.ObjectId
+				},
+				name : 'String',
+				totalPossiblePoints: Number,
+				skillDescriptors : [{
+					content : 'String',
+					descriptorId : {
+						type : Schema.Types.ObjectId
+					},
+					possiblePoints : Number,
+					acquired : Boolean
+				}]
+			}]
 		}]
 	},
-	reviewed : {
-		urlId : 'String',
-		email : 'String',
-		role : 'String',
-		group : 'String',
-		graded : Boolean
-	},
-	urlId:'String',
+	reviewed : 'String',
 	activityUrlId : 'String',
-	skills : [{
-		rubricId : {
-			type : Schema.Types.ObjectId
-		},
-		name : 'String',
-		totalPossiblePoints: Number,
-		skillDescriptors : [{
-			descriptorId : {
-				type : Schema.Types.ObjectId
-			},
-			possiblePoints : Number,
-			acquired : Boolean
-		}]
-	}]
+	urlId : 'String'
   },{
 	timestamps:true,
 	strict:false

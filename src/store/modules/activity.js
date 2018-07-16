@@ -9,7 +9,7 @@ export default {
             title : '',
             participants:[{
                 email : '',
-                //name : '',
+                token : '',
                 group: '',
                 cohort : 0,
                 //ine : '',
@@ -26,7 +26,8 @@ export default {
                 }]
             }],
             basis:20,
-            guidelines : ''
+            guidelines : '',
+            invitationsSent : true
         },
         isAdmin : false,
         withId : false,
@@ -104,6 +105,7 @@ export default {
                 title : '',
                 participants:[{
                     email : '',
+                    token : '',
                     //name : '',
                     group: '',
                     //cohort : 0,
@@ -121,7 +123,8 @@ export default {
                     }]
                 }],
                 basis : 20,
-                guidelines : ''
+                guidelines : '',
+                invitationsSent : true
             });
 
             context.commit('setIsAdmin',false);
