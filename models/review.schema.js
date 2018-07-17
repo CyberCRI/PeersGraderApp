@@ -13,7 +13,6 @@ const reviewSchema = new Schema({
 		role : 'String',
 		group : 'String',
 		reviewed : [{
-			urlId : 'String',
 			name : 'String',
 			role : 'String',
 			graded : Boolean,
@@ -35,7 +34,6 @@ const reviewSchema = new Schema({
 			}]
 		}]
 	},
-	reviewed : 'String',
 	activityUrlId : 'String',
 	urlId : 'String'
   },{

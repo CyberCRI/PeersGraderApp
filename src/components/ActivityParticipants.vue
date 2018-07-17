@@ -92,7 +92,7 @@
 		},
 		methods: {
 			isNotDynamicKey(key){
-				return key!= 'email' && key!= '_id' && key!='group' && key!='role' && key!='reviewed'
+				return key!='token' && key!= 'email' && key!= '_id' && key!='group' && key!='role' && key!='reviewed'
 			},
 			isRowError(i){
 				return this.errors.find(e=>e.line-1 == i);

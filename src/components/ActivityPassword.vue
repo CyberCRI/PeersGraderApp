@@ -34,6 +34,7 @@
 	    checkPassword(){
     		console.log('passed pwd')
     		console.log(this.password)
+    		console.log('passed urlId',this.$store.state.activity.activity.urlId)
     		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(()=>{
     			this.$notify({
     				 group: 'notifications',

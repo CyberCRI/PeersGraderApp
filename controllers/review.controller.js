@@ -24,35 +24,14 @@ module.exports = {
 		
 		var sentReview = req.body.review;
 
-		console.log('sent')
-		console.log(sentReview.reviewed)
-		
-		if(!sentReview._id){
-			sentReview.urlId = nanoid(5);
-			var indexReviewed = sentReview.grader.reviewed.findIndex(c=>c.email == sentReview.reviewed);
-			console.log('indexReviewed',indexReviewed);
-			sentReview.grader.reviewed[indexReviewed].urlId = sentReview.urlId;
-		}
+		if(!sentReview.urlId) sentReview.urlId = nanoid(5);
 
 		var	newReview = new Review(sentReview);
 
-		newReview.save().then(async function(response){
-			await Review.updateMany({
-				activityUrlId:sentReview.activityUrlId,
-				'grader.email':sentReview.grader.email,
-				'grader.reviewed.email':sentReview.reviewed
-			},{
-				$set : {'grader.reviewed.$.urlId':sentReview.urlId}
-			},{
-				multi: true
-			});
-
-			Review.findOne({urlId:response.urlId}).then(function(review){		
-				console.log('review',review)
+		newReview.save().then(async function(review){
+		
 				res.send({success:true,review:review});
-			}).catch(error=>{
-				console.log('bim error',error);
-			});	
+
 		}).catch(function(err){
 			console.log(err)
 		});

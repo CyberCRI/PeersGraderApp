@@ -10,7 +10,7 @@
 		<p>
 			<ul>
 				<li v-for="participant in activity.participants">
-					{{participant.role}} {{participant.firstname}} {{participant.name}} : {{participant.email}}
+					{{displayParticipant(participant)}}
 				</li>
 			</ul>
 		</p>
@@ -39,6 +39,16 @@
 			})
 		},
 		methods : {
+			displayParticipant(participant){
+				var a = ['name','group','role','token','reviewed','email','_id'],
+						keys = Object.keys(participant).filter(c=>!a.includes(c)),
+						info = [];
+
+				for(var k of keys)
+					info.push(participant[k]);
+
+				return `${participant.group} ${participant.role} ${participant.name} ${info.join(' ')}`
+			},
 			manageActivity(){
 				this.manage = true;
 			}

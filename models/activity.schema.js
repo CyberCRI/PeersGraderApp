@@ -8,10 +8,12 @@ const activitySchema = new Schema({
 	presentations : Number,
 	sessions : Number,
 	title : 'String',
+	teacherEmail : 'String',
+	teacherName : 'String',
 	participants : [{
 		email : 'String',
 		token : 'String',
-		//name: 'String',
+		name: 'String',
 		group : 'String',
 		//cohort : Number,
 		//ine : 'String',

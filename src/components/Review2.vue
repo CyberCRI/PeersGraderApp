@@ -103,8 +103,7 @@
 				activity : 'activity',
 			}),
 			...mapState('review',{
-				review : 'review',
-				hasReview : 'hasReview'
+				review : 'review'
 			}),
 			displayRedirection(){
 				return this.activity.rubrics.length == 1 && this.activity.rubrics[0].name == '' && this.activity.rubrics[0].points == 0
@@ -127,22 +126,19 @@
 				setReview : 'setReview',
 				setHasPushedSave : 'setHasPushedSave',
 				lookForReview : 'lookForReview',
-				lookForReviewFromParticipant : 'lookForReviewFromParticipant',
-				setShowNotificationSave : 'setShowNotificationSave'
+				lookForReviewFromParticipant : 'lookForReviewFromParticipant'
 			}),
 			getGrader(participants,identifiant){
 				return participants.find(c=>c.token == identifiant || c.email == identifiant);
 			},
 			saveReviewsBeforeHand(activity,token){
 
-				var grader = this.getGrader(activity.participants, token || this.emailParticipant),
-						vm = this;
+				var grader = this.getGrader(activity.participants, token || this.emailParticipant);
 				this.getPlanning().then(()=>{
 					for(var reviewee of grader.reviewed){
-						vm.grader = grader;
-						vm.setHasPushedSave(true);
-						vm.setShowNotificationSave(false);
-						vm.postReview();
+						this.grader = grader;
+						this.setHasPushedSave(true);
+						this.postReview();
 					}
 				});
 			},
@@ -150,20 +146,14 @@
 				var grader = this.getGrader(activity.participants, token || this.emailParticipant);
 
 				if(grader){
-					this.lookForReviewFromParticipant({
-						activityUrlId : this.actvity.urlId,
-						grader : {email: grader.email}
-					});
-
-					if(!this.hasReview){
-						this.saveReviewsBeforeHand(this.activity,this.emailParticipant);
-						//this.getPlanning().then(()=>{
-							this.emailParticipant = grader.email;
-							this.setReview(this.getNewReview(activity,grader));
-							this.grader = grader;
-							this.isReviewStarted = true;
+					this.saveReviewsBeforeHand(this.activity,this.emailParticipant);
+					//this.getPlanning().then(()=>{
+						this.emailParticipant = grader.email;
+						this.setReview(this.getNewReview(activity,grader));
+						this.grader = grader;
+						this.isReviewStarted = true;
 					//});
-					}
+					
 
 				} else {
 					this.$notify({
@@ -176,6 +166,21 @@
 			showReview(indexReviewed){
 				this.indexReviewed = indexReviewed > this.review.grader.reviewed.length ? 
 																this.review.grader.reviewed.length : indexReviewed;
+				if(this.review.grader.reviewed[indexReviewed].urlId){
+					
+					this.review.urlId = this.review.grader.reviewed[indexReviewed].urlId;
+					this.review.reviewed = this.review.grader.reviewed[indexReviewed].email;
+
+					delete this.review.__v;
+					delete this.review._id;
+					delete this.review.createdAt;
+					delete this.review.updatedAt;
+					
+					this.$router.push({
+						path:'/activity/'+this.review.activityUrlId+'/review/'+this.review.grader.reviewed[this.indexReviewed].urlId
+					});
+				}
+				else this.$router.push({path:'/activity/'+this.review.activityUrlId+'/review/'});
 			},
 			getNewReview(activity,grader){
 				var skills = this.getEmptySkillTable(activity.rubrics);
@@ -219,12 +224,23 @@
 					this.setReview({
 						grader : this.grader,
 						activityUrlId : this.review.activityUrlId,
+						reviewed : this.grader.reviewed[this.indexReviewed].email
 					}).then(()=>{
 						this.grader = this.review.grader;
 					});
 				else{
+				 if(this.review.urlId == this.review.grader.reviewed[this.indexReviewed].urlId){
 				 	this.review.grader = this.grader;
 				 	this.setReview(this.review);
+				 } else {
+				 		this.setReview({
+						grader : this.grader,
+						activityUrlId : this.review.activityUrlId,
+						reviewed : this.grader.reviewed[this.indexReviewed].email
+					}).then(()=>{
+						this.grader = this.review.grader;
+					});
+				 }
 				}
 			}
 		},
@@ -248,7 +264,7 @@
 				}
 			});
 		},
-		/*async beforeRouteUpdate(to,from,next){
+		async beforeRouteUpdate(to,from,next){
 			if(to.params.reviewId){
 
 				await this.lookForActivity(to.params.id)
@@ -261,7 +277,7 @@
 				this.isReviewStarted = true;
 			}
 			else this.lookForActivity(to.params.id);
-		}*/
+		}
 	};
 </script>
 

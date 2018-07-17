@@ -31,9 +31,13 @@ export default {
             reviewed : ''
        },
        hasPushedSave : false,
-       hasReview : false
+       hasReview : false,
+       showNotificationSave : true
     },
     actions : {
+        setShowNotificationSave(context,showNotificationSave){
+            context.commit('setShowNotificationSave',showNotificationSave);
+        },
         setHasReview(context,hasReview){
             context.commit('setHasReview',hasReview);
         },
@@ -45,11 +49,12 @@ export default {
                     context.state.review.grader = response.data.grader;
                     context.commit('setReview',response.data.review);
                     context.commit('setHasReview',true);
-                    //return Promise.resolve({hasReview:true});
+                    //return new Promise((resolve,reject)=>resolve({hasReview:true}));
 
                 } else {
                     //return Promise.resolve({hasReview:false});
                     context.commit('setHasReview',false);
+                    //return new Promise((resolve,reject)=>resolve({hasReview:false}));
                 }
             });
         },
@@ -75,20 +80,31 @@ export default {
                 if(!review.urlId){
                     return axios.post('/api/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
                         if(response.data.success){
-                            this._vm.$notify({
-                                group : 'notifications',
-                                title : 'Review saved',
-                                text :  'Review is saved nice and smooth',
-                                type :  'success'
-                            });
 
-                            router.push({path:'/activity/'+response.data.review.activityUrlId+'/review/'+response.data.review.urlId});
                             context.commit('setReview',response.data.review);
                             context.dispatch('setHasPushedSave',false);
+                            
+                            if(context.state.showNotificationSave){
+                                this._vm.$notify({
+                                    group : 'notifications',
+                                    title : 'Review saved',
+                                    text :  'Review is saved nice and smooth',
+                                    type :  'success'
+                                });
+                                context.dispatch('setShowNotificationSave',true);
+                            }
+
+                            
+                            router.push({path:'/activity/'+response.data.review.activityUrlId+'/review/'+response.data.review.urlId});
+                            
                         }
                     });
                 } else {
                     axios.put('/api/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
+                        
+                        context.dispatch('setHasPushedSave',false);
+                        context.commit('setReview',response.data.review);
+
                         if(response.data.success){
                             this._vm.$notify({
                                 group: 'notifications',
@@ -97,8 +113,7 @@ export default {
                                 type : 'success'
                             });
 
-                            context.dispatch('setHasPushedSave',false);
-                            context.commit('setReview',response.data.review);
+                           
                         }
                     });
                 }
@@ -136,6 +151,9 @@ export default {
     getters : {
     },
     mutations : {
+        setShowNotificationSave(state,showNotificationSave){
+            state.showNotificationSave = showNotificationSave;
+        },
         setHasReview(state,hasReview){
             state.hasReview = hasReview;
         },

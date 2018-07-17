@@ -11,7 +11,8 @@ export default {
                 email : '',
                 token : '',
                 group: '',
-                cohort : 0,
+                name : '',
+                //cohort : 0,
                 //ine : '',
                 role : '',
                 reviewed:[]
@@ -53,11 +54,10 @@ export default {
             axios.get('/api/activity/'+specifier.urlId).then((response)=>{
                 if(response.data.success){
                     console.log('auth activity')
-                    if(specifier.pwd.length==20 && specifier.pwd == response.data.activity.teacherPwd){
+                    if(specifier.pwd == response.data.activity.teacherPwd){
                         context.commit('setActivity',response.data.activity);
                         console.log(response.data.activity)
                         context.commit('setIsAdmin',true);
-                        //router.push({path:'/activity/'+response.data.activity.urlId});
                     }    
                 }
             }).catch(error=>{
@@ -103,10 +103,12 @@ export default {
                 presentations:0,
                 sessions : 0,
                 title : '',
+                teacherEmail : '',
+                teacherName : '',
                 participants:[{
                     email : '',
                     token : '',
-                    //name : '',
+                    name : '',
                     group: '',
                     //cohort : 0,
                     //ine : '',
@@ -167,21 +169,10 @@ export default {
                         console.log(context.state.activity)
 
                         context.state.userSession = true;
-                        router.push({path:'/activity/'+response.data.activity.urlId});
-                        console.log('?')
+                        //router.push({path:'/activity/'+response.data.activity.urlId});
+                        return new Promise((resolve,reject)=>resolve({teacherPwd:response.data.activity.teacherPwd}));
                     }
                 });
-        },
-        getPassword(lists){
-            var randoms = new Array(lists.length),
-                password = '';
-
-            for(var i=0;i<random.length;i++)
-                random[i] = Math.floor(Math.random() * lists[i].length);
-            
-            for(var random of randoms)
-                password+= lists[random];
-
         },
         getPlanning(context){
             var vm = this._vm,

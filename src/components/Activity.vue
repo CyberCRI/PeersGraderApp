@@ -6,7 +6,7 @@
 			<div v-else>
 				<notifications group="activity" />
 				<div v-show="showStep === 1 " class="">
-					<h2>Create activity 1/2</h2>
+					<h2>Create activity 1/3</h2>
 					<div class="field is-horizontal">
 						<div class="field-label is-normal">
 							<label class="label">Title</label>
@@ -39,66 +39,46 @@
 					    </div>		
 						</div>
 					</div>
-					<!-- <div class="field is-horizontal">
-						<div class="field-label is-normal">
-							<label class="label">Presentations</label>
-						</div>
-						<div class="field-body">
-					    <div class="field">
-					       <input class="input" type="number" v-model="activity.presentations" placeholder="How many presentations per sessions will there be ?">
-					    </div>		
-						</div>
-					</div> -->
 				</div>
 				<div v-show="showStep === 2 " class="">
-					<h2>Create activity 2/2</h2>
+					<h2>Create activity 2/3</h2>
 					<participants-acitivity></participants-acitivity>
-					<!--<div class="level participants-label">
-						<label class="label">Participants</label>
+				</div>
+				<div v-show="showStep === 3 ">
+					<h2>Create activity 3/3</h2>
+					<div class="field">
+					  <label class="label">Name</label>
+					  <div class="control">
+					    <input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
+					  </div>
 					</div>
-					<div v-for="(participant,i) in activity.participants" class="row-participant">
-						<div class="">
-					    <div class="field">
-					       <input class="input" type="text" v-model="participant.firstname" placeholder="Participant's firstname">
-					    </div>		
-						</div>
-						<div class="">
-					    <div class="field">
-					       <input class="input" type="text" v-model="participant.name" placeholder="Participant's name">
-					    </div>		
-						</div>
-						<div class="">
-					    <div class="field">
-					       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
-					    </div>		
-						</div>
-						<div class="">
-					    <div class="field">
-					    	<div class="select">
-						    	<select v-model="participant.role">
-									  <option disabled value="">Participant's role</option>
-									  <option>Student</option>
-									  <option>Observator</option>
-									  <option>Teacher</option>
-									</select>
-								</div>
-					    </div>		
-						</div>
-						<div class="add-participant" v-on:click="addParticipant(i)">
-							<i class="far fa-plus-square"></i>
-						</div>
-						<div class="remove-participant" @click="removeParticipant(i)">
-							<i class="far fa-minus-square"></i>
-						</div>
-					</div> -->				
+
+					<div class="field">
+					  <label class="label">Email</label>
+					  <div class="control has-icons-left">
+					    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail">
+					    <span class="icon is-small is-left">
+					      <i class="fas fa-envelope"></i>
+					    </span>
+					  </div>
+					</div>
+				</div>
+				<div class="modal" :class="{'is-active' :showModal}">
+				  <div class="modal-background"></div>
+				  <div class="modal-content">
+				    <p>Activity : {{modalInfo.activityPath}}</p>
+				    <p>Password : {{modalInfo.activityPassword}}</p>
+				    <button @click="redirect" class="button">Alright</button>
+				  </div>
+				  <button @click="redirect" class="modal-close is-large" aria-label="close"></button>
 				</div>
 				<div id="stepper" class="container is-fluid">
 					<div id="level">
 						<p class="level-right">
-								<a  v-if="showStep === 2" @click="goStep1" class="button level-item">
+								<a  v-if="showStep>1" @click="goStep(-1)" class="button level-item">
 									Previous
 								</a>
-								<a  v-if="showStep === 1" @click="goStep2" class="button level-item" :disabled="!checkFirstStepCompletion">
+								<a  v-if="showStep<3" @click="goStep(1)" class="button level-item" :disabled="!checkFirstStepCompletion">
 									Continue
 								</a>
 								<a  v-else @click="postActivity" class="button level-item" >
@@ -118,7 +98,6 @@
 
 <script>
 	import axios from 'axios'
-	//import store from '@/store/modules/activity'
 	import ActivityRead from '@/components/ActivityRead'
 	import ActivityParticipants from '@/components/ActivityParticipants'
 
@@ -132,7 +111,12 @@
 		},
 		data(){
 			return {
-				showStep : 1
+				showStep : 1,
+				showModal: false,
+				modalInfo : {
+					activityPath : '',
+					activityPassword : ''
+				}
 			};
 		},
 		computed : {
@@ -166,20 +150,29 @@
     	},
 			postActivity(){
 				console.log('launch save');
-				if(this.errors.length == 0)
-					this.setActivity(this.activity);
+				if(this.errors.length == 0){
+					var vm = this;
+					this.setActivity(this.activity).then(response=>{
+						if(response.teacherPwd){
+							vm.modalInfo.activityPath = 'http://localhost:5000/#/activity/'+this.activity.urlId,
+							vm.modalInfo.activityPassword = response.teacherPwd;
+							vm.showModal = true;
+						}
+					});
+
+				}
 			},
-			goStep1(e){
-				this.showStep = 1;
+			goStep(i){
+				this.showStep+=i;
 			},
-			goStep2(e){
-				if(!this.checkFirstStepCompletion) return;
-				else this.showStep = 2;
+			redirect(){
+				this.$router.push({path:'/activity/'+this.activity.urlId});
 			}
 		},
 		beforeRouteUpdate (to, from, next) {
 		  console.log('beforeRouteUpdate')
-		  this.goStep1();
+		  this.showStep = 1;
+		  this.showModal = false;
 		  if(!to.params.id){
 		  	console.log('here in update');
 		  	this.resetActivitySession();
@@ -191,6 +184,7 @@
 		  next()
 		},
 		beforeRouteEnter(to,from,next){
+
 			console.log('to then from')
 			console.log(to);
 			console.log(from)
@@ -199,6 +193,7 @@
 			if(!to.params.id){
 				console.log('here in route')
 				next((vm)=>{
+					vm.showModal = false;
 					console.log('before reset')
 					vm.resetActivitySession();
 					this.setErrors([]);
@@ -206,6 +201,7 @@
 				});
 			} else {
 				 next((vm)=>{
+				 	vm.showModal = false;
 					vm.setWithId(true);
 					vm.lookForActivity(to.params.id)
 				 });
