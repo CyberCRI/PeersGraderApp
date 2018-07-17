@@ -146,13 +146,16 @@
 					}
 				});
 			},
-			startReview(activity,token){
+			async startReview(activity,token){
 				var grader = this.getGrader(activity.participants, token || this.emailParticipant);
 
 				if(grader){
-					this.lookForReviewFromParticipant({
-						activityUrlId : this.actvity.urlId,
+					await this.lookForReviewFromParticipant({
+						activityUrlId : activity.urlId,
 						grader : {email: grader.email}
+					}).then(()=>{
+						this.grader = this.review.grader;
+						this.isReviewStarted = true;
 					});
 
 					if(!this.hasReview){
@@ -229,6 +232,7 @@
 			}
 		},
 		beforeRouteEnter(to,from,next){
+			console.log('beforeRouteEnter')
 			next(async vm=>{
 				await vm.lookForActivity(to.params.id);
 
@@ -236,10 +240,14 @@
 					await vm.lookForReview({
 						activityUrlId : to.params.id,
 						urlId : to.params.reviewId
+					}).then(()=>{
+						vm.grader = vm.review.grader;
+						console.log('here',vm.review.grader);
+						console.log('here',vm.grader);
+						vm.emailParticipant = vm.review.grader.email;
+						vm.isReviewStarted = true;
 					});
-					vm.grader = vm.review.grader;
-					vm.emailParticipant = vm.review.grader.email;
-					vm.isReviewStarted = true;
+					
 				} else {
 					if(to.query.ptoken){
 						vm.saveReviewsBeforeHand(vm.activity,to.query.ptoken);
@@ -248,20 +256,25 @@
 				}
 			});
 		},
-		/*async beforeRouteUpdate(to,from,next){
+		async beforeRouteUpdate(to,from,next){
+			console.log('beforeRouteUpdate')
 			if(to.params.reviewId){
 
 				await this.lookForActivity(to.params.id)
 				await this.lookForReview({
 					activityUrlId : to.params.id,
 					urlId : to.params.reviewId
+				}).then(()=>{
+					this.grader = this.review.grader;
+					console.log('theree ',this.grader)
+					console.log('there',this.review.grader);
+					this.emailParticipant = this.review.grader.email;
+					this.isReviewStarted = true;
 				});
-				this.grader = this.review.grader;
-				this.emailParticipant = this.review.grader.email;
-				this.isReviewStarted = true;
+				
 			}
 			else this.lookForActivity(to.params.id);
-		}*/
+		}
 	};
 </script>
 

@@ -46,9 +46,9 @@ export default {
             return axios.get('/api/activity/'+review.activityUrlId+'/review/grader/'+review.grader.email).then(response=>{
                 if(response.data.hasReview){
                     console.log('getReviewFromParticipant')
-                    context.state.review.grader = response.data.grader;
                     context.commit('setReview',response.data.review);
                     context.commit('setHasReview',true);
+                     router.push({path:'/activity/'+response.data.review.activityUrlId+'/review/'+response.data.review.urlId});
                     //return new Promise((resolve,reject)=>resolve({hasReview:true}));
 
                 } else {
