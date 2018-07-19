@@ -4,8 +4,9 @@ require('dotenv').config();
 var express = require('express'),
     path = require("path"),
     app = express(),
-    server = app.listen(5001),
-    //DIST_DIR = path.join(__dirname, "dist"),
+    port = process.env.PORT || 5001,
+    server = app.listen(port),
+    DIST_DIR = path.join(__dirname, "dist"),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
     router = express.Router(),
@@ -28,7 +29,8 @@ app.use(function(req, res, next) {
 });
 
 //serve site
-//app.use(express.static(DIST_DIR));
+if(process.env.NODE_ENV == 'production')
+  app.use(express.static(DIST_DIR));
 
 //routes
 app.use(require('./routes'));

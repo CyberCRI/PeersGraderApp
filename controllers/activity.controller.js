@@ -101,7 +101,7 @@ module.exports = {
 				  from: process.env.MAIL_USER, // sender address
 				  to: participant.email, // list of receivers
 				  subject: 'Review Activity ' + sentActivity.title, // Subject line
-				  html: `<p>${sentActivity.teacherName} invited you to <a href="http://localhost:5000/#/activity/${sentActivity.urlId}/review?ptoken=${participant.token}">Review here</a></p>`
+				  html: `<p>${sentActivity.teacherName} invited you to <a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/review?ptoken=${participant.token}">Review here</a></p>`
 				};
 
 
@@ -122,7 +122,7 @@ module.exports = {
 		  from: process.env.MAIL_USER, // sender address
 		  to: sentActivity.teacherEmail, // list of receivers
 		  subject: 'Review Activity ' + sentActivity.title, // Subject line
-		  html: `<p><a href="http://localhost:5000/#/activity/${sentActivity.urlId}/">Activity here</a></p>
+		  html: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
 		  			 <p>password : ${sentActivity.teacherPwd}</p>`
 		};
 
