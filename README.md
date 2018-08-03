@@ -2,29 +2,18 @@
 
 > Peer review tool
 
-## Build Setup
+#Build setup
 
-``` bash
-# install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+npm build 
 
-# build for production with minification
-npm run build
+#Run 
 
-# build for production and view the bundle analyzer report
-npm run build --report
+sudo service mongod start&
 
-# run unit tests
-npm run unit
+sudo mongo --host 127.0.0.1:27017&
 
-# run e2e tests
-npm run e2e
+npm start&
 
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+node server.js&
