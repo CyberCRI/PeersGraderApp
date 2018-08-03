@@ -7,6 +7,7 @@ import ActivityParticipants from '@/components/ActivityParticipants'
 import Planning from '@/components/ActivityPlanning'
 import ActivityRubric from '@/components/ActivityRubric'
 import Review from '@/components/Review'
+import Landing from '@/components/Landing'
 
 Vue.use(Router)
 
@@ -15,7 +16,7 @@ export default new Router({
   	{
   	  path: '/',
   	  name : 'root',
-  	  redirect:'/activity'
+      component : Landing
   	},
   	{
   		path: '/activity/:id?',

@@ -51,16 +51,18 @@ export default {
             context.commit('setWithId',withId)
         },
         getAuthActivity(context,specifier){//certainement refacto les bails ici
-            axios.get('/api/activity/'+specifier.urlId).then((response)=>{
+            return axios.get('/api/activity/'+specifier.urlId).then((response)=>{
                 if(response.data.success){
                     console.log('auth activity')
                     if(specifier.pwd == response.data.activity.teacherPwd){
                         context.commit('setActivity',response.data.activity);
                         console.log(response.data.activity)
                         context.commit('setIsAdmin',true);
-                    }    
+                        return new Promise((resolve,reject)=>resolve({granted:true}));
+                    }
                 }
             }).catch(error=>{
+                return new Promise((resolve,reject)=>resolve({granted:false}));
                 console.log('error',error);
             });
         },

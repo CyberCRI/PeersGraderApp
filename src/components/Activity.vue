@@ -1,98 +1,174 @@
 <template>
-	<div>
-			<div v-if="withId && !isAdmin">
-				<read-activity></read-activity>
-			</div>
-			<div v-else>
-				<notifications group="activity" />
-				<div v-show="showStep === 1 " class="">
-					<h2>Create activity 1/3</h2>
-					<div class="field is-horizontal">
-						<div class="field-label is-normal">
-							<label class="label">Title</label>
-						</div>
-						<div class="field-body">
-					    <div class="field">
-					       <input v-model="activity.title" class="input" type="text" placeholder="Activity's title">
-					    </div>		
-						</div>
-					</div>
-					<div class="field is-horizontal">
-					  <div class="field-label is-normal">
-					    <label class="label">Guidelines</label>
-					  </div>
-					  <div class="field-body">
-					    <div class="field">
-					      <div class="control">
-					        <textarea class="textarea" v-model="activity.guidelines" placeholder="Activity's guidelines"></textarea>
-					      </div>
-					    </div>
-					  </div>
-					</div>
-					<div class="field is-horizontal">
-						<div class="field-label is-normal">
-							<label class="label">Sessions</label>
-						</div>
-						<div class="field-body">
-					    <div class="field">
-					       <input class="input" type="number" v-model="activity.sessions" placeholder="How many sessions will there be ?">
-					    </div>		
-						</div>
-					</div>
+	<div class="pg-container">
+		<activity-header/>
+		<div id="mainContainer" class="main-container column">
+				<div v-if="withId && !isAdmin">
+					<read-activity></read-activity>
 				</div>
-				<div v-show="showStep === 2 " class="">
-					<h2>Create activity 2/3</h2>
-					<participants-acitivity></participants-acitivity>
-				</div>
-				<div v-show="showStep === 3 ">
-					<h2>Create activity 3/3</h2>
-					<div class="field">
-					  <label class="label">Name</label>
-					  <div class="control">
-					    <input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
-					  </div>
+				<div v-else>
+					<div v-show="showStep === 1 " class="">
+						<div class="level">
+							<div class="level-item">
+								<h2>Step 1 of 4</h2>
+							</div>
+						</div>
+						<div class="level">
+							<div class="level-item">
+								<h1>What is the activity ?</h1>
+							</div>
+						</div>
+						<div class="form">
+							<div class="form-content">
+								<div class="field is-horizontal">
+									<div class="icon-label is-normal">
+										<label class="label">
+											<span class="icon is-large is-left">
+							      		<i class="fas fa-pencil-alt"></i>
+							    		</span>
+										</label>
+									</div>
+									<div class="field-body">
+								    <div class="field">
+								       <input v-model="activity.title" class="input" type="text" placeholder="Activity's title">
+								    </div>		
+									</div>
+								</div>
+								<div class="field is-horizontal">
+								  <div class="icon-label is-normal">
+								    <label class="label">
+								    	<span class="icon is-large is-left">
+							      		<i class="fas fa-chalkboard-teacher"></i>
+							    		</span>
+							  		</label>
+								  </div>
+								  <div class="field-body">
+								    <div class="field">
+								      <div class="control">
+								        <textarea class="textarea" v-model="activity.guidelines" placeholder="Activity's guidelines"></textarea>
+								      </div>
+								    </div>
+								  </div>
+								</div>
+								<div class="field is-horizontal">
+									<div class="icon-label is-normal">
+										<label class="label">
+											<span class="icon is-large is-left">
+							      		<i class="fas fa-stopwatch"></i>
+							    		</span>
+										</label>
+									</div>
+									<div class="field-body">
+								    <div class="field">
+								       <input class="input" type="number" v-model="activity.sessions" placeholder="How many sessions will there be ?">
+								    </div>		
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
+					<div v-show="showStep === 2 " class="">
+						<div class="level">
+							<div class="level-item">
+								<h2>Step 2 of 4</h2>
+							</div>
+						</div>
+						<div class="level">
+							<div class="level-item">
+								<h1>Who is involve ?</h1>
+							</div>
+						</div>
+						<participants-acitivity></participants-acitivity>
+					</div>
+					<div v-show="showStep === 3 ">
+						<div class="level">
+							<div class="level-item">
+								<h2>Step 3 of 4</h2>
+							</div>
+						</div>
+						<div class="level">
+							<div class="level-item">
+								<h1>Who are you ?</h1>
+							</div>
+						</div>
+						<div class="nameonit">
+							<div class="field is-horizontal">
+								<div class="icon-label is-normal">
+									<label class="label">
+										<span class="icon is-large is-left">
+						      		<i class="fas fa-id-card-alt"></i>
+						    		</span>
+									</label>
+								</div>
+								<div class="field-body">
+							    <div class="control step3">
+							   		<input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
+							  	</div>	
+								</div>
+							</div>
 
-					<div class="field">
-					  <label class="label">Email</label>
-					  <div class="control has-icons-left">
-					    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail">
-					    <span class="icon is-small is-left">
-					      <i class="fas fa-envelope"></i>
-					    </span>
+							<div class="field is-horizontal">
+								<div class="icon-label is-normal">
+									<label class="label">
+										<span class="icon is-large is-left">
+						      		<i class="fas fa-envelope"></i>
+						    		</span>
+									</label>
+								</div>
+								<div class="field-body">
+							    <div class="control step3">
+								    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail">
+								  </div>	
+								</div>
+							</div>
+							<!-- <div class="field">
+							  <label class="label">Name</label>
+							  <div class="control">
+							    <input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
+							  </div>
+							</div> -->
+
+							<!-- <div class="field">
+							  <label class="label">Email</label>
+							  <div class="control has-icons-left">
+							    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail">
+							    <span class="icon is-small is-left">
+							      <i class="fas fa-envelope"></i>
+							    </span>
+							  </div>
+							</div> -->
+						</div>
+					</div>
+					<div class="modal" :class="{'is-active' :showModal}">
+					  <div class="modal-background"></div>
+					  <div class="modal-content">
+					    <p>Activity : {{modalInfo.activityPath}}</p>
+					    <p>Password : {{modalInfo.activityPassword}}</p>
+					    <button @click="redirect" class="button">Alright</button>
 					  </div>
+					  <button @click="redirect" class="modal-close is-large" aria-label="close"></button>
 					</div>
-				</div>
-				<div class="modal" :class="{'is-active' :showModal}">
-				  <div class="modal-background"></div>
-				  <div class="modal-content">
-				    <p>Activity : {{modalInfo.activityPath}}</p>
-				    <p>Password : {{modalInfo.activityPassword}}</p>
-				    <button @click="redirect" class="button">Alright</button>
-				  </div>
-				  <button @click="redirect" class="modal-close is-large" aria-label="close"></button>
-				</div>
-				<div id="stepper" class="container is-fluid">
-					<div id="level">
-						<p class="level-right">
-								<a  v-if="showStep>1" @click="goStep(-1)" class="button level-item">
-									Previous
-								</a>
-								<a  v-if="showStep<3" @click="goStep(1)" class="button level-item" :disabled="!checkFirstStepCompletion">
-									Continue
-								</a>
-								<a  v-else @click="postActivity" class="button level-item" >
-									<span v-if="activity.urlId!=undefined">Update</span>
-									<span v-else>Save</span>
-								</a>
-								<a v-if="activity.urlId!=undefined" @click="delActivity" class="button level-item">
-									Delete
-								</a>
-						</p>
-					</div>
-				</div>
+				</div>	
+		</div>
+		<div id="stepper-container">
+			<div id="stepper">
+				<p class="level-right">
+						<a  v-if="showStep>1 && !withId" @click="goStep(-1)" class="button level-item">
+							<
+						</a>
+						<a  v-if="showStep<3 && !withId" @click="goStep(1)" class="button level-item" 
+						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="!checkFirstStepCompletion">
+							Continue
+						</a>
+						<a  v-else @click="postActivity" class="button is-primary level-item" >
+							<span v-if="activity.urlId!=undefined">Update</span>
+							<span v-else>Save</span>
+						</a>
+						<a v-if="activity.urlId!=undefined" @click="delActivity" class="button level-item">
+							Delete
+						</a>
+				</p>
 			</div>
-		
+		</div>
 	</div>
 </template>
 
@@ -100,12 +176,14 @@
 	import axios from 'axios'
 	import ActivityRead from '@/components/ActivityRead'
 	import ActivityParticipants from '@/components/ActivityParticipants'
+	import ActivityHeader from '@/components/ActivityHeader'
 
 	import {mapState, mapActions} from 'vuex'
 
 	export default {
 		name : 'Activity',
 		components:{
+			'activity-header': ActivityHeader,
 			'read-activity' : ActivityRead,
 			'participants-acitivity' : ActivityParticipants
 		},
@@ -116,7 +194,8 @@
 				modalInfo : {
 					activityPath : '',
 					activityPassword : ''
-				}
+				},
+				APP_URL : ''
 			};
 		},
 		computed : {
@@ -142,7 +221,8 @@
       	deleteActivity: 'deleteActivity'
     	}),
     	...mapActions('participants',{
-      	setErrors : 'setErrors'
+      	setErrors : 'setErrors',
+      	errors : 'errors'
     	}),
     	delActivity()//put it back in store, change name
     	{
@@ -154,15 +234,15 @@
 					var vm = this;
 					this.setActivity(this.activity).then(response=>{
 						if(response.teacherPwd){
-							vm.modalInfo.activityPath = 'http://localhost:5000/#/activity/'+this.activity.urlId,
+							vm.modalInfo.activityPath = `https://peergraders.herokuapp.com/#/activity/${this.activity.urlId}`,
 							vm.modalInfo.activityPassword = response.teacherPwd;
 							vm.showModal = true;
 						}
 					});
-
 				}
 			},
 			goStep(i){
+				if(this.showStep>=0 && this.checkFirstStepCompletion && this.errors.length==0)
 				this.showStep+=i;
 			},
 			redirect(){
@@ -176,6 +256,12 @@
 		  if(!to.params.id){
 		  	console.log('here in update');
 		  	this.resetActivitySession();
+		  	
+		  	
+		  if(to.query.title) 
+		  	this.activity.title = to.query.title;
+			  	
+
 		  	this.setErrors([]);
 		  	console.log('reset ?');
 		  } else {
@@ -196,7 +282,14 @@
 					vm.showModal = false;
 					console.log('before reset')
 					vm.resetActivitySession();
-					this.setErrors([]);
+
+					if(to.query.title)
+						vm.activity.title = to.query.title
+						
+
+					vm.setErrors([]);
+					vm.noRedo();
+
 					console.log('after reset, has it reset')
 				});
 			} else {
@@ -212,6 +305,81 @@
 </script>
 
 <style scoped>
+  h1,h2{
+  	color : white;
+  }
+
+  .step3{
+  	width: 100%;
+  }
+
+  .nameonit{
+  	width: 70%;
+    background: white;
+    padding: 2em;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin: 0 auto;
+ 
+  }
+
+  .pg-container{
+    height: auto;
+    box-shadow: 0 1.5px 4px rgba(0,0,0,0.24), 0 1.5px 6px rgba(0,0,0,0.12);
+    border-radius: 6px;
+  }
+
+	.main-container{
+		border: solid black 1px;
+		background-size: 200px 200px;
+   	background-image:  linear-gradient(to bottom, 
+     rgba(55,152,212,0.93) 0%, 
+     rgba(55,152,212,0.93) 100%),
+     url("../../static/images/school-bg.png");
+	}
+
+	.form{
+		border: solid 1px black;
+		border-radius : 10px;
+		padding: 2em;
+		background: white;
+		width: 80%;
+		margin: 0 auto;
+	}
+
+	.form-content{
+		margin : 0 auto;
+		width: 70%;
+	}
+	
+	#stepper-container{
+		padding: 0.30em;
+		/*border-right: solid 1px transparent;
+		border-left:solid 1px transparent;
+		border-bottom : solid 1px transparent;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;*/
+	}
+
+	.icon{
+		color : #5d6e79;
+		width: 32px;
+		height: 32px;
+	}
+
+	.is-horizontal{
+		align-items: center;
+		margin-bottom: 1.5em;
+		margin-top: 1.5em;
+	}
+
+	.icon-label {
+		margin-right: 2%;
+	}
+
+	.row-participant > input{
+		width: 30px;
+	}
 	/*#stepper{
 		position:fixed;
 		top:85%;

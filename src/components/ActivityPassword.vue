@@ -35,12 +35,19 @@
     		console.log('passed pwd')
     		console.log(this.password)
     		console.log('passed urlId',this.$store.state.activity.activity.urlId)
-    		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(()=>{
-    			this.$notify({
-    				 group: 'notifications',
-             title:'Access granted',
-             type : 'success'
-    			})
+    		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(response=>{
+    			console.log('here',response)
+    			if(response.granted)
+	    			this.$notify({
+	    				 group: 'notifications',
+	             title:'Access granted',
+	             type : 'success'
+	    			})
+	    		else this.$notify({
+	    				 group: 'notifications',
+	             title:'Access not granted',
+	             type : 'error'
+	    			})
     		});
     	}
 		}

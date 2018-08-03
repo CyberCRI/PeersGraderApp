@@ -4,56 +4,45 @@
 				<span>Update</span>
 		</a>
 		<div class="level participants-label">
-			<label class="label">Participants</label>
-		</div>
-		<div class="level participants-label">
 			<label class="label">CSV Insertion</label>
 		</div>
 		<div class="field participants-label">
 			<textarea @blur="convertCSV" id="textarea" v-model="csvInsertion" class="textarea" placeholder="Textarea"></textarea>
 		</div>
-		<div v-if="errors.length>0" class="">
-			<p v-for="error in errors"><span class="help" :class="{'is-warning':error.type=='warning','is-danger':error.type== 'error'}" v-if="error.message">{{error.message}}</span></p>
+		<div v-if="isCSVError()">
+			<p style="color:red;">The field does not contain the minimum required field (email,group,role).</p>
 		</div>
-		<div v-else>
-			<p v-if="csvInsertion!='' && check" class="help is-success">Form is valid</p>
+		<div class="level participants-label">
+			<label class="label">Participants</label>
 		</div>
-		<div :class="{'row-error': isRowError(i)}" v-for="(participant,i) in activity.participants" class="row-participant">
+		<div v-for="(participant,i) in activity.participants" class="row-participant">
+			<div class="tooltip" :class="{'error-flag': isRowError(i), 'no-error' : !isRowError(i)}" >
+				&nbsp;
+				<div class="tooltip-text">{{getRowError(i) || 'Line is ok'}}</div>
+			</div>
 			<div v-for="key in Object.keys(participant)" class="">
 		    <div v-if="isNotDynamicKey(key)" class="field">
-		       <input class="input" type="text" v-model="participant[key]" :placeholder="'Participant\'s ' + key">
+		       <input class="input" type="text" v-model="participant[key]" :placeholder="key">
 		    </div>		
 			</div>
+			<div
 			<div class="">
-		    <div class="field">
-		       <input class="input" type="email" v-model="participant.email" placeholder="Participant's email">
+		    <div class="">
+		       <input class="input" type="email" v-model="participant.email" placeholder="email">
 		    </div>		
 			</div>
-			<!-- <div class="">
-		    <div class="field">
-		       <input class="input" type="text" v-model="participant.name" placeholder="Participant's name">
-		    </div>		
-			</div> -->
+		
 			<div class="">
-		    <div class="field">
-		       <input class="input" type="text" v-model="participant.group" placeholder="Participant's group">
+		    <div class="">
+		       <input class="input" type="text" v-model="participant.group" placeholder="group">
 		    </div>		
 			</div>
-			<!-- <div class="">
-		    <div class="field">
-		       <input class="input" type="number" v-model="participant.cohort" placeholder="Participant's cohort">
-		    </div>		
-			</div> -->
-			<!-- <div class="">
-		    <div class="field">
-		       <input class="input" type="text" v-model="participant.ine" placeholder="Participant's ine">
-		    </div>		
-			</div> -->
+	
 			<div class="">
-		    <div class="field">
+		    <div class="">
 		    	<div class="select">
 			    	<select v-model="participant.role">
-						  <option disabled value="">Participant's role</option>
+						  <option disabled value="">role</option>
 						  <option>Student</option>
 						  <option>Observator</option>
 						  <option>Teacher</option>
@@ -95,7 +84,16 @@
 				return key!='token' && key!= 'email' && key!= '_id' && key!='group' && key!='role' && key!='reviewed'
 			},
 			isRowError(i){
-				return this.errors.find(e=>e.line-1 == i);
+				return this.errors.find(e=>e.line-1 == i || e.lineDuplicate-1 == i);
+			},
+			isCSVError(){
+				return this.errors.find(e=>e.line == 0);
+			},
+			getRowError(i){
+				var error = this.errors[this.errors.findIndex(e=>e.line-1 == i || e.lineDuplicate-1 == i)];
+				
+				if(error) return error.message;
+				else return '';
 			},
 			isThereDuplicate(){
 				this.setErrors([]);
@@ -107,11 +105,10 @@
 						
 						if(lineDuplicate > - 1){
 							this.errors.push({
-								line : lineDuplicate+1,
+								line:k+1,
+								lineDuplicate : lineDuplicate+1,
 								message : `Duplicate email line ${k} on line ${lineDuplicate}.`,
 								type: 'error'
-							},{
-								line : k+1
 							});
 						}
 					}
@@ -145,9 +142,7 @@
 
       			if(!dataFormat.find(e=>e=='email') || !dataFormat.find(e=>e=='group') || !dataFormat.find(e=>e=='role')){
       				this.errors.push({
-      					type: 'error',
-      					line: i,
-      					message : 'The fiels does not contain the minimum required field (email,group,role).'
+      					line: i
       				});
       			}
 
@@ -205,7 +200,7 @@
 			},
 			addParticipant(i){
 				this.activity.participants.splice(i+1,0,{
-					//firstname:'',
+					name:'',
 					group:'',
 					email:'',
 					role:'',
@@ -236,6 +231,46 @@
 </script>
 
 <style scoped>
+	.tooltip {
+	    position: relative;
+	    display: inline-block;
+	}
+
+	.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+	}
+
+	.tooltip:hover .tooltip-text {
+	    visibility: visible;
+	}
+
+	.error-flag{
+		content:"";
+		border-left:solid 3px red;
+		height: 100%;
+		cursor:pointer;
+	}
+
+	.no-error{
+		content:"";
+		border-left:solid 3px #00d1b2;
+		height: 100%;
+		cursor:pointer;
+	}
+
+	input,select,textarea{
+		border-radius: 0px!important;
+	}
 	.row-error{
 		border-bottom: solid red 1px;
 	}
@@ -251,10 +286,7 @@
 		margin-bottom: 1em;
 	}
 
-	input,textarea {
-		min-width: 90%;
-		width: 90%
-	}
+
 
 	h2{
 		text-align: center;
@@ -265,9 +297,11 @@
 
 	.add-participant{
 		cursor: pointer;
+		margin:0 0.3em;
 	}
 
 	.remove-participant{
 		cursor: pointer;
+		margin: 0 0.3em;
 	}
 </style>

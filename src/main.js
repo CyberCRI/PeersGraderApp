@@ -6,7 +6,10 @@ import router from './router'
 import store from './store'
 import Notifications from 'vue-notification'
 
+
 Vue.config.productionTip = false;
+
+console.log(Vue.config)
 
 Vue.use(Notifications);
 

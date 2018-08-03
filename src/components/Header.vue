@@ -1,36 +1,59 @@
 <template>
-	<nav class="navbar" role="navigation" aria-label="main navigation">
-	  <div class="navbar-brand">
-	    <span class="navbar-item" href="https://bulma.io">
-	      <img src="../../static/images/CRI.png" alt="Centre de recherches interdisciplinaires">
-	      PeerGraders
-	    </span>
-	    <router-link to="/activity" class="navbar-item" >
-         Create new activity
-      </router-link >
-      <router-link to="/find/activity" class="navbar-item" >
-         Find an activity
-      </router-link >
-      <router-link v-if="activity.urlId" :to="activityUrl+'/participants'" class="navbar-item" >
-         Participants
-      </router-link >
-      <router-link v-if="activity.urlId" :to="activityUrl+'/planning'" class="navbar-item" >
-         Planning
-      </router-link >
-      <router-link v-if="activity.urlId" :to="activityUrl+'/rubric'" class="navbar-item" >
-         Rubric
-      </router-link >
-      <router-link v-if="activity.urlId" :to="activityUrl+'/review'" class="navbar-item" >
-         Review
-      </router-link >
+   <nav class="navbar has-shadow is-fixed-top">
+        <div class="container">
+            <div class="navbar-brand">
+                <span id="peergraders-brand" class="navbar-item">
+                    <img src="../../static/images/CRI.png" alt="Peergraders : a peer review tool">
+                    Peergraders
+                </span>
 
-	    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-	      <span aria-hidden="true"></span>
-	      <span aria-hidden="true"></span>
-	      <span aria-hidden="true"></span>
-	    </a>
-	  </div>
-	</nav>
+                <div class="navbar-burger burger" data-target="navMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+
+
+            <div id="navMenu" class="navbar-menu">
+               <div class="navbar-start">
+                  <router-link to="/help" class="navbar-item" >
+                     Help
+                  </router-link>
+                  <div class="navbar-item">
+                     <div class="control has-icons-left">
+                       <div class="select">
+                         <select>
+                           <option selected>English</option>
+                           <option>Français</option>
+                         </select>
+                       </div>
+                       <span class="icon is-left">
+                         <i class="fas fa-language"></i>
+                       </span>
+                     </div>
+                  </div>
+               </div>
+                <div class="navbar-end">
+                  <!-- <router-link to="/settings" class="navbar-item" >
+                     <button class="button is-hoverable">
+                        <span class="icon" id="settings">
+                        <i class="fas fa-cogs"></i>
+                        </span>
+                        <span>Settings</span>
+                     </button>
+                     
+                  </router-link> -->
+                  <router-link to="/activity" class="navbar-item" >
+                     <button class="button is-info is-hoverable">
+                        Create a new activity
+                     </button>
+                  </router-link >
+                </div>
+            </div>
+        </div>
+    </nav>
 </template>
 
 <script>
@@ -39,19 +62,25 @@
 	export default {
 		computed : {
 			...mapState('activity',{
-      	activity : 'activity',
-      	withId   : 'withId',
- 				isAdmin  : 'isAdmin'
-    	}),
-      activityUrl(){
-        return '/activity/'+this.activity.urlId;
-      }
+         	activity : 'activity',
+         	withId   : 'withId',
+    			isAdmin  : 'isAdmin'
+    	   }),
+         activityUrl(){
+           return '/activity/'+this.activity.urlId;
+         }
 		}
 	};	
 </script>
 
 <style scoped>
-	
+   #peergraders-brand{
+      color: #64b4c8;
+   }
+
+	#settings {
+      color : #6496b9;
+   }
 
 
 </style>
