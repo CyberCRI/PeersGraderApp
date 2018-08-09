@@ -16,6 +16,7 @@ router.put('/api/activity/:id',activityController.updateActivity);
 
 router.delete('/api/activity/:id',activityController.deleteActivity);
 
+router.post('/api/activity/sendInvitations',activityController.sendInvitations);
 
 //Reviews
 router.get('/api/activity/:id/review/:reviewId',reviewController.getReview);

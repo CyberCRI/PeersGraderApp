@@ -69,6 +69,55 @@ module.exports = {
 			res.send({success:true,activity:activity});
 		});	
 	},
+	sendInvitations : async function(req,res){
+		var sentActivity =  req.body.activity,
+				destinators = req.body.destinators,
+				message = req.body.message,
+				transporter = nodemailer.createTransport({
+					service:'gmail',
+					auth : {
+						user: process.env.MAIL_USER,
+						pass: process.env.MAIL_PWD
+					},
+					tls: { rejectUnauthorized: false }
+				});
+
+				
+
+		for(var i=0;i<destinators.length;i++){
+				var participant = sentActivity.participants.findIndex(c=>c.email==destinators[i]);
+
+				if(participant>-1 && !sentActivity.participants[participant].token){
+					sentActivity.participants[participant].token = nanoid(8);
+
+					Activity.findOneAndUpdate({urlId:sentActivity.urlId},sentActivity).then(function(){
+						Activity.findOne({urlId:sentActivity.urlId}).then(function(activity){
+							console.log('updated')
+							console.log(activity)							
+						});	
+					});
+				} else {
+					res.send({success:false,participant:false});
+				}
+
+				const mailOptions = {
+				  from: process.env.MAIL_USER, // sender address
+				  to: destinators[i], // list of receivers
+				  subject: 'Invitation to review activity ' + sentActivity.title, // Subject line
+				  html: `<p>${sentActivity.teacherName} invited you to <a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/review?ptoken=${sentActivity.participants[participant].token}">Review here</a></p><p>${message}</p>`
+				};
+
+
+				await transporter.sendMail(mailOptions, function (err, info) {
+				  if(err)
+				    console.log(err)
+				  else
+				    console.log(info);
+				});
+		}
+
+		res.send({success:true});
+	},
 	saveActivity : async function(req,res){
 
 		var sentActivity = req.body.activity,
@@ -78,7 +127,7 @@ module.exports = {
 					    user: process.env.MAIL_USER,
 					    pass: process.env.MAIL_PWD
 					  }
-				});;
+				});
 
 		console.log('sent')
 		console.log(sentActivity)

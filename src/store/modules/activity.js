@@ -35,6 +35,16 @@ export default {
         shifts : []
     },
     actions : {
+        sendInvitations(context,invitationSpecifier){
+            return axios.post('/api/activity/sendInvitations',{
+                activity: invitationSpecifier.activity,
+                destinators : invitationSpecifier.destinators,
+                message : invitationSpecifier.message
+            }).then(response=>{
+                if(response.data.success)
+                    return new Promise((resolve,reject)=>resolve({sent:true}));
+            });
+        },
         setShifts(context,shifts){
             context.commit('setShifts',shifts);
         },

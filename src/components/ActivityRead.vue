@@ -55,10 +55,16 @@
 						</div>
 						<div :class="{'is-active' : tab == 'email','': tab =='link'}" data-content="email">
 							<div id="tab-invite-content">
-								<input-tag class="input invite" placeholder="Emails" :tags.sync="invitationRecipients" validation="email"></input-tag>
+								<input-tag class="input invite pg-mailtag" placeholder="Emails" :tags.sync="invitationRecipients" validation="email"></input-tag>
 								<textarea id="textarea" v-model="invitationMessage" class="textarea invite" placeholder="Message">
 								</textarea>
-								<a class="button invite">
+								<a v-if="invitationRecipients.length>0" class="button invite">
+							    <span class="icon">
+							      <i class="fas fa-envelope"></i>
+							    </span>
+							    <span @click="invite">Send</span>
+							  </a>
+							  <a v-else disabled="disabled" class="button invite">
 							    <span class="icon">
 							      <i class="fas fa-envelope"></i>
 							    </span>
@@ -97,7 +103,7 @@
 </template>
 
 <script>
-	import {mapState} from 'vuex'
+	import {mapState,mapActions} from 'vuex'
 	import ActivityPassword from '@/components/ActivityPassword'
 	import InputTag from 'vue-input-tag'
 
@@ -125,6 +131,22 @@
 			}
 		},
 		methods : {
+			invite(){
+				console.log('biatch')
+				this.sendInvitations({
+					activity : this.activity,
+					destinators : this.invitationRecipients,
+					message : this.invitationMessage
+				}).then(()=>{
+					console.log('wtf')
+					this.$notify({
+						group:'notifications',
+						title:'Invitations sent !',
+						text : 'Invitations have been sent. In case you did not get it.',
+						type : 'success'
+					});
+				});
+			},
 			openInvite(){
 				this.showInvite = true;
 			},
@@ -180,19 +202,29 @@
 			},
 			manageActivity(){
 				this.manage = true;
-			}
-		},
-		mounted(){
-			this.invitationRecipients = this.activity.participants.reduce((a,c)=>{a.push(c.email)},[]);
-			this.noRedoNoFuckNo();	
+			},
+			...mapActions('activity',{
+				lookForActivity: 'lookForActivity',
+				sendInvitations: 'sendInvitations'
+			})
 		},
 		update(){
 			this.noRedoNoFuckNo();
-		}
+		},
+		async mounted(){
+			console.log('mounted')
+			await this.lookForActivity(this.$router.history.current.params.id);
+			this.invitationRecipients = this.activity.participants.reduce((a,c)=>{a.push(c.email);return a;},[]);
+			this.noRedoNoFuckNo();	
+		},
 	};
 </script>
 
 <style scoped>
+	.pg-mailtag{
+		height: 8em;
+		overflow-y: scroll;
+	}
 	#tab-invite-content{
 		display: flex;
 		flex-direction: column;
