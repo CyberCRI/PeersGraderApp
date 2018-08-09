@@ -8,7 +8,7 @@
 				<div class="field">
 				  <label class="label">Basis</label>
 				  <div class="control">
-				    <input class="input" type="number" v-model="activity.basis" placeholder="Activity's basis">
+				    <input class="input" type="number" min="1" v-model="activity.basis" placeholder="Activity's basis">
 				  </div>
 				</div>
 			</div>
@@ -34,7 +34,7 @@
 						    </a>
 						  </div>
 						  <div class="control">
-						    <input v-model="rubric.points" class="input" type="number" placeholder="Skill's points">
+						    <input v-model="rubric.points" class="input" type="number" min="1" placeholder="Skill's points">
 						  </div>
 						</div>
 					</div>
@@ -64,7 +64,7 @@
 										  <option :value="4">Expert</option>
 										</select>
 									</div>
-						    </div>	
+						    </div>
 				    	</div>
 				    	<div class="column">
 				    		<div class="field has-addons">
@@ -74,7 +74,7 @@
 								    </a>
 								  </div>
 								  <div class="control">
-								    <input v-model="descriptor.points" class="input" type="number" placeholder="descriptor's point">
+								    <input v-model="descriptor.points" class="input" type="number" min="1" placeholder="descriptor's point">
 								  </div>
 								</div>
 				    	</div>
@@ -118,7 +118,7 @@
 				console.log('launch save rubric');
 				if(this.check())
 					this.setActivity(this.activity);
-				else 
+				else
 					this.$notify({
 						group:'notifications',
 						type:'error',
