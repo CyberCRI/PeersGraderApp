@@ -4,7 +4,7 @@
         <div class="container">
             <div class="navbar-brand">
                 <span id="peergraders-brand" class="navbar-item">
-                    <img src="../../static/images/CRI.png" alt="Peergraders : a peer review tool">
+                    <img src="../../static/images/cri.png" alt="Peergraders : a peer review tool">
                     Peergraders
                 </span>
 

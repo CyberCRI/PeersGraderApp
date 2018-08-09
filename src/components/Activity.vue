@@ -152,18 +152,18 @@
 		<div id="stepper-container">
 			<div id="stepper">
 				<p class="level-right">
-						<a  v-if="showStep>1 && !withId" @click="goStep(-1)" class="button level-item">
+						<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
 							<
 						</a>
-						<a  v-if="showStep<3 && !withId" @click="goStep(1)" class="button level-item" 
+						<a  v-if="showStep<3 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item" 
 						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="!checkFirstStepCompletion">
 							Continue
 						</a>
-						<a  v-else @click="postActivity" class="button is-primary level-item" >
+						<a  v-if="showStep==3" @click="postActivity" class="button is-primary level-item" >
 							<span v-if="activity.urlId!=undefined">Update</span>
 							<span v-else>Save</span>
 						</a>
-						<a v-if="activity.urlId!=undefined" @click="delActivity" class="button level-item">
+						<a v-if="activity.urlId!=undefined && isAdmin" @click="delActivity" class="button is-danger level-item">
 							Delete
 						</a>
 				</p>
@@ -221,8 +221,7 @@
       	deleteActivity: 'deleteActivity'
     	}),
     	...mapActions('participants',{
-      	setErrors : 'setErrors',
-      	errors : 'errors'
+      	setErrors : 'setErrors'
     	}),
     	delActivity()//put it back in store, change name
     	{
@@ -266,6 +265,7 @@
 		  	console.log('reset ?');
 		  } else {
 		  	this.setWithId(true);
+		  	this.lookForActivity(to.params.id);
 		  }
 		  next()
 		},
@@ -288,8 +288,7 @@
 						
 
 					vm.setErrors([]);
-					vm.noRedo();
-
+					
 					console.log('after reset, has it reset')
 				});
 			} else {
