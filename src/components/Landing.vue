@@ -1,7 +1,7 @@
 <template>
-	<div>
+	<div class="landing-content">
 
-	<section id="create" class="section">
+	<section id="create" class="section school-bg">
 		<div class="has-text-centered">
 			<h2 class="title">Students turn professors with PeersGrader, for free</h2>
 			<p class="subtitle">The simple way to set up peers grading activities for your class.</p>
@@ -81,7 +81,24 @@
 		}
 	}
 </script>
+
 <style scoped>
+	.school-bg{
+		color: white!important;
+		border: solid black 1px;
+		background-size: 200px 200px;
+   	background-image:  linear-gradient(to bottom,
+     rgba(55,152,212,0.93) 0%,
+     rgba(55,152,212,0.93) 100%),
+     url("../../static/images/school-bg.png");
+	}
+
+	.landing-content{
+		position: absolute;
+		top: 100px;
+		left: 0;
+		/*certainement faire un calc in fine*/
+	}
 </style>
 <!--
 #howto .column,

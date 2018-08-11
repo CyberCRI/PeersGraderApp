@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div v-if="isAdmin">
-			<a @click="postActivity" class="button level-item" >
+		<div v-if="isAdmin || !withId">
+			<!-- <a @click="postActivity" class="button level-item" >
 				<span>Save</span>
-			</a>
+			</a> -->
 			<div class="level">
 				<div class="field">
 				  <label class="label">Basis</label>

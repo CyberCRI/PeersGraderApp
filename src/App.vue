@@ -1,8 +1,11 @@
 <template>
   <div id="pg-app">
     <notifications group="notifications"/>
-    <pg-header v-if="$route.path=='/'"/>
-    <div id="pg-main-container" class="">        
+    <div v-if="$route.path=='/'">
+      <pg-header />
+      <pg-landing/>
+    </div>
+    <div v-else id="pg-main-container" class="">        
       <router-view></router-view>
     </div>
   </div>
@@ -10,10 +13,12 @@
 
 <script>
   import Header from '@/components/Header'
+  import Landing from '@/components/landing'
 export default {
   name: 'App',
   components : {
-    'pg-header' : Header
+    'pg-header' : Header,
+    'pg-landing' : Landing
   },
   data(){
     return {

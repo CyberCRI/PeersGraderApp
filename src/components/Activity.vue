@@ -79,10 +79,13 @@
 						</div>
 						<participants-acitivity></participants-acitivity>
 					</div>
-					<div v-show="showStep === 3 ">
+					<div v-show="showStep ===3">
+						<rubric-activity></rubric-activity>
+					</div>
+					<div v-show="showStep === 4 ">
 						<div class="level">
 							<div class="level-item">
-								<h2>Step 3 of 4</h2>
+								<h2>Step 4 of 4</h2>
 							</div>
 						</div>
 						<div class="level">
@@ -155,11 +158,11 @@
 						<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
 							<
 						</a>
-						<a  v-if="showStep<3 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
+						<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
 						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="!checkFirstStepCompletion">
 							Continue
 						</a>
-						<a  v-if="showStep==3" @click="postActivity" class="button is-primary level-item" >
+						<a  v-if="showStep==4" @click="postActivity" class="button is-primary level-item" >
 							<span v-if="activity.urlId!=undefined">Update</span>
 							<span v-else>Save</span>
 						</a>
@@ -177,6 +180,7 @@
 	import ActivityRead from '@/components/ActivityRead'
 	import ActivityParticipants from '@/components/ActivityParticipants'
 	import ActivityHeader from '@/components/ActivityHeader'
+	import ActivityRubric from '@/components/ActivityRubric'
 
 	import {mapState, mapActions} from 'vuex'
 
@@ -185,7 +189,8 @@
 		components:{
 			'activity-header': ActivityHeader,
 			'read-activity' : ActivityRead,
-			'participants-acitivity' : ActivityParticipants
+			'participants-acitivity' : ActivityParticipants,
+			'rubric-activity': ActivityRubric
 		},
 		data(){
 			return {
