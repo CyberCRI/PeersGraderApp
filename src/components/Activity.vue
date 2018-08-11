@@ -30,7 +30,7 @@
 									<div class="field-body">
 								    <div class="field">
 								       <input v-model="activity.title" class="input" type="text" placeholder="Activity's title">
-								    </div>		
+								    </div>
 									</div>
 								</div>
 								<div class="field is-horizontal">
@@ -59,14 +59,14 @@
 									</div>
 									<div class="field-body">
 								    <div class="field">
-								       <input class="input" type="number" v-model="activity.sessions" placeholder="How many sessions will there be ?">
-								    </div>		
+								       <input class="input" type="number" min="1" v-model="activity.sessions" placeholder="How many sessions will there be ?">
+								    </div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div v-show="showStep === 2 " class="">
+					<div v-show="showStep === 2" class="">
 						<div class="level">
 							<div class="level-item">
 								<h2>Step 2 of 4</h2>
@@ -102,7 +102,7 @@
 								<div class="field-body">
 							    <div class="control step3">
 							   		<input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
-							  	</div>	
+							  	</div>
 								</div>
 							</div>
 
@@ -117,7 +117,7 @@
 								<div class="field-body">
 							    <div class="control step3">
 								    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail">
-								  </div>	
+								  </div>
 								</div>
 							</div>
 							<!-- <div class="field">
@@ -147,7 +147,7 @@
 					  </div>
 					  <button @click="redirect" class="modal-close is-large" aria-label="close"></button>
 					</div>
-				</div>	
+				</div>
 		</div>
 		<div id="stepper-container">
 			<div id="stepper">
@@ -155,7 +155,7 @@
 						<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
 							<
 						</a>
-						<a  v-if="showStep<3 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item" 
+						<a  v-if="showStep<3 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
 						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="!checkFirstStepCompletion">
 							Continue
 						</a>
@@ -255,11 +255,11 @@
 		  if(!to.params.id){
 		  	console.log('here in update');
 		  	this.resetActivitySession();
-		  	
-		  	
-		  if(to.query.title) 
+
+
+		  if(to.query.title)
 		  	this.activity.title = to.query.title;
-			  	
+
 
 		  	this.setErrors([]);
 		  	console.log('reset ?');
@@ -274,7 +274,7 @@
 			console.log('to then from')
 			console.log(to);
 			console.log(from)
-			
+
 
 			if(!to.params.id){
 				console.log('here in route')
@@ -285,10 +285,10 @@
 
 					if(to.query.title)
 						vm.activity.title = to.query.title
-						
+
 
 					vm.setErrors([]);
-					
+
 					console.log('after reset, has it reset')
 				});
 			} else {
@@ -297,7 +297,7 @@
 					vm.setWithId(true);
 					vm.lookForActivity(to.params.id)
 				 });
-			} 
+			}
 			//else fetchData();
 		}
 	}
@@ -319,7 +319,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
     margin: 0 auto;
- 
+
   }
 
   .pg-container{
@@ -331,8 +331,8 @@
 	.main-container{
 		border: solid black 1px;
 		background-size: 200px 200px;
-   	background-image:  linear-gradient(to bottom, 
-     rgba(55,152,212,0.93) 0%, 
+   	background-image:  linear-gradient(to bottom,
+     rgba(55,152,212,0.93) 0%,
      rgba(55,152,212,0.93) 100%),
      url("../../static/images/school-bg.png");
 	}
@@ -350,7 +350,7 @@
 		margin : 0 auto;
 		width: 70%;
 	}
-	
+
 	#stepper-container{
 		padding: 0.30em;
 		/*border-right: solid 1px transparent;
