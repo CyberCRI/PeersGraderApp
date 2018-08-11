@@ -5,7 +5,7 @@
       <pg-header />
       <pg-landing/>
     </div>
-    <div v-else id="pg-main-container" class="">        
+    <div v-else id="pg-main-container" class="">
       <router-view></router-view>
     </div>
   </div>
@@ -13,7 +13,7 @@
 
 <script>
   import Header from '@/components/Header'
-  import Landing from '@/components/landing'
+  import Landing from '@/components/Landing'
 export default {
   name: 'App',
   components : {
@@ -48,11 +48,11 @@ export default {
 
 <style>
   @import '../node_modules/bulma/css/bulma.css';
-  
+
   html,body{
     height: 100%
   }
-  
+
 
   #pg-app{
    display: flex;
