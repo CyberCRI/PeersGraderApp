@@ -107,9 +107,6 @@
 			...mapActions('activity',{
 				setActivity:'setActivity',
 			}),
-			check(){
-				return this.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
-			},
 			changeLevel(i,j){
 				this.activity.rubrics[i].descriptors.sort((a,b)=>a.level - b.level);
 			},

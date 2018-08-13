@@ -159,7 +159,7 @@
 							<
 						</a>
 						<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
-						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="!checkFirstStepCompletion">
+						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="isRubricOk || !checkFirstStepCompletion">
 							Continue
 						</a>
 						<a  v-if="showStep==4" @click="postActivity" class="button is-primary level-item" >
@@ -212,6 +212,9 @@
     	...mapState('participants',{
       	errors : 'errors'
     	}),
+    	isRubricOk(){
+    		return this.showStep == 3 && this.check();
+    	},
 			checkFirstStepCompletion(){
 				return this.activity.title && this.activity.guidelines && this.activity.sessions;
 			}
@@ -223,7 +226,8 @@
       	getAuthActivity : 'getAuthActivity',
       	setWithId:'setWithId',
       	lookForActivity: 'lookForActivity',
-      	deleteActivity: 'deleteActivity'
+      	deleteActivity: 'deleteActivity',
+      	check : 'check'
     	}),
     	...mapActions('participants',{
       	setErrors : 'setErrors'
@@ -245,9 +249,22 @@
 					});
 				}
 			},
-			goStep(i){
-				if(this.showStep>=0 && this.checkFirstStepCompletion && this.errors.length==0)
-				this.showStep+=i;
+			goStep(i){					
+				
+				if(this.showStep == 3 && !this.check()){
+					this.showStep+=i;
+				} else if(this.showStep>=0 && this.showStep!=3 && this.checkFirstStepCompletion && this.errors.length==0){
+					this.showStep+=i;
+				} else {
+					if(this.showStep==3)
+						this.$notify({
+							group:'notifications',
+							type:'error',
+							title:'Points skill incoherence'
+						});
+				}
+				
+				
 			},
 			redirect(){
 				this.$router.push({path:'/activity/'+this.activity.urlId});

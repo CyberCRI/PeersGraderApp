@@ -35,10 +35,14 @@ export default {
         shifts : []
     },
     actions : {
+        check(){
+                return this.state.activity.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
+        },
         isRubricEmpty(){
-            return this.activity.rubrics.length == 1 && this.activity.rubrics[0].name == '' && this.activity.rubrics[0].points == 0
-                            && this.activity.rubrics[0].descriptors.length == 1 && this.activity.rubrics[0].descriptors[0].content == 0 
-                            && this.activity.rubrics[0].descriptors[0].points == 0;
+            return this.state.activity.activity.rubrics.length == 1 && this.state.activity.activity.rubrics[0].name == '' 
+                    && this.state.activity.activity.rubrics[0].points == 0 && this.state.activity.activity.rubrics[0].descriptors.length == 1 
+                    && this.state.activity.activity.rubrics[0].descriptors[0].content == 0 
+                    && this.state.activity.activity.rubrics[0].descriptors[0].points == 0;
         },
         sendInvitations(context,invitationSpecifier){
             return axios.post('/api/activity/sendInvitations',{
@@ -48,6 +52,7 @@ export default {
             }).then(response=>{
                 if(response.data.success)
                     return new Promise((resolve,reject)=>resolve({sent:true}));
+                else return new Promise((resolve,reject)=>reject({sent:false}));
             });
         },
         setShifts(context,shifts){
