@@ -31,7 +31,7 @@
 		  <div class="column is-6">
 					<figure class="image is-2by1"><img class="img-landing-howto" src="../../static/images/howto-setup.svg"></figure>
 					<h4 class="title is-5">1. Suggest options</h4>
-					<p>1. Sets things like the activity name and general guidelines, number of shifts within it, date, places, a detailed rubric.</p>
+					<p>Sets things like the activity name and general guidelines, number of shifts within it, date, places, a detailed rubric.</p>
 		  </div>
 		  <div class="column is-6">
 					<figure class="image is-2by1"><img class="img-landing-howto" src="../../static/images/howto-invite.svg"></figure>
@@ -118,7 +118,7 @@
 
 	.landing-content{
 		position: absolute;
-		top: 100px;
+		top: 54px;
 		left: 0;
 		/*certainement faire un calc in fine*/
 	}

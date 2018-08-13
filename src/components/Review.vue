@@ -101,16 +101,12 @@
 		computed : {
 			...mapState('activity',{
 				activity : 'activity',
+				isRubricEmpty : 'isRubricEmpty'
 			}),
 			...mapState('review',{
 				review : 'review',
 				hasReview : 'hasReview'
 			}),
-			displayRedirection(){
-				return this.activity.rubrics.length == 1 && this.activity.rubrics[0].name == '' && this.activity.rubrics[0].points == 0
-								&& this.activity.rubrics[0].descriptors.length == 1 && this.activity.rubrics[0].descriptors[0].content == 0 
-								&& this.activity.rubrics[0].descriptors[0].points == 0;
-			},
 			isThereNextReviewed(){
 				if(this.review.grader.reviewed)
 					return this.indexReviewed >= this.review.grader.reviewed.filter(x=>x.group!=this.review.grader.group).length-1;

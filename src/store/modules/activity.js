@@ -35,6 +35,11 @@ export default {
         shifts : []
     },
     actions : {
+        isRubricEmpty(){
+            return this.activity.rubrics.length == 1 && this.activity.rubrics[0].name == '' && this.activity.rubrics[0].points == 0
+                            && this.activity.rubrics[0].descriptors.length == 1 && this.activity.rubrics[0].descriptors[0].content == 0 
+                            && this.activity.rubrics[0].descriptors[0].points == 0;
+        },
         sendInvitations(context,invitationSpecifier){
             return axios.post('/api/activity/sendInvitations',{
                 activity: invitationSpecifier.activity,
