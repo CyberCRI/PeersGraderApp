@@ -31,7 +31,7 @@
 		  <div class="column is-6">
 					<figure class="image is-2by1"><img class="img-landing-howto" src="../../static/images/howto-setup.svg"></figure>
 					<h4 class="title is-5">1. Suggest options</h4>
-					<p>1. Sets things like the activity name and general guidelines, number of shifts within it, date, places, a detailed rubric.</p>
+					<p>Sets things like the activity name and general guidelines, number of shifts within it, date, places, a detailed rubric.</p>
 		  </div>
 		  <div class="column is-6">
 					<figure class="image is-2by1"><img class="img-landing-howto" src="../../static/images/howto-invite.svg"></figure>
@@ -68,29 +68,47 @@
 	</section>
 
 	<section id="rubric" class="section has-background-warning has-text-centered">
-		<div class="columns">
-			<div class="column">
-				<figure class="image is-4by3"><img class="img-landing-howto" src="../../static/images/howto-dashboard.svg"></figure>
-			</div>
-			<div class="column">
-				<h3 class="title">Detailed rubric</h3>
-				<p>Grading rubrics helps students to better assess their peers works. Rubrics helps the students to integrate how grading occurs, which aspects matter, where to focus their attention. PeersGrader include a clean rubric editor. With the relevant admin password, the teacher can edit the detailed rubric with the rubric's title, description, maximum score. Then set the core skills and their various subskills, asssociated with their relevant gains when mastered. This details are then consolidate into a review form. When observing a work or presentation, student in teacher role can <i>tick</i> the relevant subskills, thus methodologically giving a grade to their peers. The results mus then be sent to the PeerGrader for processing.</p>
+	<div class="container">
+			<div class="columns">
+				<div class="column">
+					<figure class="image is-4by3"><img class="img-landing-howto" src="../../static/images/howto-dashboard.svg"></figure>
+				</div>
+				<div class="column">
+					<h3 class="title">Detailed rubric</h3>
+					<p>Grading rubrics helps students to better assess their peers works. Rubrics helps the students to integrate how grading occurs, which aspects matter, where to focus their attention. PeersGrader include a clean rubric editor. With the relevant admin password, the teacher can edit the detailed rubric with the rubric's title, description, maximum score. Then set the core skills and their various subskills, asssociated with their relevant gains when mastered. This details are then consolidate into a review form. When observing a work or presentation, student in teacher role can <i>tick</i> the relevant subskills, thus methodologically giving a grade to their peers. The results mus then be sent to the PeerGrader for processing.</p>
+				</div>
 			</div>
 		</div>
 	</section>
+	<section id="authors" class="section has-background-grey-dark has-text-centered">
+		<div class="container has-text-white">
+			<p>PeersGrader by <a href="https://github.com/mystermiam">Stéphane Jabol</a> et <a href="https://github.com/hugolpz">Hugo Lopez</a>, <a href="https://cri-paris.org">CRI Paris</a> <span class="icon is-small fa-1x"><img src="../../static/images/CRI-logo-sq-textless.svg" alt="Logo CRI-paris.org"></span>.
+			<br><a href="https://opensource.org/licenses/mit-license.php">MIT License</a> & <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC-by-sa-4.0</a> for public <a href="https://en.wikipedia.org/wiki/Open_source">#OpenSource</a> & <a href="https://en.wikipedia.org/wiki/Open_data">#OpenData</a>!
+			<span class="fa-stack fa-1x">
+				<i class="fas fa-heart fa-stack-1x" style="color:#B10000;"  data-fa-transform="shrink-4 up-3"></i>
+				<i class="fas fa-hand-holding fa-stack-1x" style="color:MistyRose"></i>
+			</span>
+			<br>Cutest illustrations designed by <a href="https://flaticon.com/packs/young-avatar-collection" title="Young Avatar Collection">Freepik</a> from Flaticon (<a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>).
+			<br>Made with <span class="icon has-text-danger"><i class="fas fa-heart"></i></span> in Paris.</p>
+		</div>
+	</section>
 
-	<footer class="footer" id="authors">
-		<div class="content has-text-centered">
-				<p><strong>PeersGrader</strong> by <a href="https://github.com/mystermiam">Stéphane Jabol</a> et <a href="https://github.com/hugolpz">Hugo Lopez</a>, <a href="https://cri-paris.org">CRI Paris</a> <span class="icon is-small fa-1x"><img src="../../static/images/CRI-logo-sq-textless.svg" alt="Logo CRI-paris.org"></span>.
-				<br><a href="https://opensource.org/licenses/mit-license.php">MIT License</a> & <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC-by-sa-4.0</a> for public <a href="https://en.wikipedia.org/wiki/Open_source">#OpenSource</a> & <a href="https://en.wikipedia.org/wiki/Open_data">#OpenData</a>!
-				<span class="fa-stack fa-1x">
-					<i class="fas fa-heart fa-stack-1x" style="color:#B10000;"  data-fa-transform="shrink-4 up-3"></i>
-					<i class="fas fa-hand-holding fa-stack-1x" style="color:MistyRose"></i>
-				</span>
-				<br>Cutest illustrations designed by <a href="https://flaticon.com/packs/young-avatar-collection" title="Young Avatar Collection">Freepik</a> from Flaticon (<a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>).
-				<br>Made with <span class="icon has-text-danger"><i class="fas fa-heart"></i></span> in Paris.</p>
+	<footer class="section has-background-black has-text-centered has-text-white">
+		<div class="container">
+			<div class="columns">
+				<div class="column">
+					<p class="has-text-weight-bold is-size-7">Made with <span class="icon has-text-danger"><i class="fas fa-heart"></i></span> in Paris.</p>
+				</div>
+				<div class="column">
+					<p><a href="./" class="has-text-white has-text-weight-bold">PeersGrader</a> — <span class="is-italic is-size-7">Let's do it!</span></p>
+				</div>
+				<div class="column  is-3">
+					<a href="https://github.com" class="has-text-white has-text-weight-bold"><span class="icon"><i class="fab fa-github-alt"></i></span></a>
+				</div>
+			</div>
 		</div>
 	</footer>
+
 	</div>
 </template>
 
@@ -108,7 +126,7 @@
 <style scoped>
 	.school-bg{
 		color: white!important;
-		border: solid black 0px;
+		border: solid #EEE 1px;
 		background-size: 200px 200px;
    	background-image:  linear-gradient(to bottom,
      rgba(55,152,212,0.93) 0%,
@@ -117,10 +135,14 @@
 	}
 
 	.landing-content{
+		top: 50px;/*
 		position: absolute;
-		top: 100px;
 		left: 0;
-		/*certainement faire un calc in fine*/
+		right: 0;
+		certainement faire un calc in fine*/
+	}
+	input:focus + .icon {
+		color:#1496ed;
 	}
 </style>
 <!--
@@ -130,9 +152,7 @@
 }
 
 /*fuck this shit*/
-input:focus + .icon {
-	color:#1496ed;
-}
+
 
 .title-create-container{
 	width: 100%;
