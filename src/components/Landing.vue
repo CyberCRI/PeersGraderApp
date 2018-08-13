@@ -71,7 +71,7 @@
 	<div class="container">
 			<div class="columns">
 				<div class="column">
-					<figure class="image is-4by3"><img class="img-landing-howto" src="../../static/images/howto-dashboard.svg"></figure>
+					<figure class="image is-4by3"><img class="img-landing-howto" src="../../static/images/howto-rubric.svg"></figure>
 				</div>
 				<div class="column">
 					<h3 class="title">Detailed rubric</h3>
@@ -135,14 +135,10 @@
 	}
 
 	.landing-content{
-		top: 50px;/*
 		position: absolute;
-<<<<<<< HEAD
-=======
 		top: 54px;
->>>>>>> f6ee495b1b46c9b38d9c1fe508dda4a6fc62a559
 		left: 0;
-		right: 0;
+		right: 0;/*
 		certainement faire un calc in fine*/
 	}
 	input:focus + .icon {
