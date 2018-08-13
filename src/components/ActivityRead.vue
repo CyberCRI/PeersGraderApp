@@ -76,7 +76,9 @@
 			  </div>
 			</article>
 		</div>
-		<pwd-activity v-if="manage"></pwd-activity>
+		<div  v-if="manage" class="pg-activity">
+			<pwd-activity></pwd-activity>
+		</div>
 		<div class="pg-activity">
 			<div class="pg-activity-content">
 				<div class="pg-level">
@@ -132,20 +134,23 @@
 		},
 		methods : {
 			invite(){
-				console.log('biatch')
-				this.sendInvitations({
-					activity : this.activity,
-					destinators : this.invitationRecipients,
-					message : this.invitationMessage
-				}).then(()=>{
-					console.log('wtf')
-					this.$notify({
-						group:'notifications',
-						title:'Invitations sent !',
-						text : 'Invitations have been sent. In case you did not get it.',
-						type : 'success'
+				if(!isRubricEmpty)
+					this.sendInvitations({
+						activity : this.activity,
+						destinators : this.invitationRecipients,
+						message : this.invitationMessage
+					}).then(()=>{
+						console.log('wtf')
+						this.$notify({
+							group:'notifications',
+							title:'Invitations sent !',
+							text : 'Invitations have been sent. In case you did not get it.',
+							type : 'success'
+						});
+
+						this.showInvite = false;
+
 					});
-				});
 			},
 			openInvite(){
 				this.showInvite = true;
@@ -205,7 +210,8 @@
 			},
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',
-				sendInvitations: 'sendInvitations'
+				sendInvitations: 'sendInvitations',
+				isRubricEmpty : 'isRubricEmpty'
 			})
 		},
 		update(){
@@ -251,7 +257,7 @@
 
 	#manage-message{
 		width: 95%;
-		margin: 0 auto 1em auto;
+		margin: 0 auto 0.5em auto;
 	}
 
 	.tabs ul{
@@ -288,7 +294,7 @@
 		padding: 0.5em;
 		background: white;
 		width: 95%;
-		margin: 0 auto;
+		margin: 0.5em auto;
 	}
 
 	.pg-activity-content{

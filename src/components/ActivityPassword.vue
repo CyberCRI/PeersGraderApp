@@ -1,18 +1,15 @@
 <template>
 	<div>
-		<div class="">
-			<div class="field">
-			  <label class="label">Password</label>
-			  <div class="control">
-			    <input class="input" v-model="password" type="text" placeholder="Text input">
-			  </div>
-			  <p v-if="errorMessage!=''" class="help is-error">{{errorMessage}}</p>
-			</div>
-			<div class="field">
-			  <div class="control">
-			    <button class="button is-link" @click="checkPassword">Submit</button>
-			  </div>
-			</div>
+		<div class="field has-addons">
+		  <div id="input-pwd" class="control">
+		    <input class="input" type="text" placeholder="Enter your password" v-model="password">
+		  </div>
+		  <p v-if="errorMessage!=''" class="help is-error">{{errorMessage}}</p>
+		  <div class="control">
+		    <a class="button is-link" @click="checkPassword">
+		      Get in !
+		    </a>
+		  </div>
 		</div>
 	</div>
 </template>
@@ -54,6 +51,8 @@
 	}
 </script>
 
-<style>
-	
+<style scoped>
+	#input-pwd{
+		width: 100%
+	}
 </style>
