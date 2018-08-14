@@ -81,16 +81,48 @@
 		</div>
 	</section>
 	<section id="authors" class="section has-background-grey-dark has-text-centered">
+	<!--
 		<div class="container has-text-white">
-			<p>PeersGrader by <a href="https://github.com/mystermiam">Stéphane Jabol</a> et <a href="https://github.com/hugolpz">Hugo Lopez</a>, <a href="https://cri-paris.org">CRI Paris</a> <span class="icon is-small fa-1x"><img src="../../static/images/CRI-logo-sq-textless.svg" alt="Logo CRI-paris.org"></span>.
+			<p>PeersGrader by <a href="https://github.com/mystermiam">Stéphane Jabol</a> et <a href="https://github.com/hugolpz">Hugo Lopez</a>, <a href="https://cri-paris.org">CRI Paris</a> <span class="icon is-small fa-1x"><img src="../../static/images/logo-cri-sq-textless.svg" alt="Logo CRI-paris.org"></span>.
 			<br><a href="https://opensource.org/licenses/mit-license.php">MIT License</a> & <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC-by-sa-4.0</a> for public <a href="https://en.wikipedia.org/wiki/Open_source">#OpenSource</a> & <a href="https://en.wikipedia.org/wiki/Open_data">#OpenData</a>!
 			<span class="fa-stack fa-1x">
 				<i class="fas fa-heart fa-stack-1x" style="color:#B10000;"  data-fa-transform="shrink-4 up-3"></i>
 				<i class="fas fa-hand-holding fa-stack-1x" style="color:MistyRose"></i>
 			</span>
-			<br>Cutest illustrations designed by <a href="https://flaticon.com/packs/young-avatar-collection" title="Young Avatar Collection">Freepik</a> from Flaticon (<a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>).
-			<br>Made with <span class="icon has-text-danger"><i class="fas fa-heart"></i></span> in Paris.</p>
+			<br>Cutest illustrations designed by <a href="https://flaticon.com/packs/young-avatar-collection" title="Young Avatar Collection">Freepik</a> from Flaticon (<a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>).</p>
+		</div> -->
+
+		<div class="container">
+		  <div class="columns has-text-left has-text-white">
+			<div class="column is-4">
+				<h4 class="title is-5 has-text-white has-text-weight-normal"><span class="has-text-weight-bold">PeersGrader</span> by <span class="has-text-link">Taly</span>, <a href="https://github.com/mystermiam">Jabol</a> & <a href="https://github.com/hugolpz">Lopez</a></h4>
+				<div class="subtitle is-6 has-text-white">Kindly supported by
+				<a href="https://cri-paris.org">CRI Paris <span class="icon fa-1x" style="vertical-align: middle;"><img src="../../static/images/logo-cri-sq-textless.svg" alt="Logo CRI-paris.org"></span></a> -
+				<a href="http://univ-paris5.fr">Paris 5 <span class="icon fa-1x" style="vertical-align: middle;"><img src="../../static/images/logo-paris5-sq.svg" alt="Logo Paris5.fr"></span></a></div>
+			</div>
+			<div class="column is-4">
+			  <h4 class="title is-5 has-text-white">Contribute <span class="has-text-weight-normal">on GitHub</span></h4>
+				<div class="subtitle is-6 has-text-white">
+					<iframe src="https://ghbtns.com/github-btn.html?user=mystermiam&repo=PeersGraderJS&type=star&count=true&size=large" frameborder="0" scrolling="0" width="114px" height="30px"></iframe>
+					<iframe src="https://ghbtns.com/github-btn.html?user=hugolpz&type=follow&count=true&size=large" frameborder="0" scrolling="0" width="220px" height="30px"></iframe>
+					<iframe src="https://ghbtns.com/github-btn.html?user=mystermiam&type=follow&count=true&size=large" frameborder="0" scrolling="0" width="212px" height="30px"></iframe>
+					<iframe src="https://ghbtns.com/github-btn.html?user=mystermiam&repo=PeersGraderJS&type=fork&count=false&size=large" frameborder="0" scrolling="0" width="90px" height="30px"></iframe>
+				</div>
+			</div>
+			<div class="column is-4">
+				<h4 class="title is-5 has-text-white">Open licenses
+					<span class="icon fa-1x"> <img src="../../static/images/icon-heart-in-hand.svg" alt=""></span>
+				</h4>
+				<div class="subtitle is-6 has-text-white">
+					Source codes under <a href="https://opensource.org/licenses/mit-license.php">MIT license</a>
+					<br>Website content <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-by-nc-sa-4.0</a>.
+					<br>Cutest illustrations by <a href="https://flaticon.com/packs/young-avatar-collection" title="Young Avatar Collection">Flaticon</a> <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC-BY-3.0</a>
+				</div>
+			</div>
+
+		  </div>
 		</div>
+
 	</section>
 
 	<footer class="section has-background-black has-text-centered has-text-white">
