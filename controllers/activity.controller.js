@@ -80,8 +80,10 @@ module.exports = {
 						auth : {
 							user: process.env.MAIL_USER,
 							pass: process.env.MAIL_PWD
-						},
-						tls: { rejectUnauthorized: false }
+						},tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    }
 					});
 
 					
@@ -131,7 +133,11 @@ module.exports = {
 					auth: {
 					    user: process.env.MAIL_USER,
 					    pass: process.env.MAIL_PWD
-					  }
+					  },
+					  tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    }
 				});
 
 		console.log('sent')
@@ -181,6 +187,7 @@ module.exports = {
 		};
 
 		await transporter.sendMail(mailTeacher, function (err, info) {
+			console.log('sendingMail')
 		  if(err)
 		    console.log(err)
 		  else

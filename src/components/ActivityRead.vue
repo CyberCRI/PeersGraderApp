@@ -134,7 +134,7 @@
 		},
 		methods : {
 			invite(){
-				if(!this.isRubricEmpty())
+				//if(!this.isRubricEmpty())
 					this.sendInvitations({
 						activity : this.activity,
 						destinators : this.invitationRecipients,
@@ -151,6 +151,7 @@
 						this.showInvite = false;
 
 					});
+				//else console.log('efe')
 			},
 			openInvite(){
 				this.showInvite = true;

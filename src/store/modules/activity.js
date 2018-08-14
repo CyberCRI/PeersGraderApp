@@ -35,9 +35,6 @@ export default {
         shifts : []
     },
     actions : {
-        check(){
-                return this.state.activity.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
-        },
         isRubricEmpty(){
             return this.state.activity.activity.rubrics.length == 1 && this.state.activity.activity.rubrics[0].name == '' 
                     && this.state.activity.activity.rubrics[0].points == 0 && this.state.activity.activity.rubrics[0].descriptors.length == 1 
