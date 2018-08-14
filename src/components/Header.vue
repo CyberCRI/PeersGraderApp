@@ -1,11 +1,11 @@
 <template>
-   <nav class="navbar has-shadow is-fixed-top">
+    <nav class="navbar has-shadow is-fixed-top">
         <div class="container">
             <div class="navbar-brand">
-                <span id="peergraders-brand" class="navbar-item">
-                    <img src="../../static/images/cri.png" alt="Peergraders : a peer review tool">
-                    Peergraders
-                </span>
+                <div id="peersgrader-brand" class="navbar-item">
+                    <img src="../../static/images/cri.png" alt="PeersGrader : a peer review tool">
+                    PeersGrader <a href="http://github.com/mystermiam/PeersGraderJS/issues" class="button is-small is-danger is-rounded">Alpha</a>
+                </div>
 
                 <div class="navbar-burger burger" data-target="navMenu">
                     <span></span>
@@ -13,8 +13,6 @@
                     <span></span>
                 </div>
             </div>
-
-
 
             <div id="navMenu" class="navbar-menu">
                <div class="navbar-start">
@@ -34,16 +32,14 @@
                        </span>
                      </div>
                   </div>
-               </div>
+                </div>
                 <div class="navbar-end">
                   <!-- <router-link to="/settings" class="navbar-item" >
                      <button class="button is-hoverable">
-                        <span class="icon" id="settings">
-                        <i class="fas fa-cogs"></i>
-                        </span>
+                        <span class="icon" id="settings"><i class="fas fa-cogs"></i></span>
                         <span>Settings</span>
                      </button>
-                     
+
                   </router-link> -->
                   <router-link to="/activity" class="navbar-item" >
                      <button class="button is-info is-hoverable">
@@ -70,17 +66,15 @@
            return '/activity/'+this.activity.urlId;
          }
 		}
-	};	
+	};
 </script>
 
 <style scoped>
-   #peergraders-brand{
+   #peersgrader-brand{
       color: #64b4c8;
    }
 
 	#settings {
       color : #6496b9;
    }
-
-
 </style>
