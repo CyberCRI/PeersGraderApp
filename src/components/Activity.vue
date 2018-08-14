@@ -159,7 +159,7 @@
 							<
 						</a>
 						<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
-						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="isRubricOk || !checkFirstStepCompletion">
+						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="((!checkRubric() && showStep==3) || !checkFirstStepCompletion)">
 							Continue
 						</a>
 						<a  v-if="showStep==4" @click="postActivity" class="button is-primary level-item" >
@@ -212,9 +212,6 @@
     	...mapState('participants',{
       	errors : 'errors'
     	}),
-    	isRubricOk(){
-    		return this.showStep == 3 && this.check();
-    	},
 			checkFirstStepCompletion(){
 				return this.activity.title && this.activity.guidelines && this.activity.sessions;
 			}
@@ -226,8 +223,7 @@
       	getAuthActivity : 'getAuthActivity',
       	setWithId:'setWithId',
       	lookForActivity: 'lookForActivity',
-      	deleteActivity: 'deleteActivity',
-      	check : 'check'
+      	deleteActivity: 'deleteActivity'
     	}),
     	...mapActions('participants',{
       	setErrors : 'setErrors'
@@ -249,20 +245,25 @@
 					});
 				}
 			},
+			checkRubric(){
+         return this.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
+      },
 			goStep(i){					
 				
-				if(this.showStep == 3 && !this.check()){
-					this.showStep+=i;
-				} else if(this.showStep>=0 && this.showStep!=3 && this.checkFirstStepCompletion && this.errors.length==0){
-					this.showStep+=i;
-				} else {
-					if(this.showStep==3)
+				if(this.showStep == 3){
+					if(this.checkRubric())
+						this.showStep+=i;
+					else {
+					
 						this.$notify({
 							group:'notifications',
 							type:'error',
 							title:'Points skill incoherence'
 						});
-				}
+					}
+				} else if(this.showStep>=0 && this.showStep!=3 && this.checkFirstStepCompletion && this.errors.length==0){
+					this.showStep+=i;
+				} 
 				
 				
 			},

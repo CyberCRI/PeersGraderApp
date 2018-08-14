@@ -6,7 +6,7 @@
 			</a> -->
 			<div class="level">
 				<div class="field">
-				  <label class="label">Basis</label>
+				  <label class="label">Maximum score</label>
 				  <div class="control">
 				    <input class="input" type="number" min="1" v-model="activity.basis" placeholder="Activity's basis">
 				  </div>
@@ -17,14 +17,14 @@
 					<div class="panel-heading">
 						<div class="">
 							<div class="columns">
-								<div class="column is-8 is-vcentered">
+								<div class="column is-7 is-vcentered">
 									<div class="field">
 									  <div class="control">
 									    <input v-model="rubric.name" class="input" type="text" placeholder="Skill's name">
 									  </div>
 									</div>
 								</div>
-								<div class="column is-2">
+								<div class="column is-4">
 									<div class="field">
 										<!-- <div class="control">
 									    <a class="button is-info">
@@ -36,7 +36,7 @@
 									  </div>
 									</div>
 								</div>
-								<div class="column is-2">
+								<div class="column is-1">
 									<div class="add-skill has-text-centered" v-on:click="addSkill(i)">
 										<i class="far fa-plus-square"></i>
 									</div>
@@ -52,10 +52,10 @@
 					    <div v-for="(descriptor,j) in rubric.descriptors" :key="j" class="">
 					    	
 					    	<div class="columns is-multiline descriptor is-vcentered">
-					    		<div class="column is-12">
+					    		<div class="column is-7">
 					    			<textarea class="textarea" v-model="descriptor.content" placeholder="Descriptor's description"></textarea>
 					    		</div>
-						    	<div class="column is-8">
+						    	<div class="column is-4">
 						    		
 								    	<div class="select is-fullwidth">
 									    	<select v-on:change="changeLevel(i,j) "v-model="descriptor.level">
@@ -65,16 +65,17 @@
 												  <option :value="3">Hard</option>
 												  <option :value="4">Expert</option>
 												</select>
+												
 											</div>
-								    
-						    	</div>
-						    	<div class="column is-2">
+								    	<p class="help">Level 	</p>
+						    	<!-- </div>
+						    	<div class="column is-2"> -->
 						    		
 										  
 										    <input v-model="descriptor.points" class="input is-extended" type="number" min="1" placeholder="descriptor's points">
-										
+												<p class="help">points</p>
 						    	</div>
-						    	<div class="column is-2">
+						    	<div class="column is-1">
 						    		<div class="add-descriptor has-text-centered" v-on:click="addDescriptor(i,j)">
 											<i class="far fa-plus-square"></i>
 										</div>
@@ -105,21 +106,21 @@
 		},
 		methods : {
 			...mapActions('activity',{
-				setActivity:'setActivity',
+				setActivity:'setActivity'
 			}),
 			changeLevel(i,j){
 				this.activity.rubrics[i].descriptors.sort((a,b)=>a.level - b.level);
 			},
 			postActivity(){
 				console.log('launch save rubric');
-				if(this.check())
+				/*if(this.check())
 					this.setActivity(this.activity);
 				else
 					this.$notify({
 						group:'notifications',
 						type:'error',
 						title:'Points skill incoherence'
-					});
+					});*/
 			},
 			addSkill(i){
 				this.activity.rubrics.splice(i+1,0,{

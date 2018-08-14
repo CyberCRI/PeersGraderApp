@@ -1,5 +1,5 @@
 <template>
-	<div v-if="displayRedirection">
+	<div v-if="isRubricEmpty">
 		<p>No rubric for this actvity. Cannot review</p>
 	</div>
 	<div v-else >
