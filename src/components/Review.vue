@@ -130,8 +130,6 @@
 							  
 							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="columns is-multiline v-centered">
 							    	
-							    	
-							    	
 										<div class="column is-10">
 											{{descriptor.content}}
 										</div>
