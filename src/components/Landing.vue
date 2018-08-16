@@ -94,13 +94,13 @@
 
 		<div class="container">
 		  <div class="columns has-text-left has-text-white">
-			<div class="column is-4">
+			<div class="column">
 				<h4 class="title is-5 has-text-white has-text-weight-normal"><span class="has-text-weight-bold">PeersGrader</span> by <span class="has-text-link">Taly</span>, <a href="https://github.com/mystermiam">Jabol</a> & <a href="https://github.com/hugolpz">Lopez</a></h4>
 				<div class="subtitle is-6 has-text-white">Kindly supported by
 				<a href="https://cri-paris.org">CRI Paris <span class="icon fa-1x" style="vertical-align: middle;"><img src="../../static/images/logo-cri-sq-textless.svg" alt="Logo CRI-paris.org"></span></a> -
 				<a href="http://univ-paris5.fr">Paris 5 <span class="icon fa-1x" style="vertical-align: middle;"><img src="../../static/images/logo-paris5-sq.svg" alt="Logo Paris5.fr"></span></a></div>
 			</div>
-			<div class="column is-4">
+			<div class="column is-4 mobile-hidden">
 			  <h4 class="title is-5 has-text-white">Contribute <span class="has-text-weight-normal">on GitHub</span></h4>
 				<div class="subtitle is-6 has-text-white">
 					<iframe src="https://ghbtns.com/github-btn.html?user=mystermiam&repo=PeersGraderJS&type=star&count=true&size=large" frameborder="0" scrolling="0" width="114px" height="30px"></iframe>
@@ -109,7 +109,7 @@
 					<iframe src="https://ghbtns.com/github-btn.html?user=mystermiam&repo=PeersGraderJS&type=fork&count=false&size=large" frameborder="0" scrolling="0" width="90px" height="30px"></iframe>
 				</div>
 			</div>
-			<div class="column is-4">
+			<div class="column">
 				<h4 class="title is-5 has-text-white">Open licenses
 					<span class="icon fa-1x"> <img src="../../static/images/icon-heart-in-hand.svg" alt=""></span>
 				</h4>
@@ -176,16 +176,17 @@
 	input:focus + .icon {
 		color:#1496ed;
 	}
-</style>
-<!--
-#howto .column,
-#dashboard .column {
-	margin: 0 1em 0 1em;
+	.mobile-hidden {
+  display: none;
 }
 
-/*fuck this shit*/
-
-
+@media (min-width: 769px) {
+  .mobile-hidden {
+    display: block;
+  }
+}
+</style>
+<!--
 .title-create-container{
 	width: 100%;
 	min-width: 100%;
