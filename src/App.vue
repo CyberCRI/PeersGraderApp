@@ -37,11 +37,13 @@ export default {
   },
   mounted(){
     var burger = document.querySelector('.burger');
-    var menu = document.querySelector('#'+burger.dataset.target);
-        burger.addEventListener('click', function() {
-          burger.classList.toggle('is-active');
-          menu.classList.toggle('is-active');
-      });
+    if(burger!=null){
+      var menu = document.querySelector('#'+burger.dataset.target);
+          burger.addEventListener('click', function() {
+            burger.classList.toggle('is-active');
+            menu.classList.toggle('is-active');
+        });
+    }
   }
 }
 </script>
@@ -65,8 +67,8 @@ export default {
   #pg-main-container{
    position : absolute;
    top:15%;
-   left:25%;
-   width: 50%;
+   left:15%;
+   width: 75%;
   }
 
 

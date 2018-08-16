@@ -23,7 +23,8 @@ const activitySchema = new Schema({
 			group:'String',
 			role : 'String',
 			graded : Boolean
-		}]
+		}],
+		invitationsSent : Boolean
 	}],
 	rubrics:[{
       name:'',
@@ -37,8 +38,7 @@ const activitySchema = new Schema({
   basis:Number,
 	urlId: 'String',
 	teacherPwd : 'String',
-	guidelines: 'String',
-	invitationsSent : Boolean
+	guidelines: 'String'
 },{
 	timestamps:true,
 	strict:false

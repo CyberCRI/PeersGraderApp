@@ -139,19 +139,39 @@
 						activity : this.activity,
 						destinators : this.invitationRecipients,
 						message : this.invitationMessage
-					}).then(()=>{
-						console.log('wtf')
-						this.$notify({
-							group:'notifications',
-							title:'Invitations sent !',
-							text : 'Invitations have been sent. In case you did not get it.',
-							type : 'success'
-						});
+					}).then(response=>{
+						if(response.sent)
+							this.$notify({
+								group:'notifications',
+								title:'Invitations sent !',
+								text : 'Invitations have been sent. In case you did not get it.',
+								type : 'success'
+							});
 
 						this.showInvite = false;
 
+					}).catch(response=>{
+						console.log(response);
+
+						if(!response.sent){
+							if(response.who){
+								this.$notify({
+									group:'notifications',
+									title:'Participant does not exist',
+									text : response.who+' is not registered for this activity. Sort things out',
+									type : 'error'
+								});
+							} else {
+								this.$notify({
+									group:'notifications',
+									title:'Something went wrong ...',
+									text : 'Stars were not aligned and despite our efforts to carry on your query, universe is ploting against us. Hate the game bro...',
+									type : 'error'
+								});
+							}
+						}
+
 					});
-				//else console.log('efe')
 			},
 			openInvite(){
 				this.showInvite = true;
