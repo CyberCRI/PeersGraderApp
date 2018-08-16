@@ -70,7 +70,8 @@ module.exports = {
 		});	
 	},
 	sendInvitations : async function(req,res){
-		console.log('sendInvitations')
+		console.log('sendInvitations');
+		
 		try {
 			var sentActivity =  req.body.activity,
 					destinators = req.body.destinators,
@@ -80,10 +81,8 @@ module.exports = {
 						auth : {
 							user: process.env.MAIL_USER,
 							pass: process.env.MAIL_PWD
-						},tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-    }
+						},
+						tls: { rejectUnauthorized: false }
 					});
 
 					
@@ -100,8 +99,8 @@ module.exports = {
 								console.log(activity)							
 							});	
 						});
-					} else {
-						res.send({success:false,participant:false});
+					} else if(participant == -1) {
+						res.send({success:false,participant:false,who:destinators[i]});
 					}
 
 					const mailOptions = {
@@ -148,7 +147,7 @@ module.exports = {
 			sentActivity.teacherPwd = getPassword();	
 		}
 
-		if(!sentActivity.invitationsSent){
+		/*if(!sentActivity.invitationsSent){
 			//might be beter to use reduce to create list receivers like so (depending on service restrictions)
 			//var mailist = sentActivity.participants.reduce((a,c)=>{a.push(c.email);return a;},[]);
 			//console.log('mailist',mailist.join(',')); put mailist join in to
@@ -176,7 +175,7 @@ module.exports = {
 			}
 			
 			sentActivity.invitationsSent = true;
-		}
+		}*/
 
 		const mailTeacher = {
 		  from: process.env.MAIL_USER, // sender address

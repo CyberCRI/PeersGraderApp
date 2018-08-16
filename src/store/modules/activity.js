@@ -15,6 +15,7 @@ export default {
                 //cohort : 0,
                 //ine : '',
                 role : '',
+                invitationSent : false,
                 reviewed:[]
             }],
             rubrics:[{
@@ -28,7 +29,6 @@ export default {
             }],
             basis:20,
             guidelines : '',
-            invitationsSent : true
         },
         isAdmin : false,
         withId : false,
@@ -49,7 +49,10 @@ export default {
             }).then(response=>{
                 if(response.data.success)
                     return new Promise((resolve,reject)=>resolve({sent:true}));
-                else return new Promise((resolve,reject)=>reject({sent:false}));
+                else return new Promise((resolve,reject)=>reject({
+                    sent:false,
+                    participant:response.data.participant,
+                    who:response.data.who}));
             });
         },
         setShifts(context,shifts){

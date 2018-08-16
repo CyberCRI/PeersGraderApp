@@ -48,6 +48,11 @@
                         Create a new activity
                      </button>
                   </router-link >
+                  <a v-if="$route.params.reviewId" class="navbar-item" >
+                     <button class="button is-success is-hoverable">
+                        Save
+                     </button>
+                  </a>
                 </div>
             </div>
         </div>

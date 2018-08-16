@@ -32,9 +32,13 @@ export default {
        },
        hasPushedSave : false,
        hasReview : false,
-       showNotificationSave : true
+       showNotificationSave : true,
+       isReviewStarted : false,
     },
     actions : {
+        setIsReviewStarted(context,isReviewStarted){
+            context.commit('setIsReviewStarted',isReviewStarted);
+        },
         setShowNotificationSave(context,showNotificationSave){
             context.commit('setShowNotificationSave',showNotificationSave);
         },
@@ -78,6 +82,7 @@ export default {
 
             if(context.state.hasPushedSave){
                 if(!review.urlId){
+                    console.log(review.activityUrlId);
                     return axios.post('/api/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
                         if(response.data.success){
 
@@ -151,6 +156,9 @@ export default {
     getters : {
     },
     mutations : {
+        setIsReviewStarted(state,isReviewStarted){
+            state.isReviewStarted = isReviewStarted;
+        },
         setShowNotificationSave(state,showNotificationSave){
             state.showNotificationSave = showNotificationSave;
         },
