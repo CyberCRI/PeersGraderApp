@@ -1,3 +1,4 @@
+NODE_ENV = "production"
 APP_URL = "http://localhost:5000"
 DB_URI = "mongodb://127.0.0.1:27017/peergraders"
 MAIL_USER = "YourEmail@mail.com+DO NOT COMMIT THIS CHANGE"
