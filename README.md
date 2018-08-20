@@ -7,8 +7,8 @@
 ```shell
 npm install                           # Install dependencies
 npm run-script mongo                  # Run mongo
-npm run-script build && npm run dev   # Build
-npm run-script serverjs               # Run website
+npm run-script build && npm run dev   # Build website
+npm run-script serverjs               # Run website's server
 chromium-browser "http://localhost:5000/#/"   # Opens landing page
 ```
 
@@ -48,7 +48,7 @@ chromium-browser "http://localhost:5000/#/"   # Opens landing page
 ### Database models
 
 ### Contacts
-Report issues or ideas [on github](/issues).
+Report issues or ideas [on github](./issues).
 
 ### Authorship
 * [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, earlier prototyping using HTML/CSS/JS & Google forms.
