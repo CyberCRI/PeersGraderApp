@@ -29,8 +29,11 @@ app.use(function(req, res, next) {
 });
 
 //serve site
-if(process.env.NODE_ENV == 'production')
+if(process.env.NODE_ENV == 'production'){
+  console.log('eh')
   app.use(express.static(DIST_DIR));
+}
+else console.log('ah')
 
 //routes
 app.use(require('./routes'));

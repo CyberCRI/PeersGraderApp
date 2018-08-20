@@ -54,9 +54,11 @@ export default {
                     context.commit('setHasReview',true);
                      router.push({path:'/activity/'+response.data.review.activityUrlId+'/review/'+response.data.review.urlId});
                     //return new Promise((resolve,reject)=>resolve({hasReview:true}));
+                    console.log('there ASS')
 
                 } else {
                     //return Promise.resolve({hasReview:false});
+                    console.log('here MOFO')
                     context.commit('setHasReview',false);
                     //return new Promise((resolve,reject)=>resolve({hasReview:false}));
                 }

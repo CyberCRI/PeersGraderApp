@@ -170,8 +170,7 @@
 		position: absolute;
 		top: 54px;
 		left: 0;
-		right: 0;/*
-		certainement faire un calc in fine*/
+		right: 0;
 	}
 	input:focus + .icon {
 		color:#1496ed;
@@ -186,27 +185,4 @@
   }
 }
 </style>
-<!--
-.title-create-container{
-	width: 100%;
-	min-width: 100%;
-}
-.title-create{
-	display: flex;
-	flex-wrap: wrap;
-}
-#create-button{
-	width: 100%;
-}
 
-@media screen and (max-width: 420px) {
-	.title-create>*{
-			margin: 0.5em 0 !important;
-			flex-grow: 1;
-	}
-}
-
-.title-create:last-child{
-	flex-grow: 1;
-}
- -->

@@ -31,7 +31,7 @@
 								</a>
 							</div>
 						</div>
-				  	<article class="media">
+				  	<article v-if="grader.email" class="media">
 						  <figure class="media-left is-vcentered-pg">
 						    <p class="initials image is-64x64">
 						      {{review.grader.name.split(' ').reduce((a,c)=>a+c[0],'')}}
@@ -71,7 +71,7 @@
 				  </div>
 				</div>
 			</div>
-			<div v-if="isReviewStarted" class="columns">
+			<div v-if="isReviewStarted && grader.email" class="columns">
 				<div v-if="indexReviewed>0" class="column">
 					<div class="field">
 					  <div class="control">
@@ -128,20 +128,26 @@
 							</div>
 							<div class="panel-block hero is-light">
 							  
-							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="columns is-multiline v-centered">
+							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="">
 							    	
-										<div class="column is-10">
-											{{descriptor.content}}
-										</div>
-										<div class="column is-two">
-											<label :for="'check'+h+i+j" class="checkbox is-pulled-right">
-											  <input type="checkbox" :id="'check'+h+i+j"
-											  v-model="grader.reviewed[h].skills[i].skillDescriptors[j].acquired">
-											 	{{grader.reviewed[h].skills[i].skillDescriptors[j].acquired ?
-											 	 'acquired' : 'not acquired'}}
-											</label>
-										</div>
-											
+							    	<v-collapse-wrapper>
+										    <div class="header" v-collapse-toggle>
+										        <div class="">
+										        	Desciption
+										        </div>
+										        <div class="">
+															<label :for="'check'+h+i+j" class="checkbox is-pulled-right">
+															  <input type="checkbox" :id="'check'+h+i+j"
+															  v-model="grader.reviewed[h].skills[i].skillDescriptors[j].acquired">
+															 	{{grader.reviewed[h].skills[i].skillDescriptors[j].acquired ?
+															 	 'acquired' : 'not acquired'}}
+															</label>
+														</div>
+										    </div>
+										    <div class="my-content" v-collapse-content>
+										        {{descriptor.content}}
+										    </div>
+										</v-collapse-wrapper>
 							    	
 							  	</div>
 							  
@@ -194,6 +200,7 @@
 				getPlanning : 'getPlanning'
 			}),
 			...mapActions('review',{
+				resetReview : 'resetReview',
 				setIsReviewStarted : 'setIsReviewStarted',
 				setReview : 'setReview',
 				setHasPushedSave : 'setHasPushedSave',
@@ -202,12 +209,22 @@
 				setShowNotificationSave : 'setShowNotificationSave'
 			}),
 			getGrader(participants,identifiant){
-				return participants.find(c=>c.token == identifiant || c.email == identifiant);
+
+				var looking = identifiant ? identifiant != '' ? identifiant : this.emailParticipant : this.emailParticipant;
+				console.log('looking')
+				console.log(looking)
+				return participants.find(c=>c.token == looking || c.email == looking);
 			},
 			saveReviewsBeforeHand(activity,token){
-
+				console.log('activity')
+				console.log(activity.participants)
+				console.log(this.emailParticipant)
 				var grader = this.getGrader(activity.participants, token || this.emailParticipant),
 						vm = this;
+						console.log('saveReviewsBeforeHand')
+						console.log(activity,token)
+						console.log('grader here')
+						console.log(grader)
 				this.getPlanning().then(()=>{
 					for(var reviewee of grader.reviewed){
 						vm.grader = grader;
@@ -220,24 +237,35 @@
 			async startReview(activity,token){
 				var grader = this.getGrader(activity.participants, token || this.emailParticipant);
 
+				console.log('grader THERE')
+						console.log(grader)
+
+
 				if(grader){
+
+					this.emailParticipant = grader.email;
+
 					await this.lookForReviewFromParticipant({
 						activityUrlId : activity.urlId,
 						grader : {email: grader.email}
 					}).then(()=>{
-						this.grader = this.review.grader;
-						this.setIsReviewStarted(true);
+						console.log('????????')
+						if(!this.hasReview){
+							this.saveReviewsBeforeHand(this.activity,this.emailParticipant);
+							//this.getPlanning().then(()=>{
+								this.emailParticipant = grader.email;
+								this.setReview(this.getNewReview(activity,grader));
+								this.grader = grader;
+								this.setIsReviewStarted(true);
+						//});
+						} else {
+							this.grader = this.review.grader;
+							this.setIsReviewStarted(true);	
+						}
+						
 					});
 
-					if(!this.hasReview){
-						this.saveReviewsBeforeHand(this.activity,this.emailParticipant);
-						//this.getPlanning().then(()=>{
-							this.emailParticipant = grader.email;
-							this.setReview(this.getNewReview(activity,grader));
-							this.grader = grader;
-							this.setIsReviewStarted(true);
-					//});
-					}
+					
 
 				} else {
 					this.$notify({
@@ -320,9 +348,14 @@
 					});
 					
 				} else {
-					if(to.query.ptoken){
+					vm.resetReview();
+					vm.indexReviewed = 0;
+					vm.grader = {};
+					vm.emailParticipant = '';
+				}
+
+				if(to.query.ptoken){
 						vm.startReview(vm.activity,to.query.ptoken);
-					}
 				}
 			});
 		},
@@ -343,7 +376,17 @@
 				});
 				
 			}
-			else this.lookForActivity(to.params.id);
+			else {
+				this.lookForActivity(to.params.id);
+				this.resetReview();
+				this.indexReviewed = 0;
+				this.grader = {};
+				this.emailParticipant = '';
+			}
+
+			if(to.query.ptoken){
+				this.startReview(this.activity,to.query.ptoken);
+			}
 		}
 	};
 </script>

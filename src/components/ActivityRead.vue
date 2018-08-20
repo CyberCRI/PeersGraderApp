@@ -135,6 +135,7 @@
 		methods : {
 			invite(){
 				//if(!this.isRubricEmpty())
+				console.log('invite')
 					this.sendInvitations({
 						activity : this.activity,
 						destinators : this.invitationRecipients,
