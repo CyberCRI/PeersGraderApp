@@ -5,12 +5,14 @@
   "author": "CRI",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
+    "mongo": "sudo service mongod start & sudo mongo --host 127.0.0.1:27017",
+    "build": "node build/build.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "serverjs": "node server.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
-    "build": "node build/build.js"
+    "test": "npm run unit && npm run e2e"
   },
   "dependencies": {
     "axios": "^0.18.0",
