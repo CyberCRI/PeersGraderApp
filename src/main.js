@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 import Notifications from 'vue-notification'
-import VueCollapse from 'vue2-collapse'
 
 
 Vue.config.productionTip = false;
@@ -13,7 +12,6 @@ Vue.config.productionTip = false;
 console.log(Vue.config)
 
 Vue.use(Notifications);
-Vue.use(VueCollapse);
 
 /* eslint-disable no-new */
 new Vue({

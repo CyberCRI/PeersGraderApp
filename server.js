@@ -29,7 +29,7 @@ app.use(function(req, res, next) {
 });
 
 //serve site
-//if(process.env.NODE_ENV == 'production')
+if(process.env.NODE_ENV == 'production')
   app.use(express.static(DIST_DIR));
 
 

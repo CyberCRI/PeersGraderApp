@@ -29,6 +29,7 @@ const reviewSchema = new Schema({
 						type : Schema.Types.ObjectId
 					},
 					possiblePoints : Number,
+					percentageAcquired : Number,
 					acquired : Boolean
 				}]
 			}]

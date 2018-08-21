@@ -66,8 +66,8 @@ export default {
 
   #pg-main-container{
    position : absolute;
-   top:15%;
-   left:15%;
+   top:7.5%;
+   left:12.5%;
    width: 75%;
   }
 

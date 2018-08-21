@@ -24,65 +24,65 @@
 						</div>
 					</div>
 					<div v-else>
-						<div v-if="isReviewStarted" class="columns">
-							<div class="column is-offset-4 is-4">
-								<a @click="postReview" class="button level-item is-success" >
-									<span>Save</span>
-								</a>
-							</div>
-						</div>
-				  	<article v-if="grader.email" class="media">
+
+				  	<article v-if="grader.email" class="media" id="review-info">
 						  <figure class="media-left is-vcentered-pg">
 						    <p class="initials image is-64x64">
-						      {{review.grader.name.split(' ').reduce((a,c)=>a+c[0],'')}}
+						      {{review.grader.name.trim().split(' ').reduce((a,c)=>a+c[0],'')}}
 						    </p>
 						  </figure>
-						  <div class="media-content">
-						    <div class="columns">
-						    	<div class="column is-12">
-						    		<div class="level">
-						    			<div class="level-left">
-						    				Activity
-						    			</div>
-						    			<div class="level-right">
-						    				{{activity.title}}
-						    			</div>
+						  <div class="media-content" id="resume">
+						    <div class="columns is-multiline">
+						    	<div class="column is-2">
+						    		<span class="has-text-weight-bold">Activity :</span>
 						    	</div>
-						    	<div class="level">
-						    			<div class="level-left">
-						    				Guidelines
-						    			</div>
-						    			<div class="level-right">
-						    				{{activity.guidelines}}
-						    			</div>
+						    	<div class="column  is-9">
+						    		{{activity.title}}
 						    	</div>
-						    	<div class="level">
-						    			<div class="level-left">
-						    				Reviewing
-						    			</div>
-						    			<div class="level-right">
-						    				{{grader.reviewed[indexReviewed].group}} - {{grader.reviewed[indexReviewed].name}} - {{grader.reviewed[indexReviewed].email}}
-						    			</div>
+						    	<div class="column is-2">
+						    		<span class="has-text-weight-bold">Guidelines : </span>
 						    	</div>
-						    </div>
-						  </div>
-						</div>
+						    	<div class="column  is-9">
+						    		{{activity.guidelines}}
+						    	</div>
+						    	<div class="column is-2">
+						    		<span class="has-text-weight-bold">Reviewer :</span>
+						    	</div>
+						    	<div class="column  is-9">
+						    		{{grader.name}} - {{grader.email}}
+						    	</div>
+						    	<div class="column is-2">
+						    		<span class="has-text-weight-bold">Reviewing :</span>
+						    	</div>
+						    	<div class="column  is-9">
+						    		{{grader.reviewed[indexReviewed].group}} - {{grader.reviewed[indexReviewed].name}} - {{grader.reviewed[indexReviewed].email}}
+						    	</div>
+						  	</div>
+							</div>
 						</article>
 				  </div>
 				</div>
 			</div>
 			<div v-if="isReviewStarted && grader.email" class="columns">
-				<div v-if="indexReviewed>0" class="column">
+
+							
+						
+				<div class="column is-3">
 					<div class="field">
 					  <div class="control">
-					    <button @click="showReview(indexReviewed-1)" class="button is-light">Previous</button>
+					    <button :disabled="indexReviewed<1" @click="showReview(indexReviewed-1)" class="button is-light">Previous</button>
 					  </div>
 					</div>
 				</div>
-				<div class="column is-6">
+				<div class="column is-offset-1 is-4">
+								<a @click="postReview" class="button level-item is-success" >
+									<span>Save</span>
+								</a>
+							</div>
+				<div class="column is-offset-1 is-3">
 					<div class="field">
 					  <div class="control">
-					    <button :disabled="isThereNextReviewed" @click="showReview(indexReviewed+1)" class="button is-light" :class="{'is-right': indexReviewed>0}">Next</button>
+					    <button :disabled="isThereNextReviewed" @click="showReview(indexReviewed+1)" class="button is-light is-right">Next</button>
 					  </div>
 					</div>
 				</div>
@@ -122,33 +122,46 @@
 					<div  v-if="h==indexReviewed" v-for="(skill,i) in peer.skills" :key="i" >
 						<div class="panel">
 							<div class="panel-heading">
-								<div class="">
+								<div class="card-toggle" @click="accordion">
 									{{skill.name}}
 								</div>
 							</div>
 							<div class="panel-block hero is-light">
 							  
-							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="">
-							    	
-							    	<v-collapse-wrapper>
-										    <div class="header" v-collapse-toggle>
-										        <div class="">
-										        	Desciption
-										        </div>
-										        <div class="">
+							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="subskill">
+
+							    		<div class="columns">
+							    			<div class="column is-9">
+							    				{{descriptor.content}}
+							    			</div>
+							    			<div class="column is-3 is-flexin">
+							    				<div class="slider">
+							    					<vue-slider
+												    ref="slider"
+												    v-model="descriptor.percentageAcquired"
+												    v-bind="options"
+												  ></vue-slider>
+												</div>
+												<div class="elt">
+												  <div>{{descriptor.percentageAcquired || 0}}</div>
+												</div>
+							    			</div>
+							    		</div>
+										   <!--  <div class="header">
+										  
 															<label :for="'check'+h+i+j" class="checkbox is-pulled-right">
 															  <input type="checkbox" :id="'check'+h+i+j"
 															  v-model="grader.reviewed[h].skills[i].skillDescriptors[j].acquired">
 															 	{{grader.reviewed[h].skills[i].skillDescriptors[j].acquired ?
 															 	 'acquired' : 'not acquired'}}
 															</label>
-														</div>
-										    </div>
-										    <div class="my-content" v-collapse-content>
-										        {{descriptor.content}}
-										    </div>
-										</v-collapse-wrapper>
-							    	
+														
+										    </div> -->
+										   
+										    
+										        
+										    		
+										    
 							  	</div>
 							  
 							</div>
@@ -164,6 +177,8 @@
 <script>
 	import {mapState,mapActions} from 'vuex';
 	import ActivityHeader from '@/components/ActivityHeader'
+	import vueSlider from 'vue-slider-component'
+
 
 	export default{
 		name: 'Review',
@@ -171,11 +186,45 @@
 			return {
 				emailParticipant : '',
 				indexReviewed : 0,
-				grader : {}
+				grader : {},
+        options: {
+	        eventType: 'auto',
+	        width: 'auto',
+	        height: 6,
+	        dotSize: 16,
+	        dotHeight: null,
+	        dotWidth: null,
+	        min: 0,
+	        max: 100,
+	        interval: 1,
+	        show: true,
+	        speed: 0.5,
+	        disabled: false,
+	        piecewise: false,
+	        piecewiseStyle: false,
+	        piecewiseLabel: false,
+	        tooltip: false,
+	        tooltipDir: 'top',
+	        reverse: false,
+	        data: null,
+	        clickable: true,
+	        realTime: false,
+	        lazy: false,
+	        formatter: null,
+	        bgStyle: null,
+	        sliderStyle: null,
+	        processStyle: null,
+	        piecewiseActiveStyle: null,
+	        piecewiseStyle: null,
+	        tooltipStyle: null,
+	        labelStyle: null,
+	        labelActiveStyle: null
+	      }
 			};	
 		},
 		components : {
-			'activity-header': ActivityHeader
+			'activity-header': ActivityHeader,
+			'vue-slider': vueSlider
 		},
 		computed : {
 			...mapState('activity',{
@@ -194,6 +243,9 @@
 			}
 		},
 		methods : {
+			accordion(e){
+				e.currentTarget.parentElement.parentElement.childNodes[2].classList.toggle('is-hidden');
+			},
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',				
 				setActivity : 'setActivity',
@@ -392,6 +444,34 @@
 </script>
 
 <style scoped>
+	#review-info{
+		padding: 2em;
+		background: white;
+		border: solid 1px white;
+		border-radius: 6px;
+	}
+
+	.is-flexin{
+		display: flex;
+	}
+	.slider{
+		width: 80%;
+	}
+	.subskill{
+		margin-top: 10px;
+	}
+	.subskill+.subskill{
+		margin-top: 40px;
+	}
+
+	.collapsing {
+        transition: height .35s ease;
+    }
+
+    .collapse:not(.show) {
+        display: none;
+    }
+
 	.is-vcentered-pg{
 		align-self: center;
 	}
@@ -401,6 +481,7 @@
     line-height: 3.75em;
     background: black;
     color: white;
+    border-radius: 50%;
 	}
 
 	.is-right {

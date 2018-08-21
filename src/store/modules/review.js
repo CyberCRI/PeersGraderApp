@@ -21,6 +21,7 @@ export default {
                         skillDescriptors : [{
                             content : '',
                             possiblePoints : 0,
+                            percentageAcquired : 0,
                             acquired : false
                         }]
                     }]
@@ -144,6 +145,7 @@ export default {
                             skillDescriptors : [{
                                 content : '',
                                 possiblePoints : 0,
+                                percentageAcquired : 0,
                                 acquired : false
                             }]
                         }]
