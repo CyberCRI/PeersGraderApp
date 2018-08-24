@@ -4,11 +4,24 @@ const Review = require('../models/review.schema'),
 
 module.exports = {
 	getSummaryRows : function(req,res){
-		//
-		Review.find({}).then(reviews=>{
-			console.log('getSummaryRows response');
-			console.log(reviews)
+		var profsColumn = [],
+				peersColumn = [],
+				observersColumn = [];
+				
+		//get All participants 
+		Activity.find({urlId:req.params.id},'participants').then(participants=>{
+
+
+			for(participant of participants){
+				Review.find({}).then(reviews=>{
+					console.log('getSummaryRows response');
+					console.log(reviews)
+				});
+			}
+			
 		});
+
+		
 	}
 	
 }

@@ -110,6 +110,7 @@ export default {
                         }
                     });
                 } else {
+                    console.log('sentReviewU',review);
                     axios.put('/api/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
                         
                         context.dispatch('setHasPushedSave',false);

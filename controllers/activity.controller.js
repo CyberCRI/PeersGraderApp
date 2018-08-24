@@ -53,7 +53,7 @@ module.exports = {
 		Activity.findOne({urlId:activityKey}).then(function(activity){
 			console.log('activityKey',activityKey)			
 			console.log('participants');
-			console.log(activity.participants)
+			//console.log(activity.participants)
 			res.send({success:true,participants:activity.participants});
 		});	
 	},
@@ -65,7 +65,7 @@ module.exports = {
 			{urlId:activityKey}]
 		}).then(function(activity){
 			console.log('getActivity')
-			console.log(activity)
+			//console.log(activity)
 			res.send({success:true,activity:activity});
 		});	
 	},
@@ -140,7 +140,7 @@ module.exports = {
 				});
 
 		console.log('sent')
-		console.log(sentActivity)
+		//console.log(sentActivity)
 
 		if(!sentActivity.urlId && !sentActivity.teacherPwd){
 			sentActivity.urlId = nanoid(5);
@@ -211,7 +211,7 @@ module.exports = {
 		Activity.findOneAndUpdate({urlId:req.params.id},sentActivity).then(function(){
 			Activity.findOne({urlId:req.params.id}).then(function(activity){
 				console.log('updated')
-				console.log(activity)
+				//console.log(activity)
 				res.send({success:true,activity:activity});
 			});	
 		});

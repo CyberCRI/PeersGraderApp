@@ -145,9 +145,9 @@
 												    v-model="descriptor.percentageAcquired">
 												    </vue-slider>
 												</div>
-												<!-- <div class="elt">
+												<div class="elt">
 												  <div>{{descriptor.percentageAcquired || 0}}</div>
-												</div> -->
+												</div>
 							    			</div>
 							    		</div>
 										   <!--  <div class="header">
@@ -317,6 +317,7 @@
 					}).then(()=>{
 						console.log('????????')
 						if(!this.hasReview){
+							console.log('NO REVIEW ?')
 							this.saveReviewsBeforeHand(this.activity,this.emailParticipant).then(()=>{
 								this.emailParticipant = grader.email;
 								//this.setReview(this.getNewReview(activity,grader));
@@ -397,7 +398,7 @@
 				else{*/
 					this.setHasPushedSave(true);
 					this.setShowNotificationSave(false);
-				 	this.review.grader = this.grader;
+				 	//this.review.grader = this.grader;
 				 	this.setReview(this.review);
 				//}
 			}
@@ -405,10 +406,11 @@
 		beforeRouteEnter(to,from,next){
 			console.log('beforeRouteEnter')
 			next(async vm=>{
-				vm.resetReview();
+				
 				await vm.lookForActivity(to.params.id);
 
 				if(to.params.reviewId){
+
 					await vm.lookForReview({
 						activityUrlId : to.params.id,
 						urlId : to.params.reviewId
@@ -421,6 +423,7 @@
 					});
 					
 				} else {
+					vm.resetReview();
 					vm.indexReviewed = 0;
 					vm.grader = {};
 					vm.emailParticipant = '';
@@ -433,7 +436,7 @@
 		},
 		async beforeRouteUpdate(to,from,next){
 			console.log('beforeRouteUpdate')
-			this.resetReview();
+			//this.resetReview();
 			if(to.params.reviewId){
 
 				await this.lookForActivity(to.params.id)
@@ -451,7 +454,7 @@
 			}
 			else {
 				await this.lookForActivity(to.params.id);
-				this.resetReview();
+				//this.resetReview();
 				this.indexReviewed = 0;
 				this.grader = {};
 				this.emailParticipant = '';

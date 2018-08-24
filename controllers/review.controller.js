@@ -27,6 +27,8 @@ module.exports = {
 		if(!sentReview.urlId) sentReview.urlId = nanoid(5);
 
 		var	newReview = new Review(sentReview);
+		console.log('whats at');
+		console.log(sentReview.grader.reviewed[1].percentageAcquired)
 
 		newReview.save().then(async function(review){
 		
@@ -40,10 +42,16 @@ module.exports = {
 
 		var sentReview = req.body.review;
 
+		console.log(sentReview)
+		console.log('whats at');
+		console.log(sentReview.grader.reviewed[1].skills[0].skillDescriptors[0].percentageAcquired)
+
 		Review.findOneAndUpdate({urlId:req.params.reviewId},sentReview).then(function(){
 			Review.findOne({urlId:req.params.reviewId}).then(function(review){
 				console.log('updated')
 				console.log(review)
+				for(r of review.grader.reviewed)
+					console.log(r.skills[0].skillDescriptors[0].percentageAcquired)
 				res.send({success:true,review:review});
 			});	
 		});
