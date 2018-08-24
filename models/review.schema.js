@@ -1,4 +1,5 @@
 const mongoose=require('mongoose'),
+		Activity = require('../models/activity.schema'),
     Schema = mongoose.Schema;
 
 const reviewSchema = new Schema({
@@ -13,10 +14,15 @@ const reviewSchema = new Schema({
 		role : 'String',
 		group : 'String',
 		reviewed : [{
+			reviewedId : {
+				type : Schema.Types.ObjectId,
+				ref : 'Activity.participants.id'
+			},
 			name : 'String',
 			role : 'String',
 			graded : Boolean,
 			group : 'String',
+			session : Number,
 			skills : [{
 				rubricId : {
 					type : Schema.Types.ObjectId
@@ -36,6 +42,7 @@ const reviewSchema = new Schema({
 		}]
 	},
 	activityUrlId : 'String',
+	sessionCount : Number,
 	urlId : 'String'
   },{
 	timestamps:true,

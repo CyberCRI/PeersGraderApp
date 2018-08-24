@@ -15,6 +15,7 @@ export default {
                     role : '',
                     graded : false,
                     group : '',
+                    session : 0,
                     skills : [{
                         name : '',
                         totalPossiblePoints : 0,
@@ -29,7 +30,8 @@ export default {
             },
             activityUrlId : '',
             urlId : '',
-            reviewed : ''
+            reviewed : '',
+            sessionCount : 0
        },
        hasPushedSave : false,
        hasReview : false,
@@ -139,6 +141,7 @@ export default {
                         role : '',
                         graded : false,
                         group : '',
+                        session : 0,
                         skills : [{
                             name : '',
                             totalPossiblePoints : 0,
@@ -153,7 +156,8 @@ export default {
                 },
                 activityUrlId : '',
                 urlId : '',
-                reviewed : ''
+                reviewed : '',
+                sessionCount : 0
            });
        }
     },

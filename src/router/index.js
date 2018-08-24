@@ -8,6 +8,7 @@ import Planning from '@/components/ActivityPlanning'
 import ActivityRubric from '@/components/ActivityRubric'
 import Review from '@/components/Review'
 import Landing from '@/components/Landing'
+import Dashboard from '@/components/Dashboard'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
       path:'/activity/:id/review',
       name:'review',
       component: Review
+    },
+    {
+      path:'/activity/:id/admin',
+      name:'dashboard',
+      component: Dashboard
     },
     {
       path:'/activity/:id/review/:reviewId',

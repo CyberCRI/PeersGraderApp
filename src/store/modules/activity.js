@@ -258,7 +258,8 @@ export default {
                     context.state.activity.participants[indexParticipant].reviewed.push({
                         email : presenter.email,
                         group : presenter.group,
-                        role : presenter.role
+                        role : presenter.role,
+                        session : indexShift+1
                     });
                 }
             }
@@ -275,7 +276,8 @@ export default {
                         context.state.activity.participants[indexParticipant].reviewed.push({
                             email : presenter.email,
                             group : presenter.group,
-                            role : presenter.role
+                            role : presenter.role,
+                            session : indexShift+1
                         });
                     }
                 }

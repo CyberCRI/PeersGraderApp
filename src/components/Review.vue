@@ -67,19 +67,22 @@
 
 							
 						
-				<div class="column is-3">
+				<div class="column is-2">
 					<div class="field">
 					  <div class="control">
 					    <button :disabled="indexReviewed<1" @click="showReview(indexReviewed-1)" class="button is-light">Previous</button>
 					  </div>
 					</div>
 				</div>
-				<div class="column is-offset-1 is-4">
-								<a @click="postReview" class="button level-item is-success" >
-									<span>Save</span>
-								</a>
-							</div>
-				<div class="column is-offset-1 is-3">
+				<div class="column is-7">
+					<h3 class="title has-text-centered has-text-white">Step {{grader.reviewed[indexReviewed].session}} of {{review.sessionCount}}</h3>
+				</div>
+				<div class="column is-2">
+					<a @click="postReview" class="button level-item is-success" >
+						<span>Save</span>
+					</a>
+				</div>
+				<div class="column is-1">
 					<div class="field">
 					  <div class="control">
 					    <button :disabled="isThereNextReviewed" @click="showReview(indexReviewed+1)" class="button is-light is-right">Next</button>
@@ -87,8 +90,8 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="isReviewStarted">
-				<div v-for="(peer,h) in grader.reviewed" :key="h">
+			<div v-if="isReviewStarted && grader.email && grader.group != grader.reviewed[indexReviewed].group">
+				<div v-for="(peer,h) in review.grader.reviewed" :key="h">
 					<!-- <div  v-if="h==indexReviewed" v-for="(skill,i) in peer.skills" :key="i" class="container is-fluid">
 						<div  class="columns">
 							<div class="column">
@@ -120,7 +123,7 @@
 						</div>
 					</div> -->
 					<div  v-if="h==indexReviewed" v-for="(skill,i) in peer.skills" :key="i" >
-						<div class="panel">
+						<div class="panel skill">
 							<div class="panel-heading">
 								<div class="card-toggle" @click="accordion">
 									{{skill.name}}
@@ -136,15 +139,15 @@
 							    			</div>
 							    			<div class="column is-3 is-flexin">
 							    				<div class="slider">
-							    					<vue-slider
+							    					<vue-slider 
+							    					formatter="{value} %"
 												    ref="slider"
-												    v-model="descriptor.percentageAcquired"
-												    v-bind="options"
-												  ></vue-slider>
+												    v-model="descriptor.percentageAcquired">
+												    </vue-slider>
 												</div>
-												<div class="elt">
+												<!-- <div class="elt">
 												  <div>{{descriptor.percentageAcquired || 0}}</div>
-												</div>
+												</div> -->
 							    			</div>
 							    		</div>
 										   <!--  <div class="header">
@@ -170,6 +173,13 @@
 			</div>
 				</div>
 			</div>
+			<div v-else>
+				<div class="columns">
+					<div class="column is-12">
+						<h3 class="title has-text-centered has-text-white is-uppercase">You're presenting B*tch</h3>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -186,8 +196,8 @@
 			return {
 				emailParticipant : '',
 				indexReviewed : 0,
-				grader : {},
-        options: {
+				grader : {}
+       /* options: {
 	        eventType: 'auto',
 	        width: 'auto',
 	        height: 6,
@@ -219,7 +229,7 @@
 	        tooltipStyle: null,
 	        labelStyle: null,
 	        labelActiveStyle: null
-	      }
+	      }*/
 			};	
 		},
 		components : {
@@ -229,7 +239,8 @@
 		computed : {
 			...mapState('activity',{
 				activity : 'activity',
-				isRubricEmpty : 'isRubricEmpty'
+				isRubricEmpty : 'isRubricEmpty',
+				shifts : 'shifts'
 			}),
 			...mapState('review',{
 				review : 'review',
@@ -238,7 +249,7 @@
 			}),
 			isThereNextReviewed(){
 				if(this.review.grader.reviewed)
-					return this.indexReviewed >= this.review.grader.reviewed.filter(x=>x.group!=this.review.grader.group).length-1;
+					return this.indexReviewed >= this.review.grader.reviewed.length-1;
 				else return false;
 			}
 		},
@@ -267,7 +278,7 @@
 				console.log(looking)
 				return participants.find(c=>c.token == looking || c.email == looking);
 			},
-			saveReviewsBeforeHand(activity,token){
+			async saveReviewsBeforeHand(activity,token){
 				console.log('activity')
 				console.log(activity.participants)
 				console.log(this.emailParticipant)
@@ -277,13 +288,16 @@
 						console.log(activity,token)
 						console.log('grader here')
 						console.log(grader)
-				this.getPlanning().then(()=>{
-					for(var reviewee of grader.reviewed){
-						vm.grader = grader;
-						vm.setHasPushedSave(true);
-						vm.setShowNotificationSave(false);
-						vm.postReview();
-					}
+				return this.getPlanning().then(()=>{
+					vm.review.sessionCount = vm.shifts.length;
+					
+					//grader.reviewed = Array.from(grader.reviewed.filter(x=>x.group != grader.group));
+					vm.grader = grader;
+					vm.setHasPushedSave(false);
+					vm.setShowNotificationSave(false);
+					vm.setReview(vm.getNewReview(activity,grader))
+					vm.postReview();
+					
 				});
 			},
 			async startReview(activity,token){
@@ -303,12 +317,14 @@
 					}).then(()=>{
 						console.log('????????')
 						if(!this.hasReview){
-							this.saveReviewsBeforeHand(this.activity,this.emailParticipant);
-							//this.getPlanning().then(()=>{
+							this.saveReviewsBeforeHand(this.activity,this.emailParticipant).then(()=>{
 								this.emailParticipant = grader.email;
-								this.setReview(this.getNewReview(activity,grader));
+								//this.setReview(this.getNewReview(activity,grader));
 								this.grader = grader;
 								this.setIsReviewStarted(true);
+							});
+							//this.getPlanning().then(()=>{
+								
 						//});
 						} else {
 							this.grader = this.review.grader;
@@ -334,14 +350,15 @@
 			getNewReview(activity,grader){
 				var skills = this.getEmptySkillTable(activity.rubrics);
 
-				grader.reviewed = Array.from(grader.reviewed.filter(x=>x.group != grader.group));
+				//grader.reviewed = Array.from(grader.reviewed.filter(x=>x.group != grader.group));
 
 				for(var peer of grader.reviewed)
 					peer.skills = Array.from(skills);
 
 				return {
 					grader : grader,
-					activityUrlId : activity.urlId
+					activityUrlId : activity.urlId,
+					sessionCount : this.review.sessionCount
 				};
 			},
 			getEmptySkillTable(rubrics){
@@ -360,7 +377,8 @@
 							content : rubrics[i].descriptors[j].content,
 							descriptorId : rubrics[i].descriptors[j]._id,
 							possiblePoints : rubrics[i].descriptors[j].points,
-							acquired : false
+							acquired : false,
+							percentageAcquired : 0
 						}
 					}
 				}
@@ -368,23 +386,26 @@
 				return skills;
 			},
 			postReview(){
-				this.setHasPushedSave(true);
-				if(!this.review.urlId)
+				
+				/*if(!this.review.urlId)
 					this.setReview({
 						grader : this.grader,
 						activityUrlId : this.review.activityUrlId,
 					}).then(()=>{
 						this.grader = this.review.grader;
 					});
-				else{
+				else{*/
+					this.setHasPushedSave(true);
+					this.setShowNotificationSave(false);
 				 	this.review.grader = this.grader;
 				 	this.setReview(this.review);
-				}
+				//}
 			}
 		},
 		beforeRouteEnter(to,from,next){
 			console.log('beforeRouteEnter')
 			next(async vm=>{
+				vm.resetReview();
 				await vm.lookForActivity(to.params.id);
 
 				if(to.params.reviewId){
@@ -400,7 +421,6 @@
 					});
 					
 				} else {
-					vm.resetReview();
 					vm.indexReviewed = 0;
 					vm.grader = {};
 					vm.emailParticipant = '';
@@ -413,6 +433,7 @@
 		},
 		async beforeRouteUpdate(to,from,next){
 			console.log('beforeRouteUpdate')
+			this.resetReview();
 			if(to.params.reviewId){
 
 				await this.lookForActivity(to.params.id)
@@ -429,7 +450,7 @@
 				
 			}
 			else {
-				this.lookForActivity(to.params.id);
+				await this.lookForActivity(to.params.id);
 				this.resetReview();
 				this.indexReviewed = 0;
 				this.grader = {};
@@ -460,7 +481,7 @@
 	.subskill{
 		margin-top: 10px;
 	}
-	.subskill+.subskill{
+	.subskill+.subskill,.skill+.skill{
 		margin-top: 40px;
 	}
 

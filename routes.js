@@ -1,7 +1,8 @@
 const express = require('express'),
 	router = express.Router(),
 	activityController = require('./controllers/activity.controller'),
-	reviewController = require('./controllers/review.controller');
+	reviewController = require('./controllers/review.controller'),
+	dashboardController = require('./controllers/dashboard.controller');
 
 module.exports = router;
 
@@ -26,3 +27,6 @@ router.get('/api/activity/:id/review/grader/:graderEmail',reviewController.getRe
 router.put('/api/activity/:id/review/:reviewId',reviewController.updateReview);
 
 router.post('/api/activity/:id/review',reviewController.saveReview);
+
+//Dashboard 
+router.get('/api/activity/:id/admin',dashboardController.getSummaryRows);
