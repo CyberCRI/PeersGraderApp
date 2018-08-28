@@ -256,6 +256,7 @@ export default {
                     let indexParticipant = context.state.activity.participants.findIndex(e=>e.email==participant.email),
                     presenter = shifts[indexShift].pools[indexPool].presenter;
                     context.state.activity.participants[indexParticipant].reviewed.push({
+                        reviewedId : presenter._id,
                         email : presenter.email,
                         group : presenter.group,
                         role : presenter.role,
@@ -274,6 +275,7 @@ export default {
                             presenter = shifts[indexShift].pools[indexPool].presenter;
                     
                         context.state.activity.participants[indexParticipant].reviewed.push({
+                            reviewedId : presenter._id,
                             email : presenter.email,
                             group : presenter.group,
                             role : presenter.role,

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-	namespace : true,
+	namespaced : true,
 	state : {
 		summaryRows : []
 	},
@@ -11,8 +11,12 @@ export default {
 		},
 		getSummaryRows(context,specifier){
 
-			return axios.get('/api/activity/'+specifier.activityUrlId+'/admin').then((response)=>{
-        if(response.data.success){
+			return axios.get('/api/activity/'+specifier.activityUrlId+'/admin',{params : {profs:specifier.coefs.profs,peers:specifier.coefs.peers,observers:specifier.coefs.observers}}).then((response)=>{
+        if(response.data.rows){
+        		console.log('here')
+        	console.log(response.data.rows);
+
+        	context.commit('setSummaryRows',response.data.rows);
             /*console.log('auth activity')
             if(specifier.pwd == response.data.activity.teacherPwd){
                 context.commit('setActivity',response.data.activity);

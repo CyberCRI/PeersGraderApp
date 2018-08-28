@@ -8,15 +8,15 @@ const reviewSchema = new Schema({
 	},
 	grader : {
 		participantId : {
-			type: Schema.Types.ObjectId
+			type: Schema.Types.ObjectId,
+			ref : 'Activity.participants.id'
 		},
 		email : 'String',
 		role : 'String',
 		group : 'String',
 		reviewed : [{
 			reviewedId : {
-				type : Schema.Types.ObjectId,
-				ref : 'Activity.participants.id'
+				type : Schema.Types.ObjectId
 			},
 			name : 'String',
 			role : 'String',

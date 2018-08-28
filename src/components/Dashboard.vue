@@ -25,7 +25,7 @@
 				<vue-good-table
 					class="table"
 				  :columns="columns"
-				  :rows="rows">
+				  :rows="summaryRows">
 				</vue-good-table>
 			</div>
 		</div>
@@ -33,7 +33,8 @@
 </template>
 
 <script>
-	import ActivityHeader from '@/components/ActivityHeader'
+	import ActivityHeader from '@/components/ActivityHeader';
+	import {mapState,mapActions} from 'vuex'
 	import { VueGoodTable } from 'vue-good-table';
 
 	export default {
@@ -73,10 +74,17 @@
 											field : 'finalGrade',
 											filterable : true
 										}
-									]
+									],
+								rows : []
 			};
 		},
 		computed : {
+			...mapState('activity',{
+				activity:'activity'
+			}),
+			...mapState('dashboard',{
+				summaryRows : 'summaryRows'
+			}),
 			computedProfCoef (){
 				return Number(this.profCoef);
 			}, 
@@ -91,7 +99,39 @@
 			}
 		},
 		methods : {
-			
+			...mapActions('dashboard',{
+				getSummaryRows: 'getSummaryRows',
+				setSummaryRows : 'setSummaryRows'
+			}),
+			updateSummaryRows(){
+				for(var i= 0;i<this.summaryRows.length;i++){
+					this.summaryRows[i].finalGrade = (this.summaryRows[i].teachersGrade * this.profCoef + this.summaryRows[i].peersGrade* this.peerCoef + this.summaryRows[i].observersGrade *this.observerCoef)/100; 
+				}
+			}
+		},
+		watch : {
+			profCoef : function(o,n){
+				this.updateSummaryRows();
+			},
+			peerCoef : function(o,n){
+				this.updateSummaryRows();
+			},
+			observerCoef : function(o,n){
+				this.updateSummaryRows();
+			}
+		},
+		beforeRouteEnter(to,from,next){
+			console.log('here beforeRouteEnter')
+			next(vm=>{
+				vm.getSummaryRows({
+					activityUrlId : to.params.id,
+					coefs : {
+						profs : vm.profCoef,
+						peers : vm.peerCoef,
+						observers : vm.observerCoef
+					}
+				})
+			});
 		}
 	};
 </script>
