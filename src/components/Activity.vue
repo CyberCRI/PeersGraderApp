@@ -6,15 +6,15 @@
 					<read-activity></read-activity>
 				</div>
 				<div v-else>
+
+<!-- ---------------------------------------------------------------------- -->
 					<div v-show="showStep === 1 " class="">
 						<div class="level">
-							<div class="level-item">
-								<h2>Step 1 of 4</h2>
-							</div>
-						</div>
-						<div class="level">
-							<div class="level-item">
-								<h1>What is the activity ?</h1>
+							<div class="level-item has-text-centered">
+								<div>
+									<p class="heading is-capitalize has-text-white">Step 1 of 4</p>
+									<h2 class="title is-italic has-text-white">What is your activity about ?</h2>
+								</div>
 							</div>
 						</div>
 						<div class="form">
@@ -66,31 +66,33 @@
 							</div>
 						</div>
 					</div>
+
+<!-- ---------------------------------------------------------------------- -->
 					<div v-show="showStep === 2" class="">
 						<div class="level">
-							<div class="level-item">
-								<h2>Step 2 of 4</h2>
-							</div>
-						</div>
-						<div class="level">
-							<div class="level-item">
-								<h1>Who is involve ?</h1>
+							<div class="level-item has-text-centered">
+								<div>
+									<p class="heading is-capitalize has-text-white">Step 2 of 4</p>
+									<h2 class="title is-italic has-text-white">Who is involve ?</h2>
+								</div>
 							</div>
 						</div>
 						<participants-acitivity></participants-acitivity>
 					</div>
+
+<!-- ---------------------------------------------------------------------- -->
 					<div v-show="showStep ===3">
 						<rubric-activity></rubric-activity>
 					</div>
+
+<!-- ---------------------------------------------------------------------- -->
 					<div v-show="showStep === 4 ">
 						<div class="level">
-							<div class="level-item">
-								<h2>Step 4 of 4</h2>
-							</div>
-						</div>
-						<div class="level">
-							<div class="level-item">
-								<h1>Who are you ?</h1>
+							<div class="level-item has-text-centered">
+								<div>
+									<p class="heading is-capitalize has-text-white">Step 4 of 4</p>
+									<h2 class="title is-italic has-text-white">Who are you ?</h2>
+								</div>
 							</div>
 						</div>
 						<div class="nameonit">
@@ -141,34 +143,43 @@
 							</div> -->
 						</div>
 					</div>
-					<div class="modal" :class="{'is-active' :showModal}">
+					<!-- MODAL -->
+					<div class="modal is-active" :claass="{'is-active' :showModal}">
 					  <div class="modal-background"></div>
 					  <div class="modal-content">
-					    <p>Activity : {{modalInfo.activityPath}}</p>
-					    <p>Password : {{modalInfo.activityPassword}}</p>
-					    <button @click="redirect" class="button">Alright</button>
+					    <div class="message is-danger">
+					      <div class="message-header">
+					        Important informations <button class="delete" @click="redirect" aria-label="close" ></button>
+					      </div>
+					      <div class="message-body has-text-black">
+					        <p><span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity address : {{modalInfo.activityPath}}</p>
+					        <p><span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password : {{modalInfo.activityPassword}}</p>
+					  <br>
+					        <div @click="redirect" class="buttons is-centered"><span class="button is-danger">I took note</span></div>
+					      </div>
+					    </div>
+					    <!--  <button @click="redirect" class="modal-close is-large" aria-label="close"></button> -->
 					  </div>
-					  <button @click="redirect" class="modal-close is-large" aria-label="close"></button>
 					</div>
 				</div>
 		</div>
 		<div id="stepper-container">
 			<div id="stepper">
 				<p class="level-right">
-						<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
-							<
-						</a>
-						<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
-						:class="{'is-primary' : checkFirstStepCompletion}" :disabled="((!checkRubric() && showStep==3) || !checkFirstStepCompletion)">
-							Continue
-						</a>
-						<a  v-if="showStep==4" @click="postActivity" class="button is-primary level-item" >
-							<span v-if="activity.urlId!=undefined">Update</span>
-							<span v-else>Save</span>
-						</a>
-						<a v-if="activity.urlId!=undefined && isAdmin" @click="delActivity" class="button is-danger level-item">
-							Delete
-						</a>
+					<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
+						<
+					</a>
+					<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
+					:class="{'is-primary' : checkFirstStepCompletion}" :disabled="((!checkRubric() && showStep==3) || !checkFirstStepCompletion)">
+						Continue
+					</a>
+					<a  v-if="showStep==4" @click="postActivity" class="button is-primary level-item" >
+						<span v-if="activity.urlId!=undefined">Update</span>
+						<span v-else>Save</span>
+					</a>
+					<a v-if="activity.urlId!=undefined && isAdmin" @click="delActivity" class="button is-danger level-item">
+						Delete
+					</a>
 				</p>
 			</div>
 		</div>
@@ -248,13 +259,13 @@
 			checkRubric(){
          return this.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
       },
-			goStep(i){					
-				
+			goStep(i){
+
 				if(this.showStep == 3){
 					if(this.checkRubric())
 						this.showStep+=i;
 					else {
-					
+
 						this.$notify({
 							group:'notifications',
 							type:'error',
@@ -263,9 +274,9 @@
 					}
 				} else if(this.showStep>=0 && this.showStep!=3 && this.checkFirstStepCompletion && this.errors.length==0){
 					this.showStep+=i;
-				} 
-				
-				
+				}
+
+
 			},
 			redirect(){
 				this.$router.push({path:'/activity/'+this.activity.urlId});
@@ -327,10 +338,6 @@
 </script>
 
 <style scoped>
-  h1,h2{
-  	color : white;
-  }
-
   .step3{
   	width: 100%;
   }
@@ -357,7 +364,7 @@
    	background-image:  linear-gradient(to bottom,
      rgba(55,152,212,0.93) 0%,
      rgba(55,152,212,0.93) 100%),
-     url("../../static/images/school-bg.png");
+     url("../../static/images/bg-school.png");
 	}
 
 	.form{
