@@ -197,6 +197,9 @@ export default {
                 });
         },
         getPlanning(context){
+
+        },
+        getPlanning(context){
             var vm = this._vm,
                 nbrStudents = 0,
                 groups = getGroups(),

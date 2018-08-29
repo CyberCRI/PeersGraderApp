@@ -105,8 +105,10 @@
 			}),
 			updateSummaryRows(){
 				for(var i= 0;i<this.summaryRows.length;i++){
-					this.summaryRows[i].finalGrade = (this.summaryRows[i].teachersGrade * this.profCoef + this.summaryRows[i].peersGrade* this.peerCoef + this.summaryRows[i].observersGrade *this.observerCoef)/100; 
+					this.summaryRows[i].finalGrade = Number.parseFloat((this.summaryRows[i].teachersGrade * this.profCoef + this.summaryRows[i].peersGrade* this.peerCoef + this.summaryRows[i].observersGrade *this.observerCoef)/100).toFixed(2); 
 				}
+
+
 			}
 		},
 		watch : {
