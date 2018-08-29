@@ -23,21 +23,21 @@
 			<div v-for="key in Object.keys(participant)" class="">
 		    <div v-if="isNotDynamicKey(key)" class="field">
 		       <input class="input" type="text" v-model="participant[key]" :placeholder="key">
-		    </div>		
+		    </div>
 			</div>
 			<div
 			<div class="">
 		    <div class="">
-		       <input class="input" type="email" v-model="participant.email" placeholder="email">
-		    </div>		
+		       <input class="input" type="email" v-model="participant.email" placeholder="email" style="text-transform:lowercase">
+		    </div>
 			</div>
-		
+
 			<div class="">
 		    <div class="">
 		       <input class="input" type="text" v-model="participant.group" placeholder="group">
-		    </div>		
+		    </div>
 			</div>
-	
+
 			<div class="">
 		    <div class="">
 		    	<div class="select">
@@ -48,7 +48,7 @@
 						  <option>Teacher</option>
 						</select>
 					</div>
-		    </div>		
+		    </div>
 			</div>
 			<div class="add-participant" v-on:click="addParticipant(i)">
 				<i class="far fa-plus-square"></i>
@@ -56,7 +56,7 @@
 			<div class="remove-participant" @click="removeParticipant(i)">
 				<i class="far fa-minus-square"></i>
 			</div>
-		</div>				
+		</div>
 	</div>
 </template>
 
@@ -91,7 +91,7 @@
 			},
 			getRowError(i){
 				var error = this.errors[this.errors.findIndex(e=>e.line-1 == i || e.lineDuplicate-1 == i)];
-				
+
 				if(error) return error.message;
 				else return '';
 			},
@@ -102,7 +102,7 @@
 
 					for(var k=0,lineDuplicate=-1;k<emailsEntered.length;k++){
 						lineDuplicate = emailsEntered.indexOf(emailsEntered[k],k+1);
-						
+
 						if(lineDuplicate > - 1){
 							this.errors.push({
 								line:k+1,
@@ -163,11 +163,11 @@
       		for(var i=0;i<dataCSV.length;i++){
 
       			var people = dataCSV[i];
-      			
+
       			if(this.activity.participants.length-1 < i) this.addParticipant(i)
-      			
+
       			for(var j=0; j<people.length;j++){
-      				
+
       				if(participantKeys[j]=='role'){
       					var value = people[j];
       					people[j] = value.charAt(0).toUpperCase() + value.slice(1);

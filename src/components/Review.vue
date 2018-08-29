@@ -4,14 +4,14 @@
 		<div v-if="isRubricEmpty">
 			<p>No rubric for this actvity. Cannot review</p>
 		</div>
-		<div v-else class="main-container">
+		<div v-else class="main-container bg-school">
 
 			<div class="columns">
 				<div class="column">
 					<div v-if="!$route.params.reviewId" class="field">
 					  <label class="label">Email</label>
 					  <div class="control has-icons-left">
-					    <input class="input" type="email" placeholder="Email input" v-model="emailParticipant">
+					    <input class="input" type="email" placeholder="Email input" v-model="emailParticipant" style="text-transform: lowercase">
 					    <span class="icon is-small is-left">
 					      <i class="fas fa-envelope"></i>
 					    </span>
@@ -65,8 +65,8 @@
 			</div>
 			<div v-if="isReviewStarted && grader.email" class="columns">
 
-							
-						
+
+
 				<div class="column is-2">
 					<div class="field">
 					  <div class="control">
@@ -130,7 +130,7 @@
 								</div>
 							</div>
 							<div class="panel-block hero is-light">
-							  
+
 							    <div v-for="(descriptor,j) in skill.skillDescriptors" :key="j" class="subskill">
 
 							    		<div class="columns">
@@ -139,7 +139,7 @@
 							    			</div>
 							    			<div class="column is-3 is-flexin">
 							    				<div class="slider">
-							    					<vue-slider 
+							    					<vue-slider
 							    					formatter="{value} %"
 												    ref="slider"
 												    v-model="descriptor.percentageAcquired">
@@ -151,25 +151,25 @@
 							    			</div>
 							    		</div>
 										   <!--  <div class="header">
-										  
+
 															<label :for="'check'+h+i+j" class="checkbox is-pulled-right">
 															  <input type="checkbox" :id="'check'+h+i+j"
 															  v-model="grader.reviewed[h].skills[i].skillDescriptors[j].acquired">
 															 	{{grader.reviewed[h].skills[i].skillDescriptors[j].acquired ?
 															 	 'acquired' : 'not acquired'}}
 															</label>
-														
+
 										    </div> -->
-										   
-										    
-										        
-										    		
-										    
+
+
+
+
+
 							  	</div>
-							  
+
 							</div>
 						</div>
-				
+
 			</div>
 				</div>
 			</div>
@@ -230,7 +230,7 @@
 	        labelStyle: null,
 	        labelActiveStyle: null
 	      }*/
-			};	
+			};
 		},
 		components : {
 			'activity-header': ActivityHeader,
@@ -258,7 +258,7 @@
 				e.currentTarget.parentElement.parentElement.childNodes[2].classList.toggle('is-hidden');
 			},
 			...mapActions('activity',{
-				lookForActivity: 'lookForActivity',				
+				lookForActivity: 'lookForActivity',
 				setActivity : 'setActivity',
 				getPlanning : 'getPlanning'
 			}),
@@ -290,14 +290,14 @@
 						console.log(grader)
 				return this.getPlanning().then(()=>{
 					vm.review.sessionCount = vm.shifts.length;
-					
+
 					//grader.reviewed = Array.from(grader.reviewed.filter(x=>x.group != grader.group));
 					vm.grader = grader;
 					vm.setHasPushedSave(false);
 					vm.setShowNotificationSave(false);
 					vm.setReview(vm.getNewReview(activity,grader))
 					vm.postReview();
-					
+
 				});
 			},
 			async startReview(activity,token){
@@ -325,16 +325,16 @@
 								this.setIsReviewStarted(true);
 							});
 							//this.getPlanning().then(()=>{
-								
+
 						//});
 						} else {
 							this.grader = this.review.grader;
-							this.setIsReviewStarted(true);	
+							this.setIsReviewStarted(true);
 						}
-						
+
 					});
 
-					
+
 
 				} else {
 					this.$notify({
@@ -345,7 +345,7 @@
 				}
 			},
 			showReview(indexReviewed){
-				this.indexReviewed = indexReviewed > this.review.grader.reviewed.length ? 
+				this.indexReviewed = indexReviewed > this.review.grader.reviewed.length ?
 																this.review.grader.reviewed.length : indexReviewed;
 			},
 			getNewReview(activity,grader){
@@ -387,7 +387,7 @@
 				return skills;
 			},
 			postReview(){
-				
+
 				/*if(!this.review.urlId)
 					this.setReview({
 						grader : this.grader,
@@ -406,7 +406,7 @@
 		beforeRouteEnter(to,from,next){
 			console.log('beforeRouteEnter')
 			next(async vm=>{
-				
+
 				await vm.lookForActivity(to.params.id);
 
 				if(to.params.reviewId){
@@ -421,7 +421,7 @@
 						vm.emailParticipant = vm.review.grader.email;
 						vm.setIsReviewStarted(true);
 					});
-					
+
 				} else {
 					vm.resetReview();
 					vm.indexReviewed = 0;
@@ -450,7 +450,7 @@
 					this.emailParticipant = this.review.grader.email;
 					this.setIsReviewStarted(true);
 				});
-				
+
 			}
 			else {
 				await this.lookForActivity(to.params.id);
@@ -520,11 +520,15 @@
 
 	.main-container{
 		padding: 1em;
-		border: solid black 1px;
-		background-size: 200px 200px;
-   	background-image:  linear-gradient(to bottom,
-     rgba(55,152,212,0.93) 0%,
-     rgba(55,152,212,0.93) 100%),
-     url("../../static/images/school-bg.png");
 	}
+	.bg-wood { background: url("../../static/images/bg-wood.png") repeat; }
+	.bg-school{
+		color: white!important;
+		background-size: 200px 200px;
+		background-image:  linear-gradient(to bottom,
+		 rgba(55,152,212,0.93) 0%,
+		 rgba(55,152,212,0.93) 100%),
+		 url("../../static/images/bg-school.png");
+	}
+
 </style>
