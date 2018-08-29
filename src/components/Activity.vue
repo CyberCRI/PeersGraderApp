@@ -144,7 +144,7 @@
 						</div>
 					</div>
 					<!-- MODAL -->
-					<div class="modal is-active" :claass="{'is-active' :showModal}">
+					<div class="modal" :class="{'is-active' :showModal}">
 					  <div class="modal-background"></div>
 					  <div class="modal-content">
 					    <div class="message is-danger">
@@ -154,13 +154,14 @@
 					      <div class="message-body has-text-black">
 					        <p><span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity address : {{modalInfo.activityPath}}</p>
 					        <p><span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password : {{modalInfo.activityPassword}}</p>
-					  <br>
-					        <div @click="redirect" class="buttons is-centered"><span class="button is-danger">I took note</span></div>
+								  <br>
+					        <div @click="redirect" class="buttons is-centered"><span class="button is-danger">I took note!</span></div>
 					      </div>
 					    </div>
 					    <!--  <button @click="redirect" class="modal-close is-large" aria-label="close"></button> -->
 					  </div>
 					</div>
+
 				</div>
 		</div>
 		<div id="stepper-container">
