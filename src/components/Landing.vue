@@ -1,7 +1,7 @@
 <template>
-	<div class="landing-content">
+	<div class="landing-content bg-wood">
 
-	<section id="create" class="section school-bg">
+	<section id="create" class="section bg-school">
 		<div class="container">
 			<div class="is-italic has-text-centered">
 				<h2 class="title has-text-white">Students turn professors with PeersGrader, for free</h2>
@@ -52,7 +52,7 @@
 	</div>
 	</section>
 
-	<section id="dashboard" class="section school-bg has-text-centered">
+	<section id="dashboard" class="section bg-school has-text-centered">
 		<div class="container">
 			<div class="columns">
 				<div class="column">
@@ -156,14 +156,15 @@
 </script>
 
 <style scoped>
-	.school-bg{
+	.bg-wood { background: url("../../static/images/bg-wood.png") repeat; }
+	.bg-school{
 		color: white!important;
 		border: solid #EEE 1px;
 		background-size: 200px 200px;
    	background-image:  linear-gradient(to bottom,
      rgba(55,152,212,0.93) 0%,
      rgba(55,152,212,0.93) 100%),
-     url("../../static/images/school-bg.png");
+     url("../../static/images/bg-school.png");
 	}
 
 	.landing-content{
@@ -185,4 +186,3 @@
   }
 }
 </style>
-
