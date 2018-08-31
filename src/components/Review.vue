@@ -522,8 +522,8 @@
 		padding: 1em;
 	}
 	.bg-wood { background: url("../../static/images/bg-wood.png") repeat; }
+	
 	.bg-school{
-		color: white!important;
 		background-size: 200px 200px;
 		background-image:  linear-gradient(to bottom,
 		 rgba(55,152,212,0.93) 0%,

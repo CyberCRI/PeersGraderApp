@@ -50,11 +50,11 @@ function seriousnessAssessment(basis,distance){
 	console.log('distance')
 	console.log(basis,distance);
 
-  if      (Math.abs(Number(distance))<= 1) return basis;
-  else if (Math.abs(Number(distance))<= 2) return basis*70/100;
-  else if (Math.abs(Number(distance))<= 4) return basis*50/100;
-  else if (Math.abs(Number(distance))<= 6) return basis*30/100;
-  else return 0;
+  if      (Math.abs(Number(distance))<= 1) return Number.parseFloat(basis).toFixed(2);
+  else if (Math.abs(Number(distance))<= 2) return Number.parseFloat(basis*70/100).toFixed(2);
+  else if (Math.abs(Number(distance))<= 4) return Number.parseFloat(basis*50/100).toFixed(2);
+  else if (Math.abs(Number(distance))<= 6) return Number.parseFloat(basis*30/100).toFixed(2);
+  else return 0.0;
  
 }
 

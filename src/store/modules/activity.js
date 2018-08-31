@@ -196,10 +196,65 @@ export default {
                     }
                 });
         },
-        getPlanning(context){
+        getPlanningV2(context){
+            var vm = this._vm,
+                groups = {
+                    observators : [],
+                    students : {},
+                    teachers : []                    
+                },
+                nbStudents,
+                nbTeachers,
+                nbObservators,
+                maxStudents = 0;
+            
+            function getGroups(groups){
+                return context.state.activity.participants.reduce((a,c)=>{
+                    
+                    if(c.role=='Student'){
+                        a.students[c.group] = a.students[c.group] || [];
+                        a.students[c.group].push(c);
+                    } else if(c.role=='Teacher') a.teachers.push(c);
+                    else if(c.role=='Observator') a.observators.push(c);
+
+                    return a;
+                },groups);
+            }
+
+
+            groups = getGroups(groups);
+            nbStudents = groups.students.length;
+            nbTeachers = groups.teachers.length;
+            nbObservators = groups.observators.length;
+
+
+            //prendre le nombre d'étudiants le plus grand par groupe pour déterminer shifts
+            var studentGroupsLabel = Object.keys(groups.students);                
+
+            for(var label of studentGroupsLabel){
+                if(groups.students[label].length>maxStudents){
+                    maxStudents = groups.students[label].length;
+                }
+            }
+
+            var shifts = new Array(maxStudents);
+
+            for(var i=0;shifts.length>i;i++){
+                shifts['students'] = new Array(studentGroupsLabel.length),
+                shifts['teachers'] = new Array(groups.teachers.length),
+                shifts['observators'] = new Array(groups.observators.length);
+            }
+
+            /*console.log('shifts')
+            console.log(shifts);
+            console.log('groups');
+            console.log(groups);
+            console.log('l(sto)',nbStudents,nbTeachers,nbObservators);*/
+
 
         },
         getPlanning(context){
+
             var vm = this._vm,
                 nbrStudents = 0,
                 groups = getGroups(),

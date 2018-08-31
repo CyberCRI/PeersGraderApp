@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button @click="getPlanning()">get planning</button>
+		<button @click="getPlanningV2()">get planning</button>
 		<table class="table">
 			<thead>
 				<tr><td colspan="2"></td><td :colspan="shifts.length" style="text-align:center;">Shifts</td></tr>
@@ -35,7 +35,7 @@
 		methods:{
 			...mapActions('activity',{
       	lookForActivity:'lookForActivity',
-      	getPlanning : 'getPlanning'
+      	getPlanningV2 : 'getPlanningV2'
     	})
 			/*resetPlanning(){
 				this.shifts = [];
