@@ -203,19 +203,29 @@ export default {
                     students : {},
                     teachers : []                    
                 },
-                nbStudents,
+                studentPositionShift = -1,
+                nbStudents = 0,
                 nbTeachers,
                 nbObservators,
                 maxStudents = 0;
-            
+
             function getGroups(groups){
                 return context.state.activity.participants.reduce((a,c)=>{
                     
                     if(c.role=='Student'){
                         a.students[c.group] = a.students[c.group] || [];
+                        c.presentationCount = 0;
+                        c.gradingCount = 0;
+                        c.positionShift = ++studentPositionShift;
                         a.students[c.group].push(c);
-                    } else if(c.role=='Teacher') a.teachers.push(c);
-                    else if(c.role=='Observator') a.observators.push(c);
+                    } else if(c.role=='Teacher'){
+                        c.gradingCount = 0;
+                        a.teachers.push(c);
+                    }
+                    else if(c.role=='Observator'){
+                        c.gradingCount = 0;
+                        a.observators.push(c);
+                    }
 
                     return a;
                 },groups);
@@ -223,35 +233,184 @@ export default {
 
 
             groups = getGroups(groups);
-            nbStudents = groups.students.length;
-            nbTeachers = groups.teachers.length;
-            nbObservators = groups.observators.length;
 
+            let groupsLabel = Object.keys(groups.students);
 
-            //prendre le nombre d'étudiants le plus grand par groupe pour déterminer shifts
-            var studentGroupsLabel = Object.keys(groups.students);                
-
-            for(var label of studentGroupsLabel){
-                if(groups.students[label].length>maxStudents){
-                    maxStudents = groups.students[label].length;
+            for(let group of groupsLabel){
+                nbStudents += groups.students[group].length;
+                 if(groups.students[group].length>maxStudents){
+                    maxStudents = groups.students[group].length;
                 }
             }
 
-            var shifts = new Array(maxStudents);
+            nbTeachers = groups.teachers.length;
+            nbObservators = groups.observators.length;
 
-            for(var i=0;shifts.length>i;i++){
-                shifts['students'] = new Array(studentGroupsLabel.length),
-                shifts['teachers'] = new Array(groups.teachers.length),
-                shifts['observators'] = new Array(groups.observators.length);
+            var shifts = {},
+                nbShifts = maxStudents*context.state.activity.sessions;
+
+            console.log('nbS',nbShifts)
+            shifts['students'] = new Array(nbStudents),
+            shifts['teachers'] = new Array(groups.teachers.length),
+            shifts['observators'] = new Array(groups.observators.length);
+
+            let shiftsLabel = Object.keys(shifts);
+
+            for(let entity of shiftsLabel){
+                for(var i=0;i<shifts[entity].length;i++){
+                    shifts[entity][i] = new Array(nbShifts);
+
+                    for(var j=0;j<nbShifts;j++){
+                        shifts[entity][i][j] = {presenter:{},graders:[]};
+                    }
+                }
             }
-
-            /*console.log('shifts')
-            console.log(shifts);
+            console.log('shifts')
+            console.log(shifts)
             console.log('groups');
             console.log(groups);
-            console.log('l(sto)',nbStudents,nbTeachers,nbObservators);*/
+            console.log('l(stom)',nbStudents,nbTeachers,nbObservators,maxStudents);
+
+            function isShiftOkToPresent(student,indexShift){
+
+                var ok = true;
+                console.log('isShiftOkToPresent')
+                
+               
+
+                for(var i=0;i<shifts.students.length;i++){
+                    
+                   
+                        console.log(shifts.students.length)
+                        console.log('so',i,indexShift)
+                        console.log('shift',shifts.students[i][indexShift])
+                        if(shifts.students[i][indexShift].presenter.email !== student.email && shifts.students[i][indexShift].presenter.group == student.group && i != student.positionShift){
+                            console.log('here mofo')
+                            ok = false;
+                            break;
+                            
+                        } 
+                    
+                }
+
+                console.log(ok)
+                return ok;
+                    
+            }
+
+            for(var i=0;i<groupsLabel.length;i++){
+                while(groups.students[groupsLabel[i]].every(student=>
+                    student.presentationCount < context.state.activity.sessions)){
+
+                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
+                        if(groupStudents[j].presentationCount < context.state.activity.sessions){
+                            let indexShift = 0,i=0;
+                                
+                               
+                            
+                                while(groupStudents[j].presentationCount < context.state.activity.sessions){
+                                    
+                                    if(groupStudents[j].presentationCount < context.state.activity.sessions){
+                                        if(isShiftOkToPresent(groupStudents[j],indexShift)){
+                                            shifts.students[groupStudents[j].positionShift][indexShift].presenter = {
+                                                group : groupStudents[j].group,
+                                                email : groupStudents[j].email
+                                            }
+
+                                            groupStudents[j].presentationCount = groupStudents[j].presentationCount+1;
+                                            
+
+                                            var participant = context.state.activity.participants.find(x=>x.email == groupStudents[j].email);
+
+                                            if(participant){
+                                                if(participant.reviewed.length == 0){
+                                                    participant.reviewed = new Array(nbShifts);
+                                                }
+                                                
+                                                participant.reviewed[indexShift] = {
+                                                    reviewedId : groupStudents[j]._id,
+                                                    email : groupStudents[j].email,
+                                                    group : groupStudents[j].group,
+                                                    role : groupStudents[j].role,
+                                                    session : indexShift+1
+                                                };
+                                            }
+                                        } 
+
+                                        indexShift++;
+                                    }
 
 
+                                    
+                                }
+
+                                console.log('countEnd',groupStudents[j].presentationCount)
+                                console.log('i',i)
+                        }
+                    }
+                }
+            }
+
+            var nbGrading = nbShifts - context.state.activity.sessions;
+
+   /*         for(var i=0;i<groupsLabel.length;i++){
+                while(groups.students[groupsLabel[i]].every(student=>
+                    student.gradingCount < nbGrading)){
+
+                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
+                        let indexShift = 0;
+
+                        while(groupStudents[j].gradingCount < nbGrading){
+                            for(var row = 0;row < shifts.students.length;row++){
+                                for(var col = 0;col < shifts.students[row].length; col++){
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }*/
+
+            var constraints = {
+                isPresentersGroupDifferent : { 
+                    check : function (student,shiftCell){
+                        var ok = true;
+
+                        return ok;
+                    },
+                    priority : 25
+                },
+                isThereABuddy : {
+                    check : function(){
+
+                    },
+                    priority : 10
+                },
+                isThereABuddy : {
+                    check : function (){
+
+                    },
+                    priority : 5
+                },
+                isPresenterGroupReviewedAlready : {
+                    check : function(){
+
+                    },
+                    priority : 20
+                },
+                isPresenterPersonReviewedAlready : {
+                    check : function (){
+
+                    },
+                    priority : 15
+                }
+            }
+
+            console.log('shifts')
+            console.log(shifts);
+            console.log(groups)
+            console.log('participants')
+            console.log(context.state.activity.participants)
         },
         getPlanning(context){
 
