@@ -249,7 +249,6 @@ export default {
             var shifts = {},
                 nbShifts = maxStudents*context.state.activity.sessions;
 
-            console.log('nbS',nbShifts)
             shifts['students'] = new Array(nbStudents),
             shifts['teachers'] = new Array(groups.teachers.length),
             shifts['observators'] = new Array(groups.observators.length);
@@ -258,34 +257,22 @@ export default {
 
             for(let entity of shiftsLabel){
                 for(var i=0;i<shifts[entity].length;i++){
-                    shifts[entity][i] = new Array(nbShifts);
+                    shifts[entity][i] = new Array(nbShifts).fill().map(x=>({presenter:{},graders:[]}));
 
                     for(var j=0;j<nbShifts;j++){
                         shifts[entity][i][j] = {presenter:{},graders:[]};
                     }
                 }
             }
-            console.log('shifts')
-            console.log(shifts)
-            console.log('groups');
-            console.log(groups);
-            console.log('l(stom)',nbStudents,nbTeachers,nbObservators,maxStudents);
 
             function isShiftOkToPresent(student,indexShift){
 
                 var ok = true;
-                console.log('isShiftOkToPresent')
-                
-               
 
                 for(var i=0;i<shifts.students.length;i++){
                     
-                   
-                        console.log(shifts.students.length)
-                        console.log('so',i,indexShift)
-                        console.log('shift',shifts.students[i][indexShift])
                         if(shifts.students[i][indexShift].presenter.email !== student.email && shifts.students[i][indexShift].presenter.group == student.group && i != student.positionShift){
-                            console.log('here mofo')
+                            
                             ok = false;
                             break;
                             
@@ -293,7 +280,6 @@ export default {
                     
                 }
 
-                console.log(ok)
                 return ok;
                     
             }
@@ -320,7 +306,7 @@ export default {
                                             groupStudents[j].presentationCount = groupStudents[j].presentationCount+1;
                                             
 
-                                            var participant = context.state.activity.participants.find(x=>x.email == groupStudents[j].email);
+                                            var participant = getParticipant(groupStudents[j].email);
 
                                             if(participant){
                                                 if(participant.reviewed.length == 0){
@@ -339,72 +325,209 @@ export default {
 
                                         indexShift++;
                                     }
-
-
                                     
                                 }
-
-                                console.log('countEnd',groupStudents[j].presentationCount)
-                                console.log('i',i)
                         }
                     }
                 }
             }
 
-            var nbGrading = nbShifts - context.state.activity.sessions;
+            var nbGrading = nbShifts - context.state.activity.sessions,
+                constraints = {
+                    isPresentersGroupDifferent : { 
+                        check : function (specifier){
+                           console.log('isPresentersGroupDifferent')
+                            let student = specifier.student,
+                                shiftCell = specifier.shiftCell,
+                                positionShift = specifier.positionShift,
+                                shiftStudents = specifier.shiftStudents,
+                                ok = false;
 
-   /*         for(var i=0;i<groupsLabel.length;i++){
+                            if(shiftStudents[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].group== student.group || student.positionShift == positionShift  || student.group == shiftCell.presenter.group )
+                                ok = false;
+                            else ok = true;
+
+                            console.log('okGroupDifferent',ok);
+                            return ok;
+                        },
+                        priority : 25
+                    },
+                    isThereABuddy : {
+                        check : function(specifier){
+                            console.log('isThereABuddy',specifier.student.email,specifier.indexShift,specifier.student.positionShift);
+                            let student = specifier.student,
+                                shiftStudents = specifier.shiftStudents,
+                                ok = !shiftStudents[student.positionShift].reduce((a,g)=>a.concat(g.email),[]).includes(student.email);
+
+                            console.log('okIsThere A buddy',ok);
+
+                            return ok;
+                        },
+                        priority : 5
+                    },
+                    isThereABuddyPreviousSession : {
+                        check : function (specifier){
+                            console.log('isThereABuddyPreviousSession')
+                            let student = specifier.student,
+                                indexShift = specifier.indexShift,
+                                shiftStudents = specifier.shiftStudents,
+                                ok;
+
+                            if(indexShift>0){
+                                console.log('length graders')
+                                console.log(shiftStudents[student.positionShift][indexShift-1].graders)
+                                ok = !shiftStudents[student.positionShift][indexShift-1].graders.reduce((a,g)=>a.concat(g.email),[]).includes(student.email);
+                            }
+                            else ok = true;
+
+                            console.log('isThereABuddyPreviousSessionOK',ok);
+                            return ok;
+                        },
+                        priority : 10
+                    },
+                    isPresenterGroupReviewedAlready : {
+                        check : function(specifier){
+                            console.log('isPresenterGroupReviewedAlready')
+                            let student = specifier.student,
+                                shiftCell = specifier.shiftCell,
+                                positionShift = specifier.positionShift,
+                                ok = student.reviewed.reduce((a,g)=>a.concat(g.group),[]).includes(shifts.students[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].group);
+
+                            console.log('isPresenterGroupdAlreadyOk',ok)
+                            return !ok;
+                        },
+                        priority : 15
+                    },
+                    isPresenterPersonReviewedAlready : {
+                        check : function (specifier){
+
+                            console.log('isPresenterPersonReviewedAlready')
+                            let student = specifier.student,
+                                shiftCell = specifier.shiftCell,
+                                positionShift = specifier.positionShift,
+                                ok = student.reviewed.reduce((a,g)=>a.concat(g.email),[]).includes(shifts.students[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].email);
+
+                            console.log('OK',ok)
+                            return !ok;
+                        },
+                        priority : 20
+                    }
+                };
+                console.log('nbGrading',nbGrading)
+            function getConstraints(priority){
+                var priorityConstraints = [],
+                    priorityOrderedConstraints = Object.keys(constraints).sort((a,b)=>constraints[b].priority-constraints[a].priority);
+
+                for(var i=0,prioritySum = 0;prioritySum < priority && i<priorityOrderedConstraints.length;i++){
+                    priorityConstraints.push(priorityOrderedConstraints[i]);
+                    prioritySum += constraints[priorityConstraints[i]].priority;
+                }
+
+                return priorityConstraints;
+
+            }
+
+            /*for(var row=0;row<shifts.students.length;row++){
+                for(var col=0;col<shifts.students[row].length;col++){
+
+                }
+            }*/
+
+            for(var i=0;i<groupsLabel.length;i++){
+                console.log('i',i)
                 while(groups.students[groupsLabel[i]].every(student=>
                     student.gradingCount < nbGrading)){
 
                     for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
-                        let indexShift = 0;
+                        let loopTrough = 0,
+                            priority = 75;
 
+                        gradingCountMeet:
                         while(groupStudents[j].gradingCount < nbGrading){
+                            let constraintsToApply = getConstraints(priority);
+
                             for(var row = 0;row < shifts.students.length;row++){
                                 for(var col = 0;col < shifts.students[row].length; col++){
+                                    console.log('shifts info');
+                                    console.log('cell');
+                                    console.log(shifts.students[row][col]);
+                                    console.log('student');
+                                    console.log(groupStudents[j]);
+                                    console.log('priority',priority);
+                                    console.log('loopTrough',loopTrough);
 
+                                    if(constraintsToApply.reduce((a,c)=>a && constraints[c].check({
+                                        student : groupStudents[j],
+                                        shiftCell :shifts.students[row][col],
+                                        shiftStudents : shifts.students,
+                                        indexShift : col,
+                                        positionShift : row
+                                    }),true)){
+                                        
+                                        
+                                        shifts.students[row][col].graders.push({
+                                            reviewedId : groupStudents[j]._id,
+                                            email : groupStudents[j].email,
+                                            group : groupStudents[j].group,
+                                            role : groupStudents[j].role,
+                                            session : col+1
+                                        });
+
+
+
+                                        var participant = getParticipant(groupStudents[j].email);
+
+                                            if(participant){
+                                                if(participant.reviewed.length == 0){
+                                                    participant.reviewed = new Array(nbShifts);
+                                                }
+                                                console.log('row col',row,col,shifts.students[row][col])
+                                                console.log('presenterParticipantmail')
+                                                console.log(shifts.students[row][col].presenter.email)
+                                                var presenterParticipant = getParticipant(shifts.students[row].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].email);
+                                                console.log('presenter')
+                                                console.log(presenterParticipant)
+                                                if(participant.reviewed[col] == undefined){
+                                                    participant.reviewed[col] = {
+                                                        reviewedId : presenterParticipant._id,
+                                                        email : presenterParticipant.email,
+                                                        group : presenterParticipant.group,
+                                                        role : presenterParticipant.role,
+                                                        session : col+1
+                                                    };
+
+                                                    groupStudents[j].gradingCount += 1;
+                                                }
+                                                else continue;
+                                            }
+
+                                        console.log(groupStudents[j].email)
+                                        console.log('here i am bruh, should i try something ? ');
+                                    }
+
+                                    if(groupStudents[j].gradingCount >= nbGrading){
+                                        break gradingCountMeet;
+                                    }
                                 }
+                            }
+
+                            
+                            loopTrough++;
+
+                            if(loopTrough >= nbShifts*10){
+                                priority -= 5;
+                                loopTrough = 0;
                             }
                         }
                     }
                 }
-            }*/
-
-            var constraints = {
-                isPresentersGroupDifferent : { 
-                    check : function (student,shiftCell){
-                        var ok = true;
-
-                        return ok;
-                    },
-                    priority : 25
-                },
-                isThereABuddy : {
-                    check : function(){
-
-                    },
-                    priority : 10
-                },
-                isThereABuddy : {
-                    check : function (){
-
-                    },
-                    priority : 5
-                },
-                isPresenterGroupReviewedAlready : {
-                    check : function(){
-
-                    },
-                    priority : 20
-                },
-                isPresenterPersonReviewedAlready : {
-                    check : function (){
-
-                    },
-                    priority : 15
-                }
             }
+
+            function getParticipant(email){
+                return context.state.activity.participants.find(x=>x.email == email);
+            }
+
+            
 
             console.log('shifts')
             console.log(shifts);
