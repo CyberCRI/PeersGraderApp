@@ -44,6 +44,26 @@ export default {
             menu.classList.toggle('is-active');
         });
     }
+
+    window.onresize = (function() {
+        /*var documentHeight = jQuery(document).height();
+        var element = jQuery('#you-element');
+        var distanceFromBottom = documentHeight - (element.position().top + element.outerHeight(true));*/
+        alert('rn')
+        var documentHeight = 0,
+            element = null,
+            distanceFromBottom = 0;
+
+        if(distanceFromBottom <= 0){
+           var footer = document.querySelector('#stepper-container');
+
+           footer.style.position = "fixed";
+           footer.style.bottom = "0";
+           footer.style.height = "60px";
+           footer.style.background = "white";
+           footer.style.width = "75%;"
+        }
+    });
   }
 }
 </script>

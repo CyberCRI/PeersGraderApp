@@ -2,7 +2,7 @@
 	<div class="pg-container">
 		<activity-header/>
 		<div id="mainContainer" class="main-container column">
-				<div v-if="withId && !isAdmin">
+				<div v-if="withId &!modifyWill">
 					<read-activity></read-activity>
 				</div>
 				<div v-else>
@@ -144,14 +144,14 @@
 						</div>
 					</div>
 					<!-- MODAL -->
-					<div class="modal" :class="{'is-active' :showModal}">
-					  <div class="modal-background"></div>
-					  <div class="modal-content">
+					<div v-show="showStep === 5">
+					  <!-- class="modal" :class="{'is-active' :showModal}" -->
+					  <div class="">
 					    <div class="message is-danger">
 					      <div class="message-header">
 					        Important informations <button class="delete" @click="redirect" aria-label="close" ></button>
 					      </div>
-					      <div class="message-body has-text-black">
+					      <div class="message-body has-text-black has-text-centeredz">
 					        <p>You completed the creation and configuration of a peers grading activity successfully !</p>
 					        <br>
 					        <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
@@ -182,10 +182,10 @@
 		<div id="stepper-container">
 			<div id="stepper">
 				<p class="level-right">
-					<a  v-if="showStep>1 && (!withId || isAdmin)" @click="goStep(-1)" class="button level-item">
+					<a  v-if="showStep>1 && (!withId || (isAdmin && modifyWill)) && showStep < 5" @click="goStep(-1)" class="button level-item">
 						<
 					</a>
-					<a  v-if="showStep<4 && (!withId || isAdmin)" @click="goStep(1)" class="button level-item"
+					<a  v-if="showStep<4 && (!withId || (isAdmin && modifyWill))" @click="goStep(1)" class="button level-item"
 					:class="{'is-primary' : checkFirstStepCompletion}" :disabled="((!checkRubric() && showStep==3) || !checkFirstStepCompletion)">
 						Continue
 					</a>
@@ -193,7 +193,7 @@
 						<span v-if="activity.urlId!=undefined">Update</span>
 						<span v-else>Save</span>
 					</a>
-					<a v-if="activity.urlId!=undefined && isAdmin" @click="delActivity" class="button is-danger level-item">
+					<a v-if="(withId || (isAdmin && modifyWill))" @click="delActivity" class="button is-danger level-item">
 						Delete
 					</a>
 				</p>
@@ -234,7 +234,8 @@
 			...mapState('activity',{
       	activity : 'activity',
       	withId   : 'withId',
- 				isAdmin  : 'isAdmin'
+ 				isAdmin  : 'isAdmin',
+ 				modifyWill : 'modifyWill'
     	}),
     	...mapState('participants',{
       	errors : 'errors'
@@ -267,7 +268,8 @@
 						if(response.teacherPwd){
 							vm.modalInfo.activityPath = `https://peergraders.herokuapp.com/#/activity/${this.activity.urlId}`,
 							vm.modalInfo.activityPassword = response.teacherPwd;
-							vm.showModal = true;
+							vm.showStep = 5;
+							this.goStep(5)
 						}
 					});
 				}
@@ -375,6 +377,7 @@
   }
 
 	.main-container{
+		padding-bottom: 60px;
 		border: solid black 1px;
 		background-size: 200px 200px;
    	background-image:  linear-gradient(to bottom,
@@ -398,6 +401,7 @@
 	}
 
 	#stepper-container{
+		z-index: 999999999;
 		padding: 0.30em;
 		/*border-right: solid 1px transparent;
 		border-left:solid 1px transparent;

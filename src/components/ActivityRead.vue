@@ -26,7 +26,7 @@
 			  </a>
 			
 		</div>
-		<div v-if="showInvite" id="manage-message">
+		<div v-if="showInvite && isAdmin" id="manage-message">
 			<article class="message is-danger">
 			  <div class="message-header">
 			    <p>Invite participants via</p>
@@ -76,7 +76,7 @@
 			  </div>
 			</article>
 		</div>
-		<div  v-if="manage" class="pg-activity">
+		<div  v-if="showPwd && !isAdmin" class="pg-activity">
 			<pwd-activity></pwd-activity>
 		</div>
 		<div class="pg-activity">
@@ -113,8 +113,8 @@
 		name : 'ActivityRead',
 		data(){
 			return {
-				showInvite : true,
-				manage : false,
+				showInvite : false,
+				showPwd : false,
 				tab : 'link', 
 				invitationRecipients : [],
 				invitationMessage: ''
@@ -126,7 +126,8 @@
 		},
 		computed:{
 			...mapState('activity',{
-				activity:'activity'
+				activity:'activity',
+				isAdmin: 'isAdmin'
 			}),
 			activityLink(){
 				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId;
@@ -175,6 +176,9 @@
 					});
 			},
 			openInvite(){
+				this.setModifyWill(false);
+				this.showPwd = true;
+
 				this.showInvite = true;
 			},
 			copyToClipboard(str){
@@ -228,12 +232,14 @@
 				return `${participant.group} ${participant.role} ${participant.name} ${info.join(' ')}`
 			},
 			manageActivity(){
-				this.manage = true;
+				this.showPwd = true;
+				this.setModifyWill(true);
 			},
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',
 				sendInvitations: 'sendInvitations',
-				isRubricEmpty : 'isRubricEmpty'
+				isRubricEmpty : 'isRubricEmpty',
+				setModifyWill : 'setModifyWill'
 			})
 		},
 		update(){

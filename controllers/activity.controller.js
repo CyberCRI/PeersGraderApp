@@ -181,7 +181,30 @@ module.exports = {
 		  from: process.env.MAIL_USER, // sender address
 		  to: sentActivity.teacherEmail, // list of receivers
 		  subject: 'Review Activity ' + sentActivity.title, // Subject line
-		  html: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
+		  html : `<div class="">
+					    <div class="message is-danger">
+					      <div class="message-header">
+					        Important informations <button class="delete" aria-label="close" ></button>
+					      </div>
+					      <div class="message-body has-text-black has-text-centeredz">
+					        <p>You completed the creation and configuration of a peers grading activity successfully !</p>
+					        <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
+					        <p>
+					          <span class="icon"><i class="fas fa-pencil-alt fa-1x" aria-hidden="true"></i></span> You can edit participants, options and the rubric using this link & password.<br>
+					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : ${process.env.APP_URL}/#/activity/${sentActivity.urlId}/<br>
+					          <span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password is : ${sentActivity.teacherPwd}<br>
+					        </p>
+					        <h3 class="title is-6">How do I <i>really</i> start the activity with my participants ?</h3>
+					        <p><span class="icon"><i class="fas fa-clock fa-1x" aria-hidden="true"></i></span> On D-day, gather your participants, identify additional or missing ones.<br>
+					          <span class="icon"><i class="fa fa-users user-check fa-1x" aria-hidden="true"></i></span> Update the participants' list, thanks to the link & master password above.<br>
+					          <span class="icon"><i class="fas fa-truck-monster fa-1x" aria-hidden="true"></i></span> Everyone's optimal planning is generated.<br>
+					          <span class="icon"><i class="fas fa-paper-plane fa-1x" aria-hidden="true"></i></span> Send email invitations to all your participants instantly.<br>
+					          <span class="icon"><i class="fas fa-hand-peace fa-1x" aria-hidden="true"></i></span> Enjoy ! Participants open the link, follow their missions, submiting evaluations as needed.
+					        </p>
+					      </div>
+					    </div>
+					  </div>`,
+		  htmlOld: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
 		  			 <p>password : ${sentActivity.teacherPwd}</p>`
 		};
 

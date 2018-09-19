@@ -32,6 +32,7 @@ export default {
         },
         isAdmin : false,
         withId : false,
+        modifyWill : false,
         shifts : []
     },
     actions : {
@@ -54,6 +55,9 @@ export default {
                     participant:response.data.participant,
                     who:response.data.who}));
             });
+        },
+        setModifyWill(context,modifyWill){
+            context.commit('setModifyWill',modifyWill);
         },
         setShifts(context,shifts){
             context.commit('setShifts',shifts);
@@ -79,6 +83,8 @@ export default {
                         console.log(response.data.activity)
                         context.commit('setIsAdmin',true);
                         return new Promise((resolve,reject)=>resolve({granted:true}));
+                    } else {
+                        return new Promise((resolve,reject)=>resolve({granted:false}));
                     }
                 }
             }).catch(error=>{
@@ -170,6 +176,8 @@ export default {
                         console.log('there there')
                         context.state.activity = response.data.activity;
                         context.state.userSession = true;
+
+                        return new Promise((resolve,reject)=>resolve({teacherPwd:response.data.activity.teacherPwd}));
                     }
 
 
@@ -332,8 +340,22 @@ export default {
                 }
             }
 
-            var nbGrading = nbShifts - context.state.activity.sessions,
+            var nbGrading = Math.round((context.state.activity.participants.length - groupsLabel.length)/groupsLabel.length),
                 constraints = {
+                    isMaxSize : {
+                        check : function(specifier){
+                            let student = specifier.student,
+                                ok = false;
+
+                            if(student.gradingCount < nbGrading){
+                                ok = true;
+                            } 
+
+                            return ok;
+
+                        },
+                        priority : 30
+                    },
                     isPresentersGroupDifferent : { 
                         check : function (specifier){
                            console.log('isPresentersGroupDifferent')
@@ -440,7 +462,7 @@ export default {
 
                     for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
                         let loopTrough = 0,
-                            priority = 75;
+                            priority = 105;
 
                         gradingCountMeet:
                         while(groupStudents[j].gradingCount < nbGrading){
@@ -534,6 +556,7 @@ export default {
             console.log(groups)
             console.log('participants')
             console.log(context.state.activity.participants)
+            console.log('nbGrading',nbGrading)
         },
         getPlanning(context){
 
@@ -818,6 +841,9 @@ export default {
     getters : {
     },
     mutations : {
+        setModifyWill(state,modifyWill){
+            state.modifyWill = modifyWill;
+        },
         setShifts(state,shifts){
             state.shifts = shifts;
         },
