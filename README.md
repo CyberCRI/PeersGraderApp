@@ -46,7 +46,12 @@ chromium-browser "http://localhost:5000/#/"   # Opens landing page
 [2]: https://i.stack.imgur.com/dIToA.png -->
 
 ### Database models
+All the mongo models can be found here : https://github.com/hugolpz/PeersGraderApp/tree/master/models
+The client models that supports mongo's data and some more for state management purpose can be found here : 
 
+https://github.com/hugolpz/PeersGraderApp/tree/master/src/store/modules
+
+Take a look at the state object.
 ### Contacts
 Report issues or ideas [on github](./issues).
 
