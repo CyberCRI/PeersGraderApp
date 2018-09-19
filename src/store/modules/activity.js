@@ -177,7 +177,7 @@ export default {
                         context.state.activity = response.data.activity;
                         context.state.userSession = true;
 
-                        return new Promise((resolve,reject)=>resolve({teacherPwd:response.data.activity.teacherPwd}));
+                        //return new Promise((resolve,reject)=>resolve({}));
                     }
 
 

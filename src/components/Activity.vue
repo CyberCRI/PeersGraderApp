@@ -2,7 +2,7 @@
 	<div class="pg-container">
 		<activity-header/>
 		<div id="mainContainer" class="main-container column">
-				<div v-if="withId &!modifyWill">
+				<div v-if="withId && !modifyWill">
 					<read-activity></read-activity>
 				</div>
 				<div v-else>
@@ -193,7 +193,7 @@
 						<span v-if="activity.urlId!=undefined">Update</span>
 						<span v-else>Save</span>
 					</a>
-					<a v-if="(withId || (isAdmin && modifyWill))" @click="delActivity" class="button is-danger level-item">
+					<a v-if="(withId && isAdmin && modifyWill)" @click="delActivity" class="button is-danger level-item">
 						Delete
 					</a>
 				</p>
@@ -268,8 +268,8 @@
 						if(response.teacherPwd){
 							vm.modalInfo.activityPath = `https://peergraders.herokuapp.com/#/activity/${this.activity.urlId}`,
 							vm.modalInfo.activityPassword = response.teacherPwd;
-							vm.showStep = 5;
-							this.goStep(5)
+							vm.showStep = 4;
+							this.goStep(1);
 						}
 					});
 				}

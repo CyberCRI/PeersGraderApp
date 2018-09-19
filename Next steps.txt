@@ -1,0 +1,11 @@
+Next steps 
+
+- Faire passer par un module d'authenfication toutes les actions qui requièrent un niveau admin;
+- Moduler Activity.vue
+- Bind le textarea de participants avec les inputs du formulaire : formulaire = textarea
+- 
+-
+- 
+- 
+- 
+- 
