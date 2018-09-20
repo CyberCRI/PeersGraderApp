@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const Activity = require('../models/activity.schema'),
 	nanoid = require('nanoid'),
-	nodemailer = require('nodemailer');
+	nodemailer = require('nodemailer'),
+	inLineCss = require('nodemailer-juice');
 
 function getPassword(){
   var lists = [
@@ -181,33 +182,31 @@ module.exports = {
 		  from: process.env.MAIL_USER, // sender address
 		  to: sentActivity.teacherEmail, // list of receivers
 		  subject: 'Review Activity ' + sentActivity.title, // Subject line
-		  html : `<div class="">
-					    <div class="message is-danger">
-					      <div class="message-header">
-					        Important informations <button class="delete" aria-label="close" ></button>
-					      </div>
-					      <div class="message-body has-text-black has-text-centeredz">
-					        <p>You completed the creation and configuration of a peers grading activity successfully !</p>
-					        <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
-					        <p>
-					          <span class="icon"><i class="fas fa-pencil-alt fa-1x" aria-hidden="true"></i></span> You can edit participants, options and the rubric using this link & password.<br>
-					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : ${process.env.APP_URL}/#/activity/${sentActivity.urlId}/<br>
-					          <span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password is : ${sentActivity.teacherPwd}<br>
-					        </p>
-					        <h3 class="title is-6">How do I <i>really</i> start the activity with my participants ?</h3>
-					        <p><span class="icon"><i class="fas fa-clock fa-1x" aria-hidden="true"></i></span> On D-day, gather your participants, identify additional or missing ones.<br>
-					          <span class="icon"><i class="fa fa-users user-check fa-1x" aria-hidden="true"></i></span> Update the participants' list, thanks to the link & master password above.<br>
-					          <span class="icon"><i class="fas fa-truck-monster fa-1x" aria-hidden="true"></i></span> Everyone's optimal planning is generated.<br>
-					          <span class="icon"><i class="fas fa-paper-plane fa-1x" aria-hidden="true"></i></span> Send email invitations to all your participants instantly.<br>
-					          <span class="icon"><i class="fas fa-hand-peace fa-1x" aria-hidden="true"></i></span> Enjoy ! Participants open the link, follow their missions, submiting evaluations as needed.
-					        </p>
-					      </div>
-					    </div>
-					  </div>`,
+		  html : `<div class="message-body has-text-black" style="color:#111;font-family: BlinkMacSystemFont,-apple-system,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Helvetica,Arial,sans-serif;line-height: 1.5;padding: 20px 24px 20px 24px">
+							  <p style="margin:0px">
+							    Congratulation ! :D You successfully completed the configuration and creation of a peers grading activity !
+							  </p> <br>
+							  <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
+							  <p style="margin:0px">
+							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-pencil-alt-solid.png">&nbsp;You can edit participants, options and the rubric using this link &amp; password.<br>
+							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-link-solid.png">&nbsp;Activity's link is : https://peergraders.herokuapp.com/#/activity/dtYwV<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-key-solid.png" style="height:12px;width:12px">&nbsp;Master password is : ChubbyPanamanianMermaids<br>
+							  </p><br>
+							  <h3 class="title is-6">How do I <i>really</i> start the activity with my participants ?</h3>
+							  <p style="margin:0px">
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-clock-solid.png" style="height:12px;width:12px">&nbsp;On D-day, gather your participants, identify additional or missing ones.<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451385-users-solid.png" style="height:12px;width:12px">&nbsp;Update the participants' list, thanks to the link &amp; master password above.<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451409-truck-monster-solid.png" style="height:12px;width:12px">&nbsp;Everyone's optimal planning is generated.<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-paper-plane-solid.png" style="height:12px;width:12px">&nbsp;Send email invitations to all your participants instantly.<br>
+							   <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-hand-peace-solid.png" style="height:12px;width:12px">&nbsp;Enjoy ! Participants open the link, follow their missions, submiting evaluations as needed.
+							  </p>
+							  <br>
+							</div>`,
 		  htmlOld: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
 		  			 <p>password : ${sentActivity.teacherPwd}</p>`
 		};
 
+		transporter.use('compile', inLineCss());
 		await transporter.sendMail(mailTeacher, function (err, info) {
 			console.log('sendingMail')
 		  if(err)

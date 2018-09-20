@@ -49,7 +49,6 @@ export default {
         /*var documentHeight = jQuery(document).height();
         var element = jQuery('#you-element');
         var distanceFromBottom = documentHeight - (element.position().top + element.outerHeight(true));*/
-        alert('rn')
         var documentHeight = 0,
             element = null,
             distanceFromBottom = 0;

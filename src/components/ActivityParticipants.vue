@@ -114,6 +114,7 @@
 					}
 			},
 			convertCSV(){
+				var commaMode = true;
 				this.setErrors([]);
 
 				if(document.getElementById('textarea').value=='')return;
@@ -124,11 +125,18 @@
 
 				//reset errors tabs
 
-      	for(var i=0,dataSize=0,dataFormat=[];i<lines.length;i++){
+      	for(var i=0,dataSize=0,dataFormat=[],splitChar='';i<lines.length;i++){
       		if(i==0){
-      			dataFormat = lines[i].split(',').map(e=>e.trim());
+      			if(lines[i].indexOf('\t') >-1 && lines[i].indexOf(',') == -1)
+      				commaMode = false
+
+      			splitChar = commaMode ? ',' : '\t';
+      			dataFormat = lines[i].split(splitChar).map(e=>e.trim());
       			participantKeys = dataFormat.filter(e=>e!="_id"),
       			dataSize = dataFormat.length;
+
+
+
 
       			for(var j=0;j<dataFormat.length;j++){
       				let dataFormatDuplicate = dataFormat.indexOf(dataFormat[j],j+1);
@@ -147,8 +155,8 @@
       			}
 
       		} else{
-      			if(lines[i].split(',').length == dataSize){
-      				dataCSV.push(lines[i].split(','));
+      			if(lines[i].trim().split(splitChar).length == dataSize){
+      				dataCSV.push(lines[i].split(splitChar));
       			} else{
       				this.errors.push({
       					type : 'error',

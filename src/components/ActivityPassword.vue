@@ -24,9 +24,11 @@
 				errorMessage : ''
 			};
 		},
+		props : ['context'],
 		methods : {
 			...mapActions('activity',{
 	    	getAuthActivity : 'getAuthActivity',
+	    	setModifyWill : 'setModifyWill'
 	    }),
 	    checkPassword(){
     		console.log('passed pwd')
@@ -34,12 +36,17 @@
     		console.log('passed urlId',this.$store.state.activity.activity.urlId)
     		this.getAuthActivity({urlId:this.$store.state.activity.activity.urlId,pwd:this.password}).then(response=>{
     			console.log('here',response)
-    			if(response.granted)
+    			if(response.granted){
 	    			this.$notify({
 	    				 group: 'notifications',
 	             title:'Access granted',
 	             type : 'success'
-	    			})
+	    			});
+
+	    			if(this.context == 'modify')
+	    				this.setModifyWill(true)
+	    			else this.setModifyWill(false);
+	    		}
 	    		else this.$notify({
 	    				 group: 'notifications',
 	             title:'Access not granted',

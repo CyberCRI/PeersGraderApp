@@ -77,7 +77,7 @@
 			</article>
 		</div>
 		<div  v-if="showPwd && !isAdmin" class="pg-activity">
-			<pwd-activity></pwd-activity>
+			<pwd-activity :context="context"></pwd-activity>
 		</div>
 		<div class="pg-activity">
 			<div class="pg-activity-content">
@@ -117,7 +117,8 @@
 				showPwd : false,
 				tab : 'link', 
 				invitationRecipients : [],
-				invitationMessage: ''
+				invitationMessage: '',
+				context : ''
 			};
 		},	
 		components:{
@@ -178,7 +179,7 @@
 			openInvite(){
 				this.setModifyWill(false);
 				this.showPwd = true;
-
+				this.context = 'invite';
 				this.showInvite = true;
 			},
 			copyToClipboard(str){
@@ -233,7 +234,10 @@
 			},
 			manageActivity(){
 				this.showPwd = true;
-				this.setModifyWill(true);
+				this.context = 'modify'
+
+				if(this.isAdmin)
+					this.setModifyWill(true);
 			},
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',

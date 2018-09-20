@@ -24,6 +24,7 @@
     "mongoose": "^5.1.5",
     "nanoid": "^1.0.3",
     "nodemailer": "^4.6.7",
+    "nodemailer-juice": "^1.0.1",
     "vue": "^2.5.2",
     "vue-good-table": "^2.13.0",
     "vue-input-tag": "^1.0.4",
