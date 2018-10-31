@@ -95,7 +95,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="nameonit">
+						<div class="name-on-it">
 							<div class="field is-horizontal">
 								<div class="icon-label is-normal">
 									<label class="label">
@@ -143,7 +143,8 @@
 							</div> -->
 						</div>
 					</div>
-					<!-- MODAL -->
+
+<!-- ---------------------------------------------------------------------- -->
 					<div id="step5" v-show="showStep === 5">
 					  <!-- class="modal" :class="{'is-active' :showModal}" -->
 					  <div class="level">
@@ -366,7 +367,7 @@
 	width: 100%;
 }
 
-.nameonit{
+.name-on-it{
 	width: 70%;
 	background: white;
 	padding: 2em;
