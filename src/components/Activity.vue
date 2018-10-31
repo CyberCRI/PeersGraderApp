@@ -9,7 +9,7 @@
 
 <!-- ---------------------------------------------------------------------- -->
 					<div id="step1" v-show="showStep === 1 " class="">
-						<div class="level">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 1 of 4</p>
@@ -68,8 +68,8 @@
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div id="step2" v-show="showStep === 2" class="">
-						<div class="level">
+					<div id="step2" v-show="showStep === 2">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 2 of 4</p>
@@ -81,13 +81,21 @@
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div id="step3" v-show="showStep ===3">
+					<div id="step3" v-show="showStep === 3">
+						<div class="level step-header">
+							<div class="level-item has-text-centered">
+								<div>
+									<p class="heading is-capitalize has-text-white">Step 3 of 4 : grading grid</p>
+									<h2 class="title is-italic has-text-white">What matters and how much ?</h2>
+								</div>
+							</div>
+						</div>
 						<rubric-activity></rubric-activity>
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
 					<div id="step4" v-show="showStep === 4 ">
-						<div class="level">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 4 of 4</p>
@@ -147,7 +155,7 @@
 <!-- ---------------------------------------------------------------------- -->
 					<div id="step5" v-show="showStep === 5">
 					  <!-- class="modal" :class="{'is-active' :showModal}" -->
-					  <div class="level">
+					  <div class="level step-header">
 						<div class="level-item has-text-centered">
 							<div>
 								<p class="heading is-capitalize has-text-white">Oh, a light memo.<!-- Step "done", aka 5 on 4--></p>
@@ -155,7 +163,7 @@
 							</div>
 						</div>
 					  </div>
-					    <div class="message is-danger">
+					    <div class="message is-danger step5-message">
 					      <div class="message-header">
 					        Important informations <button class="delete" @click="redirect" aria-label="close" ></button>
 					      </div>
