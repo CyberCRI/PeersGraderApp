@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar has-shadow is-fixed-top">
+    <nav class="navbar bg-wood has-shadow is-fixed-top">
         <div class="container">
             <div class="navbar-brand">
                 <div id="peersgrader-brand" class="navbar-item">
@@ -15,11 +15,18 @@
                 </div>
             </div>
 
+            <div id="docs" class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link has-text-info">Docs/Help</a>
+
+              <div class="navbar-dropdown has-text-info">
+                <a class="navbar-item" href="">Overview</a>
+                <router-link to="/help" class="navbar-item">In practice</router-link>
+                <hr class="navbar-divider">
+                <div class="navbar-item">v. 2018.11.03</div>
+              </div>
+            </div>
             <div id="navMenu" class="navbar-menu">
                <div class="navbar-start">
-                  <router-link to="/help" class="navbar-item" >
-                     Help
-                  </router-link>
                   <div class="navbar-item">
                      <div class="control has-icons-left">
                        <div class="select">
@@ -72,10 +79,15 @@
 </script>
 
 <style scoped>
-#peersgrader-brand > * {
-  margin: 0em .5em 0em .5em;
+.bg-wood,
+#docs *  { background: url("../../static/images/bg-wood.png") repeat; }
+
+#peersgrader-brand > *,
+#navMenu,
+#docs {
+  margin: 0em .6em 0em .6em;
 }
-#peersgrader-brand > span {
+#peersgrader-brand {
   color: #64b4c8;
 }
 /*
