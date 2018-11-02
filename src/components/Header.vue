@@ -3,8 +3,9 @@
         <div class="container">
             <div class="navbar-brand">
                 <div id="peersgrader-brand" class="navbar-item">
-                    <img src="../../static/images/cri.png" alt="PeersGrader : a peer review tool">
-                    PeersGrader <a href="http://github.com/mystermiam/PeersGraderJS/issues" class="button is-small is-danger is-rounded">Alpha</a>
+                    <img src="../../static/images/logo-cri-sq-textless.svg" alt="PeersGrader : create peers grading activities for your class.">
+                    <span>PeersGrader</span>
+                    <a href="http://github.com/CyberCRI/PeersGraderApp/issues" class="button is-small is-danger is-rounded">Alpha</a>
                 </div>
 
                 <div class="navbar-burger burger" data-target="navMenu">
@@ -33,13 +34,13 @@
                      </div>
                   </div>
                 </div>
+
                 <div class="navbar-end">
                   <!-- <router-link to="/settings" class="navbar-item" >
                      <button class="button is-hoverable">
                         <span class="icon" id="settings"><i class="fas fa-cogs"></i></span>
                         <span>Settings</span>
                      </button>
-
                   </router-link> -->
                   <router-link to="/activity" class="navbar-item" >
                      <button class="button is-info is-hoverable">
@@ -47,6 +48,7 @@
                      </button>
                   </router-link >
                 </div>
+
             </div>
         </div>
     </nav>
@@ -70,11 +72,14 @@
 </script>
 
 <style scoped>
-   #peersgrader-brand{
-      color: #64b4c8;
-   }
-
-	#settings {
-      color : #6496b9;
-   }
+#peersgrader-brand > * {
+  margin: 0em .5em 0em .5em;
+}
+#peersgrader-brand > span {
+  color: #64b4c8;
+}
+/*
+#settings {
+  color : #6496b9;
+} */
 </style>
