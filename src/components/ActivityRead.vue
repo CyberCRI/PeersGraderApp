@@ -131,7 +131,7 @@
 				isAdmin: 'isAdmin'
 			}),
 			activityLink(){
-				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId;
+				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId+'/review';
 			}
 		},
 		methods : {
