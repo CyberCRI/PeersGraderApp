@@ -4,8 +4,9 @@
         <div class="container">
             <div class="navbar-brand">
                 <span id="peergraders-brand" class="navbar-item">
-                    <img src="../../static/images/cri.png" alt="Peergraders : a peer review tool">
-                    Peergraders
+                    <a href="https://cri-paris.org"><img src="../../static/images/cri.png" alt="Peergraders : a peer review tool"></a>
+                    <a href="./" class="has-text-link">PeersGrader</a>
+
                 </span>
 
                 <div class="navbar-burger burger" data-target="navMenu">

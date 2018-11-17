@@ -1,21 +1,18 @@
 <template>
-	<div>
 		<div v-if="isAdmin || !withId">
 			<!-- <a @click="postActivity" class="button level-item" >
 				<span>Save</span>
 			</a> -->
-			<div class="level">
+			<div class="level max-overall-score">
 				<div class="field">
-				  <label class="label">Maximum score</label>
+				  <label class="label">Maximum overall score</label>
 				  <div class="control">
 				    <input class="input" type="number" min="1" v-model="activity.basis" placeholder="Activity's basis">
 				  </div>
 				</div>
 			</div>
-			<div v-for="(rubric,i) of activity.rubrics" :key="i">
-				<div class="panel">
-					<div class="panel-heading">
-						<div class="">
+			<div class="panel skill" v-for="(rubric,i) of activity.rubrics" :key="i">
+					<div class="panel-heading skill-header">
 							<div class="columns">
 								<div class="column is-7 is-vcentered">
 									<div class="field">
@@ -45,35 +42,34 @@
 									</div>
 								</div>
 							</div>
-						</div>
 					</div>
-					<div class="panel-block hero is-light">
+					<div class="panel-block hero is-light skill-subs">
 					  
-					    <div v-for="(descriptor,j) in rubric.descriptors" :key="j" class="">
+					    <div v-for="(descriptor,j) in rubric.descriptors" :key="j" >
 					    	
 					    	<div class="columns is-multiline descriptor is-vcentered">
 					    		<div class="column is-7">
-					    			<textarea class="textarea" v-model="descriptor.content" placeholder="Descriptor's description"></textarea>
+					    			<textarea class="textarea" v-model="descriptor.content" placeholder="Sub-skill to mastered, defined via a clean description"></textarea>
 					    		</div>
 						    	<div class="column is-4">
 						    		
 								    	<div class="select is-fullwidth">
 									    	<select v-on:change="changeLevel(i,j) "v-model="descriptor.level">
-												  <option disabled value="">Level</option>
+												  <option disabled value="">Difficulty to master it</option>
 												  <option :value="1">Easy</option>
 												  <option :value="2">Medium</option>
 												  <option :value="3">Hard</option>
 												  <option :value="4">Expert</option>
 												</select>
-												
+										
 											</div>
-								    	<p class="help">Level 	</p>
+								    	<p class="help"><br> 	</p>
 						    	<!-- </div>
 						    	<div class="column is-2"> -->
 						    		
 										  
 										    <input v-model="descriptor.points" class="input is-extended" type="number" min="1" placeholder="descriptor's points">
-												<p class="help">points</p>
+												<p class="help">points for it.</p>
 						    	</div>
 						    	<div class="column is-1">
 						    		<div class="add-descriptor has-text-centered" v-on:click="addDescriptor(i,j)">
@@ -87,12 +83,10 @@
 					    </div>
 					  
 					</div>
-				</div>
 				
 			</div>
 		</div>
 		<pwd-activity v-else/>
-	</div>
 </template>
 
 <script>
@@ -168,12 +162,10 @@
 	}
 
 	.descriptor{
-		margin-top: 3em;
+		margin-top: 1em;
 	}
 
 	.panel{
 		margin-top: 2em;
 	}
-
-
 </style>

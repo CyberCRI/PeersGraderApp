@@ -8,8 +8,8 @@
 				<div v-else>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div v-show="showStep === 1 " class="">
-						<div class="level">
+					<div id="step1" v-show="showStep === 1 " class="">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 1 of 4</p>
@@ -68,8 +68,8 @@
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div v-show="showStep === 2" class="">
-						<div class="level">
+					<div id="step2" v-show="showStep === 2">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 2 of 4</p>
@@ -81,13 +81,21 @@
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div v-show="showStep ===3">
+					<div id="step3" v-show="showStep === 3">
+						<div class="level step-header">
+							<div class="level-item has-text-centered">
+								<div>
+									<p class="heading is-capitalize has-text-white">Step 3 of 4 : grading grid</p>
+									<h2 class="title is-italic has-text-white">What matters and how much ?</h2>
+								</div>
+							</div>
+						</div>
 						<rubric-activity></rubric-activity>
 					</div>
 
 <!-- ---------------------------------------------------------------------- -->
-					<div v-show="showStep === 4 ">
-						<div class="level">
+					<div id="step4" v-show="showStep === 4 ">
+						<div class="level step-header">
 							<div class="level-item has-text-centered">
 								<div>
 									<p class="heading is-capitalize has-text-white">Step 4 of 4</p>
@@ -95,7 +103,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="nameonit">
+						<div class="name-on-it">
 							<div class="field is-horizontal">
 								<div class="icon-label is-normal">
 									<label class="label">
@@ -143,11 +151,19 @@
 							</div> -->
 						</div>
 					</div>
-					<!-- MODAL -->
-					<div v-show="showStep === 5">
+
+<!-- ---------------------------------------------------------------------- -->
+					<div id="step5" v-show="showStep === 5">
 					  <!-- class="modal" :class="{'is-active' :showModal}" -->
-					  <div class="">
-					    <div class="message is-danger">
+					  <div class="level step-header">
+						<div class="level-item has-text-centered">
+							<div>
+								<p class="heading is-capitalize has-text-white">Oh, a light memo.<!-- Step "done", aka 5 on 4--></p>
+								<h2 class="title is-italic has-text-white">Done ! </h2>
+							</div>
+						</div>
+					  </div>
+					    <div class="message is-danger step5-message">
 					      <div class="message-header">
 					        Important informations <button class="delete" @click="redirect" aria-label="close" ></button>
 					      </div>
@@ -157,7 +173,7 @@
 					        <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
 					        <p>
 					          <span class="icon"><i class="fas fa-pencil-alt fa-1x" aria-hidden="true"></i></span> You can edit participants, options and the rubric using this link & password.<br>
-					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : {{modalInfo.activityPath}}<br>
+					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : <a href="">{{modalInfo.activityPath}}</a><br>
 					          <span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password is : {{modalInfo.activityPassword}}<br>
 
 					        </p><br>
@@ -174,7 +190,6 @@
 					      </div>
 					    </div>
 					    <!--  <button @click="redirect" class="modal-close is-large" aria-label="close"></button> -->
-					  </div>
 					</div>
 
 				</div>
@@ -356,114 +371,117 @@
 </script>
 
 <style scoped>
-  .step3{
-  	width: 100%;
-  }
+.step3{
+	width: 100%;
+}
 
-  .nameonit{
-  	width: 70%;
-    background: white;
-    padding: 2em;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    margin: 0 auto;
+.name-on-it{
+	width: 70%;
+	background: white;
+	padding: 2em;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	margin: 0 auto;
+}
 
-  }
+.pg-container{
+	height: auto;
+	box-shadow: 0 1.5px 4px rgba(0,0,0,0.24), 0 1.5px 6px rgba(0,0,0,0.12);
+	border-radius: 6px;
+}
 
-  .pg-container{
-    height: auto;
-    box-shadow: 0 1.5px 4px rgba(0,0,0,0.24), 0 1.5px 6px rgba(0,0,0,0.12);
-    border-radius: 6px;
-  }
+.main-container{
+	padding-bottom: 60px;
+	border: none;
+	background-size: 200px 200px;
+background-image:  linear-gradient(to bottom,
+rgba(55,152,212,0.93) 0%,
+rgba(55,152,212,0.93) 100%),
+url("../../static/images/bg-school.png");
+}
 
-	.main-container{
-		padding-bottom: 60px;
-		border: solid black 1px;
-		background-size: 200px 200px;
-   	background-image:  linear-gradient(to bottom,
-     rgba(55,152,212,0.93) 0%,
-     rgba(55,152,212,0.93) 100%),
-     url("../../static/images/bg-school.png");
-	}
+.form{
+	border: solid 1px #dbdbdb;
+	border-radius : 10px;
+	padding: 2em;
+	background: white;
+	width: 80%;
+	margin: 0 auto;
+}
+.message.is-danger { 
+	width: 80%;
+	margin: 0 auto;
+}
 
-	.form{
-		border: solid 1px black;
-		border-radius : 10px;
-		padding: 2em;
-		background: white;
-		width: 80%;
-		margin: 0 auto;
-	}
+.form-content{
+	margin : 0 auto;
+	width: 70%;
+}
 
-	.form-content{
-		margin : 0 auto;
-		width: 70%;
-	}
+#stepper-container{
+	z-index: 999999999;
+	padding: 0.30em;
+	/*border-right: solid 1px transparent;
+	border-left:solid 1px transparent;
+	border-bottom : solid 1px transparent;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;*/
+}
 
-	#stepper-container{
-		z-index: 999999999;
-		padding: 0.30em;
-		/*border-right: solid 1px transparent;
-		border-left:solid 1px transparent;
-		border-bottom : solid 1px transparent;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;*/
-	}
+.icon{
+	color : #5d6e79;
+	width: 32px;
+	height: 32px;
+}
 
-	.icon{
-		color : #5d6e79;
-		width: 32px;
-		height: 32px;
-	}
+.is-horizontal{
+	align-items: center;
+	margin-bottom: 1.5em;
+	margin-top: 1.5em;
+}
 
-	.is-horizontal{
-		align-items: center;
-		margin-bottom: 1.5em;
-		margin-top: 1.5em;
-	}
+.icon-label {
+	margin-right: 2%;
+}
 
-	.icon-label {
-		margin-right: 2%;
-	}
-
-	.row-participant > input{
-		width: 30px;
-	}
-	/*#stepper{
-		position:fixed;
-		top:85%;
-	}*/
+.row-participant > input{
+	width: 30px;
+}
+/*#stepper{
+	position:fixed;
+	top:85%;
+}*/
 
 /*	.participants-label{
-		display: flex;
-		justify-content: space-around;
-	}
+	display: flex;
+	justify-content: space-around;
+}
 
-	.row-participant{
-		display: flex;
-		align-items: center;
-		justify-content: space-evenly;
-		margin-bottom: 1em;
-	}
+.row-participant{
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-bottom: 1em;
+}
 
-	input,textarea {
-		min-width: 90%;
-		width: 90%
-	}
+input,textarea {
+	min-width: 90%;
+	width: 90%
+}
 
-	h2{
-		text-align: center;
-		margin: 1.2em auto;
-		width: 20%;
-		font-size: 2vh;
-	}
+h2{
+	text-align: center;
+	margin: 1.2em auto;
+	width: 20%;
+	font-size: 2vh;
+}
 
-	.add-participant{
-		cursor: pointer;
-	}
+.add-participant{
+	cursor: pointer;
+}
 
-	.remove-participant{
-		cursor: pointer;
-	}*/
+.remove-participant{
+	cursor: pointer;
+}*/
 
 </style>
