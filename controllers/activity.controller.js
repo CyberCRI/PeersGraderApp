@@ -189,8 +189,8 @@ module.exports = {
 							  <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
 							  <p style="margin:0px">
 							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-pencil-alt-solid.png">&nbsp;You can edit participants, options and the rubric using this link &amp; password.<br>
-							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-link-solid.png">&nbsp;Activity's link is : https://peergraders.herokuapp.com/#/activity/dtYwV<br>
-							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-key-solid.png" style="height:12px;width:12px">&nbsp;Master password is : ChubbyPanamanianMermaids<br>
+							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-link-solid.png">&nbsp;Activity's link is : ${process.env.APP_URL}/#/activity/${sentActivity.urlId}/<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-key-solid.png" style="height:12px;width:12px">&nbsp;Master password is : ${sentActivity.teacherPwd}<br>
 							  </p><br>
 							  <h3 class="title is-6">How do I <i>really</i> start the activity with my participants ?</h3>
 							  <p style="margin:0px">
@@ -203,7 +203,7 @@ module.exports = {
 							  <br>
 							</div>`,
 		  htmlOld: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
-		  			 <p>password : ${sentActivity.teacherPwd}</p>`
+		  			 <p>password : </p>`
 		};
 
 		transporter.use('compile', inLineCss());
