@@ -14,50 +14,14 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-  	{
-  	  path: '/',
-  	  name : 'root',
-      component : Landing
-  	},
-  	{
-  		path: '/activity/:id?',
-  		name:'crudActivity',
-  		component : Activity
-  	},
-    {
-      path:'/activity/:id/review',
-      name:'review',
-      component: Review
-    },
-    {
-      path:'/activity/:id/admin',
-      name:'dashboard',
-      component: Dashboard
-    },
-    {
-      path:'/activity/:id/review/:reviewId',
-      name:'crudReview',
-      component:Review
-    },
-    {
-      path: '/activity/:id/participants',
-      name: 'activityParticipants',
-      component : ActivityParticipants
-    },
-    {
-      path: '/activity/:id/planning',
-      name: 'activityPlanning',
-      component : Planning
-    },
-    {
-      path: '/activity/:id/rubric',
-      name: 'activityRubric',
-      component: ActivityRubric
-    },
-    {
-      path: '/find/activity',
-      name:'findActivity',
-      component: FindActivity
-    }
+  	{ path: '/', name : 'root', component : Landing },
+  	{ path: '/activity/:id?', name:'crudActivity', component : Activity },
+    { path: '/activity/:id/review', name:'review', component: Review },
+    { path: '/activity/:id/admin', name:'dashboard', component: Dashboard },
+    { path: '/activity/:id/review/:reviewId', name:'crudReview', component:Review },
+    { path: '/activity/:id/participants', name: 'activityParticipants', component : ActivityParticipants },
+    { path: '/activity/:id/planning', name: 'activityPlanning', component : Planning },
+    { path: '/activity/:id/rubric', name: 'activityRubric', component: ActivityRubric },
+    { path: '/find/activity', name:'findActivity', component: FindActivity }
   ]
 });

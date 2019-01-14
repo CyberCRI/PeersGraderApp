@@ -3,7 +3,7 @@
     <notifications group="notifications"/>
     <div v-if="$route.path=='/'">
       <pg-header />
-      <pg-landing/>
+      <pg-landing />
     </div>
     <div v-else id="pg-main-container" class="">
       <router-view></router-view>
@@ -12,18 +12,17 @@
 </template>
 
 <script>
-  import Header from '@/components/Header'
-  import Landing from '@/components/Landing'
-export default {
+import Header from '@/components/Header'
+import Landing from '@/components/Landing'
+
+export default { // ? what is that "export default" for
   name: 'App',
   components : {
-    'pg-header' : Header,
-    'pg-landing' : Landing
+    'pg-header' : Header,    // app header
+    'pg-landing' : Landing   // app landing
   },
   data(){
-    return {
-      landing : true
-    };
+    return { landing : true };
   },
   beforeRouteEnter(to,from,next){
     console.log('beforeRouteEnter')
@@ -36,6 +35,7 @@ export default {
     console.log('from',from)
   },
   mounted(){
+    // ? Burger vs Menu manager
     var burger = document.querySelector('.burger');
     if(burger!=null){
       var menu = document.querySelector('#'+burger.dataset.target);
@@ -45,13 +45,14 @@ export default {
         });
     }
 
+    // Footer constant repositioning
     window.onresize = (function() {
         /*var documentHeight = jQuery(document).height();
         var element = jQuery('#you-element');
         var distanceFromBottom = documentHeight - (element.position().top + element.outerHeight(true));*/
         var documentHeight = 0,
             element = null,
-            distanceFromBottom = 0;
+            distanceFromBottom = 0; // ? so its always 0 !
 
         if(distanceFromBottom <= 0){
            var footer = document.querySelector('#stepper-container');
@@ -70,10 +71,9 @@ export default {
 <style>
   @import '../node_modules/bulma/css/bulma.css';
 
-  html,body{
+  html, body{
     height: 100%
   }
-
 
   #pg-app{
    display: flex;
@@ -89,6 +89,4 @@ export default {
    left:12.5%;
    width: 75%;
   }
-
-
 </style>
