@@ -419,16 +419,17 @@ var gkeys = {
   "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg',
   "testpoem"  : '1MQkHnD-2XJSVnvL5PQDjfygJOJXoeHayVoBiak82jLU'
 }
-var init = function() {
-  var googleSpreadsheetKey = getUrlVars()["google"] || gkeys['2019.01.11'];
+
+var init = function(googleSheetID) {
   Tabletop.init({
-    key: googleSpreadsheetKey,
+    key: googleSheetID,
     callback: showInfo,
     simpleSheet: true
   })
 };
 
 // On page load
-window.onload = function() { init() };
+var googleId = getUrlVars()["google"] || gkeys['2019.01.11'];
+window.onload = function() { init(googleId) };
 // On button RUNS click
 // in html page

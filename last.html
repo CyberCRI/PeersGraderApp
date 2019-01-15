@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>2017.05.12</title>
+    <title>2019.01.14</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.4.3/tabletop.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
@@ -18,10 +18,16 @@
   <body>
 
   <div class="container">
-    <h2>Poster peer-review project</h2>
-    <span id="run" class="btn btn-success success"><i class="glyphicon glyphicon-time"></i> V.0.3.0 (Canada rainbow)</span>
-    <span class="btn btn-alert alert"><i class="glyphicon glyphicon-info-sign"></i> Note : code editing ongoing (May 5th)</span>
-    <p>This table summarize grades of the L1 students for the PeerPoster day.
+    <div class="row">
+      <div class="col-lg-9">
+        <h2>Poster peer-review project</h2>
+    </div>
+    <div class="col-lg-3 ">
+      <h2></h2><p><span class="btn btn-success success btn-block"><i class="glyphicon glyphicon-time"></i> V.0.4.0</span>
+        <br><span class="btn btn-alert alert text-center"><i class="glyphicon glyphicon-info-sign"></i> Note : no editing ongoing (Jan. 14th, 2019)</span></p>
+    </div>
+  </div>
+      <!--
     <div class="legend">
       <p>
         <b>2016.12 / v.0.1 (Albatros ignition)</b> :
@@ -30,28 +36,57 @@
           <li>0.2.1: code cleaning, functional programming, easy to adpat to google form's titles changes. For BioMed L3 (Descartes), 140 students, 48 posters, 4 times 2 hours workshop. 6 professors.</li>
           <li>0.2.2: move to Github, write elegant README.md.</li>
         <b>2018.05 / v.0.3 (Canada rainbow)</b> :<br><li>0.3.1: add simple but meaningful datavisualization via Ploty.js.</li></p>
+    </div> -->
+
+  <div class="container">
+    <div class="legend">
+      <h4>How to use ?</h4>
+      <p>
+        <li>1) Duplicate <a href="https://docs.google.com/forms/d/e/1FAIpQLSc_s1vOetb8PC7WXvkS8otn_zYbWloGIWE8Ogh1kxIdjTvd9w/viewform">this questionnaire</a>. WARNING: do NOT change questions headers, nor add space, nor punctuation.</li>
+        <li>2) Push the creation of the associate Google Sheet.</li>
+        <li>3) On the Google Sheet : <code>File > Publish to the Web >
+        Published content & settings > Entire page + Automatically republish when changes are made</code></li>
+        <li>4) From the Google Sheet's url, extract the sheet's ID code:<br>https://docs.google.com/spreadsheets/d/<code>1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg</code>/edit#gid=1709706079</li>
+        <li>5) Enter your sheet's ID into the field below > click <span class="btn btn-success btn-xs">Run !</span></li>
+      </p>
     </div>
   </div>
+  <br>
 
-  <div class="container" id="form">
-    <form>
-      <div class="form-group">
-        <label for="inputSessions">Number of sessions :</label>
-        <input type="number" min="1" step="1" class="form-control" id="inputSessions" placeholder="6">
-      </div>
-      <div class="form-group">
-        <label for="inputGoogleSheet">Google form ID :</label>
-        <input type="text" class="form-control" id="inputGoogleSheet" placeholder="1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo">
-      </div>
-      <button type="submit" class="btn btn-default">Validate</button>
-    </form>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Google form ID :</button>
+          </span>
+          <input id="googleSheetId" type="text" class="form-control btn-lg" placeholder="1wHNlEtNZoyQ-zwgKHMb6wnewpruiGkqTqnX12v8vY6Mo">
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-3 -->
+      <div class="col-lg-3">
+        <button id="run" class="btn btn-success btn-block">Run !</button>
+      </div><!-- /.col-lg-6 -->
+    </div><!-- /.row -->
   </div>
 
+</div>
+
+
+<hr><br>
   <!-- page content -->
-  <div class="container" id="hook-table"></div>
-  <div class="container" id="hook-violin"></div>
+  <div class="container" id="hook-table">
+    <h4>Summary table</h4>
+  </div>
+  <div class="container" id="hook-violin">
+    <h4>Violins</h4>
+  </div>
 </body>
 <script>
-$('#run').on('click', function(){ init() });
+var googleId = document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys['2019.01.11'];
+$('#run').on('click', function(){
+  console.log("googleId: 1.", document.getElementById("googleSheetId").value)
+  // "2." ,getUrlVars()["google"] ,"3.", gkeys['2019.01.11']);
+  init(googleId)
+});
 </script>
 </html>
