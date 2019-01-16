@@ -397,8 +397,12 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
   var cols = Object.keys(studentsSortAverages[0]);
+
+  $('#hook-table').empty();
   tablify(studentsSortAverages, cols);
-  // scatterPlot(studentsCleaned);
+  // scatterPlot(studentsCle aned);
+  $('#hook-violin').empty();
+  $('#hook-violin').removeClass();
   violinPlot(studentsSort,"hook-violin");
 };
 
@@ -407,16 +411,16 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
 /* Data call ********************************************************* */
 /* ******************************************************************* */
 var gkeys = {
-  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc',
-  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0',
-  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo',
-  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs',
-  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA',
-  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII',
-  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4',
-  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo',
-  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg',
-  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg',
+  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc', // named fdv
+  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0', // anon  biomed
+  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo', // named biomed
+  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs', // named fdv
+  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA', // named bio?
+  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII', // named bio?
+  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4', // named biomed
+  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named fdv
+  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named biomed
+  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named biomed
   "testpoem"  : '1MQkHnD-2XJSVnvL5PQDjfygJOJXoeHayVoBiak82jLU'
 }
 

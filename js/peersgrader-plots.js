@@ -22,7 +22,7 @@ var violinTemplate = function(){
     name: "Some name",
     span: [ 0 ],
     line: { color: "#8dd3c7" },
-    y0: "Some name for lagend",
+    y0: "Some name for legend",
     x: [ 12.65, 17.92, 16.45 ],
     orientation: "h"
   }
@@ -40,7 +40,6 @@ var students = [ {"indivEmail":"laetitialnrt@free.fr","indivFamily":"LIENART Lae
 
 /* ************************************************************************* */
 /* CREATE VALID VIZDATA **************************************************** */
-var vizdata = [];
 var dataForViolins = function(studentsRawData, template) {
   var traces = [];
   for (var i=0; i<studentsRawData.length;i++){

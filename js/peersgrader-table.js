@@ -1,7 +1,6 @@
 /* */
 function tablify(data, columns) {
   console.log ("/* Tablify ***************************** /")
-  d3.select('#hook-table').html("");
   var container = d3.select('#hook-table').append('div')
     .attr('class','container')
   var table = container.append('table').attr("class", "table table-striped");
