@@ -40,8 +40,8 @@ var  createListOfTerms = function(sessions){
     country    : 'Country of education?',
     city       : 'City of education?',
     gender     : 'Gender?',
-    indivStatus: 'status',  // THIS CAN BE DELETED?
-    groupId    : 'Group?', // THIS CAN BE DELETED?
+    // indivStatus: 'status',  // THIS CAN BE DELETED?
+    // groupId    : 'Group?', // THIS CAN BE DELETED?
     session    : 'session',
     presenting : 'presenting',
   };
@@ -66,28 +66,6 @@ var finalDataForm = function(item){
 
 /* ******************************************************************** */
 /* Extract instance of Evaluation ************************************* */
-// flat data with instance of evaluation "A grade B" and metadata.
-var normalizing = function(jsonData, numberOfSessions, terms) {
-  var d = [], S = numberOfSessions;
-  jsonData.forEach(function(x){
-    var evaluationsByStudentX = {
-      indivEmail  : x[terms.indivEmail],
-      indivFamily : x[terms.indivFamily],
-      indivGroupId: individualIdToGroupId(x[terms.indivId]),
-      indivId     : x[terms.indivId],
-      indivStatus :
-        individualIdToGroupId(x[terms.indivId]).match('Prof')?'professor':
-        individualIdToGroupId(x[terms.indivId]).match('G')?'student':'observator'
-    };
-    for (var i=1; i<S+1;i++){
-//      console.log('Troll1a!','1/'+'S'+i+'group'||"fails1",'2/'+terms['S'+i+'group']||"fails2",'3/'+individualIdToGroupId(x[terms['S'+i+'group']]||"fails3") );
-      evaluationsByStudentX['S'+i+'group'] = individualIdToGroupId(x[terms['S'+i+'group']]);
-      evaluationsByStudentX['S'+i+'grade'] = x[terms['S'+i+'grade']] === "I'm presenting (no grade)"? terms.presenting: +x[terms['S'+i+'grade']];
-    }
-    d.push(evaluationsByStudentX);
-  })
-  return d;
-};
 
 // flattening the database, showing up each instance of evaluation "A grade B" and metadata.
 var flattening = function(jsonData, numberOfSessions, terms) {
@@ -209,22 +187,21 @@ var getGradesReceived = function(evaluations, students, terms){
 
 /* ******************************************************************** */
 /*  Students A notes given to other injection ************************* */
-var getGradesGiven = function(array, terms, sessions, students) {
-  var output = array.map(function(x) { // for each students, who graded several times
-    var grdGiven = [];
-    for (var i = 1; i <= sessions; i++) {
-      var grp = x['S'+i+'group'],
-          grd = x['S'+i+'grade'] === terms.presenting? terms.presenting: +x['S'+i+'grade'];
-      grdGiven.push([grp, grd]);
-    }
-    for (var i = 0; i < students.length; i++) {
-      if (x.indivEmail === students[i].indivEmail) {
-        students[i].gradesGiven = grdGiven;
+var getGradesGiven = function(evaluations, students){
+  for (var i = 0; i < students.length; i++) {
+    var student = students[i];
+    students[i].gradesGiven = [];
+    for (var j = 0; j < evaluations.length; j++) {
+      var evaluation = evaluations[j],
+          studentEvaluationsSent = (student.indivEmail == evaluation.indivEmail);
+      if(studentEvaluationsSent) {
+        console.log(student.indivEmail)
+        students[i].gradesGiven.push([ evaluation.grpEv, evaluation.grdEv])
       }
     }
-  })
-  return output
+  }
 }
+
 /* ******************************************************************* */
 /* Set up ************************************************************ */
 /* ******************************************************************* */
@@ -256,11 +233,11 @@ function showInfo(data, tabletop) {
     getGradesReceived(evaluations, students, googleTerms) // not sorted by session
     console.log('4c/ students > gradesReceived ',students.length,students);
 
-  var normalized = normalizing(data, sessions, googleTerms);
-  console.log('5a/ normalized ',normalized.length,normalized); // Students list
-
-    getGradesGiven(normalized, googleTerms, sessions, students);
     console.log('5b/ students > gradesGiven ',students.length,students);
+    getGradesGiven(evaluations, students)
+    var given = JSON.stringify(students)
+    console.log('5c/ students > gradesGiven2 ',students.length,students);
+    console.log('5d/ Given',given);
 
   /* ******************************************************************** */
   /* 2b) Students average injection ************************************* */
