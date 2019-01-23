@@ -62,7 +62,7 @@
           </span>
           <input id="googleSheetId" type="text" class="form-control btn-lg" placeholder="1wHNlEtNZoyQ-zwgKHMb6wnewpruiGkqTqnX12v8vY6Mo">
         </div><!-- /input-group -->
-      </div><!-- /.col-lg
+      </div><!-- /.col-lg -->
       <div class="col-lg-2">
         <button id="run" class="btn btn-success btn-block">Run !</button>
       </div><!-- /.col-lg-->
@@ -87,14 +87,18 @@
   </div>
 </body>
 <script>
-var googleId = document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys['2019.01.11'];
+var googleId = function() {
+  var id =  document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys['2019.01.11'];
+  return id;
+};
+
 $('#run').on('click', function(){
-  console.log("googleId: 1.", document.getElementById("googleSheetId").value)
+  console.log("googleId: 1.",  googleId())
   // "2." ,getUrlVars()["google"] ,"3.", gkeys['2019.01.11']);
-  init(document.getElementById("googleSheetId").value)
+  init(googleId())
 });
 $('.open').on('click', function(){
-  var url = location.pathname + "?google="+document.getElementById("googleSheetId").value;
+  var url = location.pathname + "?google="+googleId();
   window.open(url, '_blank');
 });
 </script>
