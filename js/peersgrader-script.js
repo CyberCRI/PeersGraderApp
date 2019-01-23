@@ -2,6 +2,10 @@
 /* ******************************************************************** */
 /* SET UP ************************************************************* */
 /* ******************************************************************** */
+var dev = true;
+var cl = function(parameters){
+  if(dev){ console.log(parameters);}
+};
 var getNumberOfSessions = function(keys) {
   var count = keys.filter(function(str) { return str.indexOf('presenting') > -1; }).length;
   return count
@@ -14,7 +18,7 @@ var getUrlVars = function() {
   });
   return vars;
 }
-console.log("window.location.search",getUrlVars()["google"]);
+cl(["window.location.search",getUrlVars()["google"]]);
 /* ******************************************************************** */
 /* DATA FORMATING ***************************************************** */
 /* ******************************************************************** */
@@ -40,8 +44,6 @@ var  createListOfTerms = function(sessions){
     country    : 'Country of education?',
     city       : 'City of education?',
     gender     : 'Gender?',
-    // indivStatus: 'status',  // THIS CAN BE DELETED?
-    // groupId    : 'Group?', // THIS CAN BE DELETED?
     session    : 'session',
     presenting : 'presenting',
   };
@@ -50,18 +52,6 @@ var  createListOfTerms = function(sessions){
     obj['S'+s+'grade'] = 'Session #'+s+' — grade you give'; // 'title '+S+' on google sheet';
   };
   return obj
-}
-
-var finalDataForm = function(item){
-  return {
-    "indivId"     : item.indivId,
-    "averageProfs": item.averageProfs,
-    "averagePeers": item.averagePeers,
-    "normalness"  : item.normalness,
-    "finalGrade"  : item.finalScore,
-    "indivFamily" : item.indivFamily,
-    "indivEmail"  : item.indivEmail
-  }
 }
 
 /* ******************************************************************** */
@@ -78,6 +68,8 @@ var flattening = function(jsonData, numberOfSessions, terms) {
         indivFamily : x[terms.indivFamily],
         indivId     : x[terms.indivId],
         indivGroupId: individualIdToGroupId(x[terms.indivId]),
+        indivGender : x[terms.gender],
+        indivCity   : x[terms.city],
         indivStatus :
           individualIdToGroupId(x[terms.indivId]).match('Prof')?'professor':
           individualIdToGroupId(x[terms.indivId]).match('G')?'student':'observator',
@@ -95,27 +87,6 @@ var flattening = function(jsonData, numberOfSessions, terms) {
 /* ******************************************************************** */
 
 /* ******************************************************************** */
-/* SeriousnessAssessment (function) *********************************** */
-var seriousnessAssessment = function(a, b, bonus, counter){
-  var distance = Math.abs(a - b),
-      bump = 20 - distance*5;
-      /*
-  if      (distance<= 1) { bump=20; }
-  else if (distance<= 2) { bump=16; }
-  else if (distance<= 4) { bump=10; }
-  else if (distance<= 6) { bump= 6; }
-  else { bump= 0; } */
-  bonus= bonus + bump;
-  counter= counter+1;
-  return [bonus,counter,bump]
-}
-// Linear:
-// bump = 20 - distance;
-// Sigmoid_function > Logistic function
-// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
-
-
-/* ******************************************************************** */
 /* STUDENTS *********************************************************** */
 /* ******************************************************************** */
 /* 1) Students listing ************************************************ */
@@ -126,6 +97,8 @@ var createCleanPersona = function(item){
     indivFamily : item.indivFamily,
     indivId     : item.indivId,
     indivGroupId: item.indivGroupId,
+    indivGender : item.indivGender,
+    indivCity   : item.indivCity,
     gradesPeers : [],
     averagePeers: null,
     gradesProfs : [],
@@ -133,11 +106,13 @@ var createCleanPersona = function(item){
     averageAll  : null,
     gradesGiven : [],
     normalness  : null,
-    finalScore  : null
+    finalGrade  : null
   }
   return persona
 }
 
+/* ******************************************************************** */
+/* Students > create table of students ******************************** */
 var getPersonaList = function(evaluations) {
   let uniqIds = {};
   let filtered = evaluations
@@ -195,7 +170,6 @@ var getGradesGiven = function(evaluations, students){
       var evaluation = evaluations[j],
           studentEvaluationsSent = (student.indivEmail == evaluation.indivEmail);
       if(studentEvaluationsSent) {
-        console.log(student.indivEmail)
         students[i].gradesGiven.push([ evaluation.grpEv, evaluation.grdEv])
       }
     }
@@ -218,41 +192,37 @@ function showInfo(data, tabletop) {
   var keys = Object.keys(data[0]),
       sessions = getNumberOfSessions(keys),
       googleTerms = createListOfTerms(sessions); // matching google sheet
-  console.log('1/ keys: ',keys.length, keys)
-  console.log('2/ sessions: ',sessions)
-  console.log('3/ googleTerms: ',googleTerms.length, googleTerms)
+  cl(['1/ keys: ',keys.length, keys]);
+  cl(['2/ sessions: ',sessions]);
+  cl(['3/ googleTerms: ',googleTerms.length, googleTerms]);
   // https://docs.google.com/spreadsheets/d/1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc
   // http://www.jsoneditoronline.org/?id=f1c7796026cc37212e950eb0ac30b24d
 
   var evaluations = flattening(data, sessions, googleTerms);
-  console.log('4a/ evaluations ',evaluations.length,evaluations); // Students list
-
-    var students = getPersonaList(evaluations).filter(function (e) { return e.indivStatus == 'student';});
-    console.log('4b/ students ',students.length,students);
-
-    getGradesReceived(evaluations, students, googleTerms) // not sorted by session
-    console.log('4c/ students > gradesReceived ',students.length,students);
-
-    console.log('5b/ students > gradesGiven ',students.length,students);
-    getGradesGiven(evaluations, students)
-    var given = JSON.stringify(students)
-    console.log('5c/ students > gradesGiven2 ',students.length,students);
-    console.log('5d/ Given',given);
+  cl(['4a/ evaluations ',evaluations.length,evaluations]); // Students list
+  var students = getPersonaList(evaluations).filter(function (e) { return e.indivStatus == 'student';});
+  cl('5a/ students > creation (empty)',students.length,students);
+  getGradesReceived(evaluations, students, googleTerms) // not sorted by session
+  cl('5b/ students > add "gradesReceived"');
+  getGradesGiven(evaluations, students);
+  cl('5c/ students > add "gradesGiven"');
 
   /* ******************************************************************** */
   /* 2b) Students average injection ************************************* */
   for (var i = 0; i < students.length; i++) {
-    var row = students[i];
-    var sumPeers = row.gradesPeers.reduce(function(a, b) { return a + b[1];}, 0);
-    var sumProfs = row.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0);
-    // Summing and rounding :
-    students[i].averagePeers = Math.round((sumPeers) * 10 / row.gradesPeers.length) / 10;
-    // if no teachers, then use gradesPeers
-    if(sumProfs) { students[i].averageProfs = Math.round((sumProfs) * 10 / row.gradesProfs.length) / 10, students[i].profReviewed = true  }
-    else { students[i].averageProfs = students[i].averagePeers, students[i].profReviewed = false } ;
-    students[i].averageAll = Math.round((students[i].averagePeers + students[i].averageProfs) * 10 / 2) / 10; // duplicata with later process ?
+    var student = students[i]
+    var avgPeers = student.gradesPeers.length ?
+          student.gradesPeers.reduce(function(toll, arr) { return toll + arr[1]; }, 0) / student.gradesPeers.length : undefined;
+    var avgProfs = student.gradesProfs.length ?
+          (student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0) / student.gradesProfs.length)
+          : avgPeers;
+    if (!student.gradesPeers.length){ avgPeers = avgProfs; }
+    students[i].averagePeers = avgPeers.toFixed(1);
+    students[i].averageProfs = avgProfs.toFixed(1);
+    students[i].profReviewed = student.gradesProfs.length? true:false;
   }
-console.log('6/ students > averagePeers/averageProf/averageAll: ',students.length,students); // students with grades
+  cl('5d/ students > add "averagePeers", "averageProfs", "profReviewed"\'s values.');
+  cl(['5e/ students ',students.length,students]);
 
   /* ******************************************************************** */
   /* GROUPS ************************************************************* */
@@ -265,7 +235,7 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
       groupsList.push(newId);
     }
   }
-  console.log('7/ groupsList=[]: ',groupsList.length,groupsList); // Students list
+  cl(['7/ groupsList=[]: ',groupsList.length,groupsList]); // Students list
   /* ******************************************************************** */
   /* Groups table creation ********************************************** */
   for (var i = 0; i < groupsList.length; i++) {
@@ -297,14 +267,13 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
   /* Groups averages calculus ******************************************* */
   for (var i = 0; i < groups.length; i++) {
     var rowGrp = groups[i];
-    var sumPeers = rowGrp.gradesPeers.reduce(function(a, b) { return a + b; }, 0),
-        sumProfs = rowGrp.gradesProfs.reduce(function(a, b) { return a + b; }, 0);
-    avgPeers = Math.round((sumPeers) * 10 / rowGrp.gradesPeers.length) / 10 ;
-    avgProfs = sumProfs ? Math.round((sumProfs) * 10 / rowGrp.gradesProfs.length) / 10 : avgPeers,
-    avgAll = Math.round((avgPeers + avgProfs) / 2 * 10) / 10;
+    var avgPeers = rowGrp.gradesPeers.reduce(function(a, b) { return a + b; }, 0) / rowGrp.gradesPeers.length,
+        avgProfs = rowGrp.gradesProfs.length?
+          rowGrp.gradesProfs.reduce(function(a, b) { return a + b; }, 0) / rowGrp.gradesProfs.length
+          : avgPeers;
     groups[i].averagePeers = avgPeers;
     groups[i].averageProfs = avgProfs;
-    groups[i].averageAll = avgAll;
+    groups[i].averageAll = (avgPeers/2 + avgProfs/2).toFixed(1);
   }
   var grpClean = groups.map(function(x) {
     return {
@@ -324,10 +293,33 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
       }
     }
   }
- //                         console.log("10/ groups[0]: ", JSON.stringify(groups));
+ // cl(["10/ groups[0]: ", JSON.stringify(groups)]);
+
+
 
   /* ******************************************************************** */
   /* NORMALNESS SCORE *************************************************** */
+  /* ******************************************************************** */
+  /* ******************************************************************** */
+  /* SeriousnessAssessment (function) *********************************** */
+  var seriousnessAssessment = function(a, b, bonus, counter){
+    var distance = Math.abs(a - b),
+        bump = 20 - distance*5;
+        /*
+    if      (distance<= 1) { bump=20; }
+    else if (distance<= 2) { bump=16; }
+    else if (distance<= 4) { bump=10; }
+    else if (distance<= 6) { bump= 6; }
+    else { bump= 0; } */
+    bonus= bonus + bump;
+    counter= counter+1;
+    return [bonus,counter,bump]
+  }
+  // Linear:
+  // bump = 20 - distance;
+  // Sigmoid_function > Logistic function
+  // var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
+
   /* ******************************************************************** */
   /* Seriousness calculation ******************************************** */
   for (var i=0; i< students.length; i++){
@@ -346,12 +338,12 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
           bonus   = res[0],
           counter = res[1];
           var bump= res[2];
-//        console.log('Seriousness -- Eval by x:',[groupId,grd],'; Eval by all:',[groupId,avgAll],'=> ',bump);
+//        cl(['Seriousness -- Eval by x:',[groupId,grd],'; Eval by all:',[groupId,avgAll],'=> ',bump]);
         }
       }
     }
-    students[i].normalness = ( Math.round((bonus/counter)*10)/10*1);
-    console.log('Seriousness overall for',name,bonus,'/',counter,': ',students[i].normalness)
+    students[i].normalness =(bonus/counter).toFixed(1);
+    // cl(['Seriousness overall for',name,bonus.toFixed(1),'/',counter,': ',students[i].normalness]);
   }
 
   /* ******************************************************************** */
@@ -361,28 +353,41 @@ console.log('6/ students > averagePeers/averageProf/averageAll: ',students.lengt
   for (var i = 0; i < students.length; i++) {
     var row = students[i],
       sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
-      students[i].finalScore = Math.round((sum) * 10) / 10;
+      students[i].finalGrade = sum.toFixed(1);
   }
-  console.log('11/ students > finalGrade: ',students.length, students); // students with grades
+  cl('11/ students > add "finalGrade"'); // students with grades
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
   /* ******************************************************************** */
   /* SORTING ************************************************************ */
   var studentsSort = sortJSON(students,'indivId', '123')
-  console.log('12/ students > sorted: ',studentsSort.length, studentsSort); // students with grades
+  cl(['12/ students > sorted: ',studentsSort.length, studentsSort]); // students with grades
   /* ******************************************************************** */
-  /* Pre-TABLE ********************************************************** */
+  /* Pre-TABLE ********************************************************** * /
+  var finalDataForm = function(item){
+    // THIS IS NEEDS, GIVES STRUCTURE TO TABLE
+    return {
+      "indivId"     : item.indivId,
+      "averageProfs": item.averageProfs,
+      "averagePeers": item.averagePeers,
+      "normalness"  : item.normalness,
+      "finalGrade"  : item.finalGrade,
+      "indivFamily" : item.indivFamily,
+      "indivEmail"  : item.indivEmail
+    }
+  }
   var studentsSortAverages = studentsSort.map(finalDataForm);
-  console.log('13/ studentsReformated: ',studentsSortAverages.length, studentsSortAverages); // students with grades
+  cl(['13/ studentsReformated: ',studentsSortAverages.length, studentsSortAverages]); // students with grades
 
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = Object.keys(studentsSortAverages[0]);
+  var cols = ["indivId","indivGender","indivCity","profReviewed","averageProfs","averagePeers","normalness","finalGrade","indivFamily","indivEmail"];
+  //Object.keys(studentsSortAverages[0]);
 
   $('#hook-table').empty();
-  tablify(studentsSortAverages, cols);
+  tablify(studentsSort, cols);
   // scatterPlot(studentsCle aned);
   $('#hook-violin').empty();
   $('#hook-violin').removeClass();
