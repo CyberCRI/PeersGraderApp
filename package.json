@@ -21,7 +21,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "moment": "^2.22.2",
-    "mongoose": "^5.1.5",
+    "mongoose": "^5.4.19",
     "nanoid": "^1.0.3",
     "nodemailer": "^4.6.7",
     "nodemailer-juice": "^1.0.1",
