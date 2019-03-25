@@ -217,6 +217,7 @@ function showInfo(data, tabletop) {
           (student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0) / student.gradesProfs.length)
           : avgPeers;
     if (!student.gradesPeers.length){ avgPeers = avgProfs; }
+  //  console.log(avgPeers,student)
     students[i].averagePeers = avgPeers.toFixed(1);
     students[i].averageProfs = avgProfs.toFixed(1);
     students[i].profReviewed = student.gradesProfs.length? true:false;
