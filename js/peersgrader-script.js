@@ -217,9 +217,9 @@ function showInfo(data, tabletop) {
           (student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0) / student.gradesProfs.length)
           : avgPeers;
     if (!student.gradesPeers.length){ avgPeers = avgProfs; }
-  //  console.log(avgPeers,student)
-    students[i].averagePeers = avgPeers.toFixed(1);
-    students[i].averageProfs = avgProfs.toFixed(1);
+    console.log("here: ",+avgPeers.toFixed(1),avgPeers,+avgProfs.toFixed(1),avgProfs);
+    students[i].averagePeers = +avgPeers.toFixed(1);
+    students[i].averageProfs = +avgProfs.toFixed(1);
     students[i].profReviewed = student.gradesProfs.length? true:false;
   }
   cl('5d/ students > add "averagePeers", "averageProfs", "profReviewed"\'s values.');
@@ -354,9 +354,57 @@ function showInfo(data, tabletop) {
   for (var i = 0; i < students.length; i++) {
     var row = students[i],
       sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
-      students[i].finalGrade = sum.toFixed(1);
+      students[i].finalGrade = +sum.toFixed(1);
   }
   cl('11/ students > add "finalGrade"'); // students with grades
+
+
+
+  /* ******************************************************************** */
+  /* FOTA *************************************************************** */
+  var addRank = function(input,basedOnCol){
+    for(var i = 0; i<input.length; i++){
+    	if(i !=0 && input[i][basedOnCol] == input[i-1][basedOnCol]){
+      	input[i].rank=input[i-1].rank;
+      } else { input[i].rank = i; }
+    }
+  	return input;
+  };
+
+  var findExtrems = function(input,basedOnCol,returnedCol){
+  	var minBaseCol,
+    		maxBaseCol,
+    		minReturnCol,
+        maxReturnCol;
+    for(var i=0; i<input.length; i++){
+    	 	if(minBaseCol===undefined || input[i][basedOnCol] < minBaseCol){ minBaseCol = input[i][basedOnCol]; minReturnCol = input[i][returnedCol]; }
+    	 	if(maxBaseCol===undefined || input[i][basedOnCol] > maxBaseCol){ maxBaseCol = input[i][basedOnCol]; maxReturnCol = input[i][returnedCol]; }
+    }
+    return { "min": minReturnCol, "max": maxReturnCol};
+  }
+  // given min, max, and data.length, assign a FOPA key with levant value.
+  var addFopa = function(data,min,max){
+  	var output = data;
+  	var distance = (max-min)/(data.length-1);
+  	for(var i=0; i<output.length; i++){
+      console.log(max, i+1, output[i].rank, distance);
+    	output[i].fopa = +(max - (output[i].rank)*distance).toFixed(3);
+    }
+    return output;
+  }
+  /* ************************************************************************* */
+  // FOPA ALGO ******************************************************************** */
+  /* var min = findExtrems(data).min,
+  		max = findExtrems(data).max; */
+  var ext = findExtrems(students,'finalGrade','averageProfs'),
+  		min = ext.min,
+  		max = ext.max;
+  alert(JSON.stringify(ext))
+  var _dataSorted = sortJSON(students, 'finalGrade', '321');
+  var _dataRanked = addRank(_dataSorted,'finalGrade')
+  alert(JSON.stringify(_dataRanked))
+  var _dataFopaed = addFopa(_dataRanked, min, max);
+  alert(JSON.stringify(_dataFopaed))
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
@@ -384,7 +432,7 @@ function showInfo(data, tabletop) {
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["indivId","indivGender","indivCity","profReviewed","averageProfs","averagePeers","normalness","finalGrade","indivFamily","indivEmail"];
+  var cols = ["indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","indivFamily","indivEmail"]; //,"indivCity"
   //Object.keys(studentsSortAverages[0]);
 
   $('#hook-table').empty();
