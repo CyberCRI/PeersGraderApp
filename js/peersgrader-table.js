@@ -1,9 +1,11 @@
 /* */
 function tablify(data, columns) {
+  var sortAscending = true;
   console.log ("/* Tablify ***************************** /")
   var container = d3.select('#hook-table').append('div')
     .attr('class','container')
-  var table = container.append('table').attr("class", "table table-striped");
+  var table = container.append('table')
+      .attr("class", "table table-striped");
   var thead = table.append('thead')
   var	tbody = table.append('tbody');
 
@@ -12,7 +14,25 @@ function tablify(data, columns) {
     .selectAll('th')
     .data(columns).enter()
     .append('th')
-    .text(function (d) { return d; });
+    .text(function (d) { return d; })
+    .on('click', function (d) {
+      thead.attr('class', 'header');
+      if (sortAscending) {
+        rows.sort(function(a, b) {
+          if(b[d] > a[d]) {return +1;}
+          if(b[d] < a[d]) {return -1;}
+        });
+        sortAscending = false;
+        this.className = 'aes';
+      } else {
+        rows.sort(function(a, b) {
+          if(b[d] > a[d]) {return -1;}
+          if(b[d] < a[d]) {return +1;}
+        });
+        sortAscending = true;
+        this.className = 'des';
+      }
+    });
 
   // create a row for each object in the data
   var rows = tbody.selectAll('tr')
@@ -29,8 +49,8 @@ function tablify(data, columns) {
     })
     .enter()
     .append('td')
+    .attr('data-th', function (d) {	return d.value; })
     .text(function (d) { return d.value; });
-  return table;
 }
 
 

@@ -404,23 +404,17 @@ function showInfo(data, tabletop) {
   var ext = findExtrems(students,'finalGrade','averageProfs'),
   		min = ext.min,
   		max = ext.max;
-  alert(JSON.stringify(ext))
   var _dataSorted = sortJSON(students, 'finalGrade', '321');
   var _dataRanked = addRank(_dataSorted,'finalGrade','rank')
-  alert(JSON.stringify(_dataRanked))
   var _dataFopaed = addFopa(_dataRanked,'rank','fopa', min, max);
-  alert(JSON.stringify(_dataFopaed))
 
   // FopqPP
   var extPP = findExtrems(students,'finalGradePP','averageProfs'),
       minPP = extPP.min,
       maxPP = extPP.max;
-  alert(JSON.stringify(extPP))
   var _dataSortedPP = sortJSON(students, 'finalGradePP', '321');
   var _dataRankedPP = addRank(_dataSortedPP,'finalGradePP','rankPP')
-  alert(JSON.stringify(_dataRankedPP))
   var _dataFopaedPP = addFopa(_dataRankedPP,'rankPP','fopaPP',minPP, maxPP);
-  alert(JSON.stringify(_dataFopaedPP))
 
   /* ******************************************************************** */
   /* DATA CLEANING ****************************************************** */
