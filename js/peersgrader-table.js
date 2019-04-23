@@ -1,8 +1,10 @@
 /* */
-function tablify(data, columns) {
+function tablify(data,columns,tableId) {
+  tableId = '-'+tableId || '';
+  $('.activity:last').append('<div class="hook-table'+tableId+'"></div>');
   var sortAscending = true;
   console.log ("/* Tablify ***************************** /")
-  var container = d3.select('#hook-table').append('div')
+  var container = d3.select('.hook-table'+tableId).append('div')
     .attr('class','container')
   var table = container.append('table')
       .attr("class", "table table-striped");
@@ -14,7 +16,10 @@ function tablify(data, columns) {
     .selectAll('th')
     .data(columns).enter()
     .append('th')
-    .text(function (d) { return d; })
+    .text(function (d) {
+      var decimal = d.toString().split('.')[1];
+      decimal&&decimal.length>0?d=d.toFixed(2):d=d;
+      return d; })
     .on('click', function (d) {
       thead.attr('class', 'header');
       if (sortAscending) {

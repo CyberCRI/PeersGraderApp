@@ -38,6 +38,7 @@ var individualIdToGroupId = function (string) {
 // key : 'actual string on google questionnaire'  <==== !!!!!
 var  createListOfTerms = function(sessions){
   var obj = {
+    date       : 'Event',
     indivEmail : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
     indivFamily: 'Name?',
     indivId    : 'Identifiant?',
@@ -63,6 +64,7 @@ var flattening = function(jsonData, numberOfSessions, terms) {
   jsonData.forEach(function(x){
     for (var i=1; i<=numberOfSessions;i++){
       var instanceOfEvaluation = {
+        date        : x[terms.date],
         session     : i,
         indivEmail  : x[terms.indivEmail],
         indivFamily : x[terms.indivFamily],
@@ -92,6 +94,7 @@ var flattening = function(jsonData, numberOfSessions, terms) {
 /* 1) Students listing ************************************************ */
 var createCleanPersona = function(item){
   var persona = {
+    date   : item.date,
     indivStatus : item.indivStatus,
     indivEmail  : item.indivEmail,
     indivFamily : item.indivFamily,
@@ -188,7 +191,9 @@ var evaluations= [],
 /* ******************************************************************* */
 /* ShowInfo ********************************************************** */
 /* ******************************************************************* */
-function showInfo(data, tabletop) {
+function showInfo(data,tabletop,eventNum) {
+  eventNum = eventNum || 1;
+  console.log(i,data,tabletop)
   var keys = Object.keys(data[0]),
       sessions = getNumberOfSessions(keys),
       googleTerms = createListOfTerms(sessions); // matching google sheet
@@ -242,6 +247,7 @@ function showInfo(data, tabletop) {
   for (var i = 0; i < groupsList.length; i++) {
     if (!groupsList[i].match('Prof') ) {
       groups.push({
+        groupDate:null,               //
         groupId: groupsList[i],
         gradesPeers: [],
         averagePeers: null,
@@ -442,15 +448,11 @@ function showInfo(data, tabletop) {
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","finalGradePP","rankPP","fopaPP","indivFamily","indivEmail"]; //,"indivCity"
-  //Object.keys(studentsSortAverages[0]);
-
-  $('#hook-table').empty();
-  tablify(studentsSort, cols);
-  // scatterPlot(studentsCle aned);
-  $('#hook-violin').empty();
-  $('#hook-violin').removeClass();
-  violinPlot(studentsSort,"hook-violin");
+  var cols = ["date","indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","finalGradePP","rankPP","fopaPP","indivFamily","indivEmail"]; //,"indivCity"
+  $(".activity:last").append('<h4>Table</h4>')
+  tablify(studentsSort,cols,eventNum);
+  $(".activity:last").append('<h4>Violins</h4>')
+  violinPlot(studentsSort,"hook"+eventNum);
 };
 
 
@@ -458,20 +460,22 @@ function showInfo(data, tabletop) {
 /* Data call ********************************************************* */
 /* ******************************************************************* */
 var gkeys = {
-  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc', // named fdv
-  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0', // anon  biomed
-  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo', // named biomed
-  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs', // named fdv
-  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA', // named bio?
-  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII', // named bio?
-  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4', // named biomed
-  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named fdv
-  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named biomed
-  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named biomed
+  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc', // named P5 fdv
+  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0', // named P5 biomed
+  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo', // named P5 biomed
+  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs', // named P5 fdv
+  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA', // named P7 bio?
+  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII', // named P7 bio?
+  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4', // named P5 biomed
+  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named P5 fdv
+  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named P5 biomed
+  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named P5 biomed
   "testpoem"  : '1MQkHnD-2XJSVnvL5PQDjfygJOJXoeHayVoBiak82jLU'
-}
+};
 
-var init = function(googleSheetID) {
+var displayResults = function(googleSheetID,cycle) {
+  var cycle= cycle;
+  console.log('cycle1',cycle)
   Tabletop.init({
     key: googleSheetID,
     callback: showInfo,
@@ -479,8 +483,31 @@ var init = function(googleSheetID) {
   })
 };
 
+var googleId = function(date) {
+  var id =  document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys[date||'2019.01.11'];
+  return id;
+};
+var resetPage = function(){ $('#hook').empty(); }
 // On page load
-var googleId = getUrlVars()["google"] || gkeys['2019.01.11'];
-window.onload = function() { init(googleId) };
+window.onload = function() {
+  $('#run').on('click', function(){
+    resetPage();
+    $("#hook").append('<div><h3>'+item+'</h3></div>');
+    displayResults(googleId())
+  });
+  $('#open').on('click', function(){
+    var url = location.pathname + "?google="+googleId();
+    window.open(url, '_blank');
+  });
+
+  $('#biomeds').on('click', function(){
+    var biomeds = ["2017.01.10","2017.05.12","2018.01.12","2018.05.03","2019.01.11"];
+    resetPage();
+    for (var item of biomeds) {
+      $("#hook").append('<div class="activity"><h3>'+item+'</h3></div>');
+      displayResults(googleId(item))
+    };
+  });
+}
 // On button RUNS click
 // in html page

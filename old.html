@@ -9,9 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
-    <script src="./js/peersgrader-table.js"></script>
-    <script src="./js/peersgrader-plots.js"></script>
-    <script src="./js/peersgrader-script.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/style.css">
   </head>
@@ -55,7 +52,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-6">
         <div class="input-group">
           <span class="input-group-btn">
             <button class="btn btn-default" type="button">Google form ID :</button>
@@ -67,7 +64,10 @@
         <button id="run" class="btn btn-success btn-block">Run !</button>
       </div><!-- /.col-lg-->
       <div class="col-lg-2">
-        <button class="btn btn-info btn-block open">Open</button>
+        <button id="open" class="btn btn-info btn-block">Open</button>
+      </div><!-- /.col-lg -->
+      <div class="col-lg-2">
+        <button id="biomeds" class="btn btn-info btn-block" >Biomeds</button>
       </div><!-- /.col-lg -->
     </div><!-- /.row -->
   </div>
@@ -78,28 +78,13 @@
 <hr><br>
   <!-- page content -->
   <div class="container">
-    <h4>Summary table</h4>
-    <div id="hook-table"></div>
-  </div>
-  <div class="container">
-    <h4>Violins</h4>
-    <div id="hook-violin" class="a"></div>
+    <h2>Results</h2>
+    <div id="hook"></div>
   </div>
 </body>
+<script src="./js/peersgrader-table.js"></script>
+<script src="./js/peersgrader-plots.js"></script>
+<script src="./js/peersgrader-script.js"></script>
 <script>
-var googleId = function() {
-  var id =  document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys['2019.01.11'];
-  return id;
-};
-
-$('#run').on('click', function(){
-  console.log("googleId: 1.",  googleId())
-  // "2." ,getUrlVars()["google"] ,"3.", gkeys['2019.01.11']);
-  init(googleId())
-});
-$('.open').on('click', function(){
-  var url = location.pathname + "?google="+googleId();
-  window.open(url, '_blank');
-});
 </script>
 </html>
