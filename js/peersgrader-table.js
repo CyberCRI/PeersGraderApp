@@ -19,7 +19,7 @@ function tablify(data,columns,tableId) {
     .text(function (d) {
       var decimal = d.toString().split('.')[1];
       decimal&&decimal.length>0?d=d.toFixed(2):d=d;
-      return d; })
+      return +d; })
     .on('click', function (d) {
       thead.attr('class', 'header');
       if (sortAscending) {
