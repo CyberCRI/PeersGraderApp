@@ -48,6 +48,7 @@ function tablify(data,columns,tableId) {
       return columns.map(function (column) {
         var d = row[column],
         decimal = +d.toString().split('.')[1];
+        if(!isNaN(+d)){ d=+d}
         if(!isNaN(+d)&&decimal&&decimal.toString().length>0){ d= (+d).toFixed(2) }
         return {"column": column, "value": d };
       });
