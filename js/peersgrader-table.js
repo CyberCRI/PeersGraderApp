@@ -16,10 +16,7 @@ function tablify(data,columns,tableId) {
     .selectAll('th')
     .data(columns).enter()
     .append('th')
-    .text(function (d) {
-      var decimal = d.toString().split('.')[1];
-      if(decimal&&decimal.length>0){ d=d.toFixed(2)};
-      return d; })
+    .text(function (d) { return d; })
     .on('click', function (d) {
       thead.attr('class', 'header');
       if (sortAscending) {
@@ -49,13 +46,18 @@ function tablify(data,columns,tableId) {
   var cells = rows.selectAll('td')
     .data(function (row) {
       return columns.map(function (column) {
-        return {"column": column, "value": row[column]};
+        var d = row[column],
+            decimal = d.toString().split('.')[1];
+        if(decimal&&decimal.length>0){ d=+d.toFixed(2)};
+        return {"column": column, "value": d };
       });
     })
     .enter()
     .append('td')
     .attr('data-th', function (d) {	return d.value; })
-    .text(function (d) { return d.value; });
+    .text(function (d) {
+
+      return d.value; });
 }
 
 
