@@ -1,7 +1,8 @@
 /* */
-function tablify(data,columns,tableId) {
+var tablify = function (data,columns,tableId) {
   tableId = '-'+tableId || '';
-  $('.activity:last').append('<div class="hook-table'+tableId+'"></div>');
+  // https://stackoverflow.com/questions/55814163/d3js-last-is-not-a-valid-selector
+  $('.activity:last-child').append('<div class="hook-table'+tableId+'"></div>');
   var sortAscending = true;
   console.log ("/* Tablify ***************************** /")
   var container = d3.select('.hook-table'+tableId).append('div')
@@ -56,9 +57,7 @@ function tablify(data,columns,tableId) {
     .enter()
     .append('td')
     .attr('data-th', function (d) {	return d.value; })
-    .text(function (d) {
-
-      return d.value; });
+    .text(function (d) { return d.value; });
 }
 
 

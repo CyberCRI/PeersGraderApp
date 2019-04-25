@@ -492,7 +492,7 @@ var resetPage = function(){ $('#hook').empty(); }
 window.onload = function() {
   $('#run').on('click', function(){
     resetPage();
-    $("#hook").append('<div><h3>'+item+'</h3></div>');
+    $("#hook").append('<div><h3>Activity</h3></div>');
     displayResults(googleId())
   });
   $('#open').on('click', function(){
