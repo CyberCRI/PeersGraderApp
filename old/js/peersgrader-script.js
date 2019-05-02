@@ -309,23 +309,33 @@ function showInfo(data,tabletop,eventNum) {
   /* ******************************************************************** */
   /* ******************************************************************** */
   /* SeriousnessAssessment (function) *********************************** */
-  var seriousnessAssessment = function(a, b, bonus, counter){
-    var distance = Math.abs(a - b),
-        bump = 20 - distance*5;
-        /*
-    if      (distance<= 1) { bump=20; }
-    else if (distance<= 2) { bump=16; }
-    else if (distance<= 4) { bump=10; }
-    else if (distance<= 6) { bump= 6; }
-    else { bump= 0; } */
-    bonus= bonus + bump;
+  var seriousnessAssessment = function(avg,gradeGiven,bonus, counter,perfect,typical){
+				perfect = perfect || 20,
+				typical = perfect&&typical?typical:0.75*perfect;
+    var distance  = Math.abs(avg - gradeGiven),
+				normalness=0;
+		// Linear, 1d:
+		// normalness = perfect - distance;
+		// Linear, 5d:
+       normalness = perfect - distance*5;
+		/* Discrete :
+    if      (distance<=0.05*perfect){ normalness=1.0*perfect; }
+    else if (distance<=0.1*perfect) { normalness=0.8*perfect; }
+    else if (distance<=0.2*perfect) { normalness=0.5*perfect; }
+    else if (distance<=0.3*perfect) { normalness=0.3*perfect; }
+    else { normalness= 0; } */
+		// Sigmoid_function > Logistic function
+		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
+		/* Louis degration polinomiale :
+			normalness = perfect
+				-(Math.pow(Math.abs(avg-gradeGiven),2))/2
+				+ Math.abs(avg-typical);
+		*/
+		if(normalness>perfect){ normalness=perfect; }
+    bonus= bonus + normalness;
     counter= counter+1;
-    return [bonus,counter,bump]
-  }
-  // Linear:
-  // bump = 20 - distance;
-  // Sigmoid_function > Logistic function
-  // var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
+    return [bonus,counter,normalness];
+  };
 
   /* ******************************************************************** */
   /* Seriousness calculation ******************************************** */
@@ -382,7 +392,7 @@ function showInfo(data,tabletop,eventNum) {
   	return input;
   };
 
-  var findExtrems = function(input,basedOnCol,returnedCol){
+  var findExtremsOnTwinColum = function(input,basedOnCol,returnedCol){
   	var minBaseCol,
     		maxBaseCol,
     		minReturnCol,
@@ -407,7 +417,7 @@ function showInfo(data,tabletop,eventNum) {
   // FOPA ALGO ******************************************************************** */
   /* var min = findExtrems(data).min,
   		max = findExtrems(data).max; */
-  var ext = findExtrems(students,'finalGrade','averageProfs'),
+  var ext = findExtremsOnTwinColum(students,'finalGrade','averageProfs'),
   		min = ext.min,
   		max = ext.max;
   var _dataSorted = sortJSON(students, 'finalGrade', '321');
@@ -415,7 +425,7 @@ function showInfo(data,tabletop,eventNum) {
   var _dataFopaed = addFopa(_dataRanked,'rank','fopa', min, max);
 
   // FopqPP
-  var extPP = findExtrems(students,'finalGradePP','averageProfs'),
+  var extPP = findExtremsOnTwinColum(students,'finalGradePP','averageProfs'),
       minPP = extPP.min,
       maxPP = extPP.max;
   var _dataSortedPP = sortJSON(students, 'finalGradePP', '321');
@@ -452,7 +462,7 @@ function showInfo(data,tabletop,eventNum) {
   $(".activity:last").append('<h4>Table</h4>')
   tablify(studentsSort,cols,eventNum);
   $(".activity:last").append('<h4>Violins</h4>')
-  violinPlot(studentsSort,"hook"+eventNum);
+  // violinPlot(studentsSort,"hook"+eventNum);
 };
 
 

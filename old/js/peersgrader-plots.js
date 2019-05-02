@@ -46,33 +46,36 @@ var dataForViolins = function(studentsRawData, template) {
     var trace  = template(),
         student= studentsRawData[i];
     trace.y0   = student.indivId; //+" "+student.indivFamily ;
-    trace.showlegend = i==0?true:false;
-    trace.legendgroup= "Got";
-    trace.name = "Grades received by this student";
-    trace.text = student.gradesPeers.join("; ").replace(/,/g,":")
-    var grades = student.gradesPeers.map(function(a) { return a[1] }).filter(Number),
+    trace.showlegend = i===0?true:false;
+    trace.legendgroup= "from Peers";
+    trace.name = "GradesPeers received by this student";
+    trace.text = student.gradesPeers.join("; ").replace(/,/g,":");
+    var grades = student.gradesPeers.map(
+			function(a) { return a[1]; }
+		).filter(Number),
         l = grades.length;
-        if(l == 1){ grades[1] = grades[0]+.1 }
-        if(grades[0] == grades[1]){ grades[1] = grades[1]+.1 }
+        if(l == 1){ grades[1] = grades[0]+0.1; }
+        if(grades[0] == grades[1]){ grades[1] = grades[1]+0.1; }
     trace.x    = grades;
     trace.side = "positive";
     trace.line.color = '#8dc7d3';
     trace.pointpos= 0.2;
-    traces.push({...trace});
-    var trace  = template();
-    trace.y0   = student.indivId; //+" "+student.indivFamily ;
-    trace.showlegend = i==0?true:false;
+    traces.push({ ...trace });
+    
+		trace    = template();
+    trace.y0 = student.indivId; //+" "+student.indivFamily ;
+    trace.showlegend = i===0?true:false;
     // trace.legendgroup= "Gave";
     // trace.name = "Grades given by this student";
     // trace.text = student.gradesGiven.join("; ").replace(/,/g,":")
     // trace.x    = student.gradesGiven.map(function(a) { return a[1] }).filter(Number);
-    trace.legendgroup= "by Profs";
+    trace.legendgroup= "from Profs";
     trace.name = "GradesProfs received by this student";
     trace.text = student.gradesProfs.join("; ").replace(/,/g,":")
     var grades = student.gradesProfs.map(function(a) { return a[1] }).filter(Number),
         l = grades.length;
-        if(l == 1){ grades[1] = grades[0]+.1 }
-        if(grades[0] == grades[1]){ grades[1] = grades[1]+.1 }
+        if(l == 1){ grades[1] = grades[0]+0.1; }
+        if(grades[0] == grades[1]){ grades[1] = grades[1]+0.1; }
     trace.x    = grades; // .length>1 ? gradesProfs: [ gradesProfs[0],gradesProfs[0]+0.1];  /**************************** fails on [15], on [15,15]. On [] ? ************************
     trace.side = "negative";
     trace.line.color = '#d38dc7';
@@ -111,7 +114,8 @@ var layout = {
   violinmode: "overlay"
 }
 // Runs violin dataviz
-var violinPlot = function(data,hook){
+var violinPlot = function(data,hookId) {
+  hookId = '-'+hookId || '';
   console.log ("/* ViolinPlot ************************************* /")
   console.log(JSON.stringify(data[0]));
   layout.height= data.length * 120;
