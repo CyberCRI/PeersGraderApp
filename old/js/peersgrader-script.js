@@ -327,8 +327,8 @@ function showInfo(data,tabletop,eventNum) {
 		// Sigmoid_function > Logistic function
 		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
 		/* Louis degration polinomiale : */
-			normalness = perfect
-				-(Math.pow(Math.abs(avg-gradeGiven),2))/2
+			normalness = perfect + Math.abs(avg-gradeGiven)*0.5
+				-(Math.pow(Math.abs(avg-gradeGiven),2))*(-0.357)
 				+ Math.abs(avg-typical);
 		/**/
 		if(normalness>perfect){ normalness=perfect; }
