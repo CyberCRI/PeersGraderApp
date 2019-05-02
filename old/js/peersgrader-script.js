@@ -316,8 +316,8 @@ function showInfo(data,tabletop,eventNum) {
 				normalness=0;
 		// Linear, 1d:
 		// normalness = perfect - distance;
-		// Linear, 5d:
-       normalness = perfect - distance*5;
+		/* Linear, 5d:
+       normalness = perfect - distance*5; */
 		/* Discrete :
     if      (distance<=0.05*perfect){ normalness=1.0*perfect; }
     else if (distance<=0.1*perfect) { normalness=0.8*perfect; }
@@ -326,11 +326,11 @@ function showInfo(data,tabletop,eventNum) {
     else { normalness= 0; } */
 		// Sigmoid_function > Logistic function
 		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
-		/* Louis degration polinomiale :
+		/* Louis degration polinomiale : */
 			normalness = perfect
 				-(Math.pow(Math.abs(avg-gradeGiven),2))/2
 				+ Math.abs(avg-typical);
-		*/
+		/**/
 		if(normalness>perfect){ normalness=perfect; }
     bonus= bonus + normalness;
     counter= counter+1;
