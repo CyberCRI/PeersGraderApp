@@ -311,7 +311,7 @@ function showInfo(data,tabletop,eventNum) {
   /* SeriousnessAssessment (function) *********************************** */
   var seriousnessAssessment = function(a, b, bonus, counter){
     var distance = Math.abs(a - b),
-        bump = 20 - (distance*distance)/2 + (15-a);
+        bump = 20 - distance*5;
         /*
     if      (distance<= 1) { bump=20; }
     else if (distance<= 2) { bump=16; }
