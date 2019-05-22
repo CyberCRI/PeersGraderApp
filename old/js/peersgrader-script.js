@@ -327,11 +327,14 @@ function showInfo(data,tabletop,eventNum) {
 		// Sigmoid_function > Logistic function
 		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
 		/* Louis degration polinomiale : */
-			normalness = perfect + Math.abs(avg-gradeGiven)*0.5
-				-(Math.pow(Math.abs(avg-gradeGiven),2))*(-0.357)
-				+ Math.abs(avg-typical);
+			normalness = perfect
+				- 1*Math.pow(Math.abs(avg-gradeGiven),2)
+				+ 1*Math.abs(avg-typical);
 		/**/
+		console.log('normalness: ',normalness);
+		console.log('distance: ',distance);
 		if(normalness>perfect){ normalness=perfect; }
+		if(normalness<0){ normalness=0; }
     bonus= bonus + normalness;
     counter= counter+1;
     return [bonus,counter,normalness];
@@ -351,7 +354,7 @@ function showInfo(data,tabletop,eventNum) {
         if(grp === groups[k].groupId && typeof grd === 'number'){
           var avgProfs= groups[k].averageProfs,
               avgAll  = groups[k].averageAll;
-          var res = seriousnessAssessment(avgAll,grd,bonus,counter),
+          var res = seriousnessAssessment(avgAll,grd,bonus,counter,20,15),
           bonus   = res[0],
           counter = res[1];
           var bump= res[2];
