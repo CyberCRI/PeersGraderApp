@@ -38,7 +38,6 @@ var individualIdToGroupId = function (string) {
 // key : 'actual string on google questionnaire'  <==== !!!!!
 var  createListOfTerms = function(sessions){
   var obj = {
-    date       : 'Event',
     indivEmail : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
     indivFamily: 'Name?',
     indivId    : 'Identifiant?',
@@ -64,7 +63,6 @@ var flattening = function(jsonData, numberOfSessions, terms) {
   jsonData.forEach(function(x){
     for (var i=1; i<=numberOfSessions;i++){
       var instanceOfEvaluation = {
-        date        : x[terms.date],
         session     : i,
         indivEmail  : x[terms.indivEmail],
         indivFamily : x[terms.indivFamily],
@@ -94,7 +92,6 @@ var flattening = function(jsonData, numberOfSessions, terms) {
 /* 1) Students listing ************************************************ */
 var createCleanPersona = function(item){
   var persona = {
-    date   : item.date,
     indivStatus : item.indivStatus,
     indivEmail  : item.indivEmail,
     indivFamily : item.indivFamily,
@@ -191,9 +188,7 @@ var evaluations= [],
 /* ******************************************************************* */
 /* ShowInfo ********************************************************** */
 /* ******************************************************************* */
-function showInfo(data,tabletop,eventNum) {
-  eventNum = eventNum || 1;
-  console.log(i,data,tabletop)
+function showInfo(data, tabletop) {
   var keys = Object.keys(data[0]),
       sessions = getNumberOfSessions(keys),
       googleTerms = createListOfTerms(sessions); // matching google sheet
@@ -247,7 +242,6 @@ function showInfo(data,tabletop,eventNum) {
   for (var i = 0; i < groupsList.length; i++) {
     if (!groupsList[i].match('Prof') ) {
       groups.push({
-        groupDate:null,               //
         groupId: groupsList[i],
         gradesPeers: [],
         averagePeers: null,
@@ -309,33 +303,23 @@ function showInfo(data,tabletop,eventNum) {
   /* ******************************************************************** */
   /* ******************************************************************** */
   /* SeriousnessAssessment (function) *********************************** */
-  var seriousnessAssessment = function(avg,gradeGiven,bonus, counter,perfect,typical){
-				perfect = perfect || 20,
-				typical = perfect&&typical?typical:0.75*perfect;
-    var distance  = Math.abs(avg - gradeGiven),
-				normalness=0;
-		// Linear, 1d:
-		// normalness = perfect - distance;
-		/* Linear, 5d:
-       normalness = perfect - distance*5; */
-		/* Discrete :
-    if      (distance<=0.05*perfect){ normalness=1.0*perfect; }
-    else if (distance<=0.1*perfect) { normalness=0.8*perfect; }
-    else if (distance<=0.2*perfect) { normalness=0.5*perfect; }
-    else if (distance<=0.3*perfect) { normalness=0.3*perfect; }
-    else { normalness= 0; } */
-		// Sigmoid_function > Logistic function
-		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
-		/* Louis degration polinomiale : */
-			normalness = perfect + Math.abs(avg-gradeGiven)*0.5
-				-(Math.pow(Math.abs(avg-gradeGiven),2))*(-0.357)
-				+ Math.abs(avg-typical);
-		/**/
-		if(normalness>perfect){ normalness=perfect; }
-    bonus= bonus + normalness;
+  var seriousnessAssessment = function(a, b, bonus, counter){
+    var distance = Math.abs(a - b),
+        bump = 20 - distance*5;
+        /*
+    if      (distance<= 1) { bump=20; }
+    else if (distance<= 2) { bump=16; }
+    else if (distance<= 4) { bump=10; }
+    else if (distance<= 6) { bump= 6; }
+    else { bump= 0; } */
+    bonus= bonus + bump;
     counter= counter+1;
-    return [bonus,counter,normalness];
-  };
+    return [bonus,counter,bump]
+  }
+  // Linear:
+  // bump = 20 - distance;
+  // Sigmoid_function > Logistic function
+  // var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
 
   /* ******************************************************************** */
   /* Seriousness calculation ******************************************** */
@@ -392,7 +376,7 @@ function showInfo(data,tabletop,eventNum) {
   	return input;
   };
 
-  var findExtremsOnTwinColum = function(input,basedOnCol,returnedCol){
+  var findExtrems = function(input,basedOnCol,returnedCol){
   	var minBaseCol,
     		maxBaseCol,
     		minReturnCol,
@@ -417,7 +401,7 @@ function showInfo(data,tabletop,eventNum) {
   // FOPA ALGO ******************************************************************** */
   /* var min = findExtrems(data).min,
   		max = findExtrems(data).max; */
-  var ext = findExtremsOnTwinColum(students,'finalGrade','averageProfs'),
+  var ext = findExtrems(students,'finalGrade','averageProfs'),
   		min = ext.min,
   		max = ext.max;
   var _dataSorted = sortJSON(students, 'finalGrade', '321');
@@ -425,7 +409,7 @@ function showInfo(data,tabletop,eventNum) {
   var _dataFopaed = addFopa(_dataRanked,'rank','fopa', min, max);
 
   // FopqPP
-  var extPP = findExtremsOnTwinColum(students,'finalGradePP','averageProfs'),
+  var extPP = findExtrems(students,'finalGradePP','averageProfs'),
       minPP = extPP.min,
       maxPP = extPP.max;
   var _dataSortedPP = sortJSON(students, 'finalGradePP', '321');
@@ -454,15 +438,18 @@ function showInfo(data,tabletop,eventNum) {
   }
   var studentsSortAverages = studentsSort.map(finalDataForm);
   cl(['13/ studentsReformated: ',studentsSortAverages.length, studentsSortAverages]); // students with grades
-
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["date","indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","finalGradePP","rankPP","fopaPP","indivFamily","indivEmail"]; //,"indivCity"
-  $(".activity:last").append('<h4>Table</h4>')
-  tablify(studentsSort,cols,eventNum);
-  $(".activity:last").append('<h4>Violins</h4>')
-  // violinPlot(studentsSort,"hook"+eventNum);
+  var cols = ["indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","finalGradePP","rankPP","fopaPP","indivFamily","indivEmail"]; //,"indivCity"
+  //Object.keys(studentsSortAverages[0]);
+
+  $('#hook-table').empty();
+  tablify(studentsSort, cols);
+  // scatterPlot(studentsCle aned);
+  $('#hook-violin').empty();
+  $('#hook-violin').removeClass();
+  violinPlot(studentsSort,"hook-violin");
 };
 
 
@@ -470,23 +457,20 @@ function showInfo(data,tabletop,eventNum) {
 /* Data call ********************************************************* */
 /* ******************************************************************* */
 var gkeys = {
-  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc', // named P5 fdv
-  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0', // named P5 biomed
-  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo', // named P5 biomed
-  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs', // named P5 fdv
-  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA', // named P7 bio?
-  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII', // named P7 bio?
-  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4', // named P5 biomed
-  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named P5 fdv
-  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named P5 biomed
-  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named P5 biomed
-	"2019.05.20": '1mF54W78XfpgUejgEJwv780yfH8Sm_l6h7btKXVU8Q78',
+  "2016.11.25": '1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc', // named fdv
+  "2017.01.10": '1sqQB46CwxjcTwG46T_cAvoS_B5fT_6abe7_NBaRs0v0', // anon  biomed
+  "2017.05.12": '1wHNlEtNZoyQ-wgKHMb6wnewpruiGkqTqnX12v8vY6Mo', // named biomed
+  "2017.05.29": '1ZyN70SJImSgttxiETCVNNSmwB5r2lneliFR4KzDLJWs', // named fdv
+  "2017.06.07": '1nmyiVNnGNmSUC8suoQj7s_06D-cFb0UQZvM_odpEYlA', // named bio?
+  "2017.12.01": '1Yz7Njbbu9-lA0sQIMFyF2S5K3LN8bHEbd-nl8v7gHII', // named bio?
+  "2018.01.12": '1xQF8EyIultcDMmZUAOYYU07xIQFW6bGbQFYm8CmC3Q4', // named biomed
+  "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named fdv
+  "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named biomed
+  "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named biomed
   "testpoem"  : '1MQkHnD-2XJSVnvL5PQDjfygJOJXoeHayVoBiak82jLU'
-};
+}
 
-var displayResults = function(googleSheetID,cycle) {
-  var cycle= cycle;
-  console.log('cycle1',cycle)
+var init = function(googleSheetID) {
   Tabletop.init({
     key: googleSheetID,
     callback: showInfo,
@@ -494,31 +478,8 @@ var displayResults = function(googleSheetID,cycle) {
   })
 };
 
-var googleId = function(date) {
-  var id =  document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys[date||'2019.01.11'];
-  return id;
-};
-var resetPage = function(){ $('#hook').empty(); }
 // On page load
-window.onload = function() {
-  $('#run').on('click', function(){
-    resetPage();
-    $("#hook").append('<div><h3>Activity</h3></div>');
-    displayResults(googleId())
-  });
-  $('#open').on('click', function(){
-    var url = location.pathname + "?google="+googleId();
-    window.open(url, '_blank');
-  });
-
-  $('#biomeds').on('click', function(){
-    var biomeds = ["2017.01.10","2017.05.12","2018.01.12","2018.05.03","2019.01.11","2019.05.20"];
-    resetPage();
-    for (var item of biomeds) {
-      $("#hook").append('<div class="activity"><h3>'+item+'</h3></div>');
-      displayResults(googleId(item))
-    };
-  });
-}
+var googleId = getUrlVars()["google"] || gkeys['2019.01.11'];
+window.onload = function() { init(googleId) };
 // On button RUNS click
 // in html page
