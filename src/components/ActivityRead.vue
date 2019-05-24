@@ -1,14 +1,14 @@
 <template>
 	<div id="action-bar">
+
+		<!-- ACCESS TO ADMIN DASHBOARD -->
 		<div class ="action-activity level">
-			
 				<a class="button is-small" @click="manageActivity">
 			    <span class="icon is-medium">
 			      <i class="fas fa-edit"></i>
 			    </span>
-			    <span>Modify</span>
+			    <span>Admin edit</span>
 			  </a>
-			
 			<!-- <div class="level-item">
 				<a class="button is-small">
 			    <span class="icon is-medium">
@@ -17,15 +17,15 @@
 			    <span>Rubric</span>
 			  </a>
 			</div> -->
-			
 				<a class="button is-small" @click="openInvite">
 			    <span class="icon is-medium">
 			      <i class="fas fa-share-square"></i>
 			    </span>
 			    <span>Send invitations</span>
 			  </a>
-			
 		</div>
+
+		<!-- ADMIN DASHBOARD -->
 		<div v-if="showInvite && isAdmin" id="manage-message">
 			<article class="message is-danger">
 			  <div class="message-header">
@@ -76,6 +76,8 @@
 			  </div>
 			</article>
 		</div>
+
+		<!-- ACTIVITY SUMMARY for everyone -->
 		<div  v-if="showPwd && !isAdmin" class="pg-activity">
 			<pwd-activity :context="context"></pwd-activity>
 		</div>
@@ -115,12 +117,12 @@
 			return {
 				showInvite : false,
 				showPwd : false,
-				tab : 'link', 
+				tab : 'link',
 				invitationRecipients : [],
 				invitationMessage: '',
 				context : ''
 			};
-		},	
+		},
 		components:{
 			'pwd-activity' : ActivityPassword,
 			'input-tag' : InputTag
@@ -131,6 +133,7 @@
 				isAdmin: 'isAdmin'
 			}),
 			activityLink(){
+				// https://jsfiddle.net/y16d3zrb/
 				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId+'/review';
 			}
 		},
@@ -145,8 +148,8 @@
 					}).then(response=>{
 						if(response.sent)
 							this.$notify({
-								group:'notifications',
-								title:'Invitations sent !',
+								group: 'notifications',
+								title: 'Invitations sent !',
 								text : 'Invitations have been sent. In case you did not get it.',
 								type : 'success'
 							});
@@ -166,8 +169,8 @@
 								});
 							} else {
 								this.$notify({
-									group:'notifications',
-									title:'Something went wrong ...',
+									group: 'notifications',
+									title: 'Something went wrong ...',
 									text : 'Stars were not aligned and despite our efforts to carry on your query, universe is ploting against us. Hate the game bro...',
 									type : 'error'
 								});
@@ -186,10 +189,10 @@
 			  const el = document.createElement('textarea');  // Create a <textarea> element
 			  el.value = str;                                 // Set its value to the string that you want copied
 			  el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
-			  el.style.position = 'absolute';                 
+			  el.style.position = 'absolute';
 			  el.style.left = '-9999px';                      // Move outside the screen to make it invisible
 			  document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
-			  const selected =            
+			  const selected =
 			    document.getSelection().rangeCount > 0        // Check if there is any content selected previously
 			      ? document.getSelection().getRangeAt(0)     // Store selection if found
 			      : false;                                    // Mark as false to know no selection existed before
@@ -206,16 +209,13 @@
 			},
 			tabswitch(e){
 				var tab = e.target.getAttribute('data-tab');
-
 				this.tab = tab;
 			},
 			noRedoNoFuckNo(){
 				var container = document.getElementById('mainContainer'),
-					actionBar = document.getElementById('action-bar'),
+					actionBar   = document.getElementById('action-bar'),
 					containerPadding = parseInt(window.getComputedStyle(container, null).getPropertyValue('padding')),
-					containerWidth = parseInt(window.getComputedStyle(container,null).getPropertyValue('width'));
-
-				
+					containerWidth   = parseInt(window.getComputedStyle(container, null).getPropertyValue('width'));
 
 				actionBar.style.position = 'relative';
 				actionBar.style.width = `calc(100% + ${2*containerPadding}px)`
@@ -242,8 +242,8 @@
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',
 				sendInvitations: 'sendInvitations',
-				isRubricEmpty : 'isRubricEmpty',
-				setModifyWill : 'setModifyWill'
+				isRubricEmpty  : 'isRubricEmpty',
+				setModifyWill  : 'setModifyWill'
 			})
 		},
 		update(){
@@ -253,7 +253,7 @@
 			console.log('mounted')
 			await this.lookForActivity(this.$router.history.current.params.id);
 			this.invitationRecipients = this.activity.participants.reduce((a,c)=>{a.push(c.email);return a;},[]);
-			this.noRedoNoFuckNo();	
+			this.noRedoNoFuckNo();
 		},
 	};
 </script>
@@ -336,7 +336,7 @@
 
 	.action-activity{
 		display: flex!important;
-		background:#434e57;
+		background: #434e57;
 		justify-content: center;
 	}
 
