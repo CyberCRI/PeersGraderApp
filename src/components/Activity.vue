@@ -173,7 +173,7 @@
 					        <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
 					        <p>
 					          <span class="icon"><i class="fas fa-pencil-alt fa-1x" aria-hidden="true"></i></span> You can edit participants, options and the rubric using this link & password.<br>
-					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : <a href="">{{modalInfo.activityPath}}</a><br>
+					          <span class="icon"><i class="fas fa-link fa-1x" aria-hidden="true"></i></span> Activity's link is : <a :href="modalInfo.activityPath">{{modalInfo.activityPath}}</a><br>
 					          <span class="icon"><i class="fas fa-key fa-1x" aria-hidden="true"></i></span> Master password is : {{modalInfo.activityPassword}}<br>
 
 					        </p><br>
@@ -281,7 +281,7 @@
 					var vm = this;
 					this.setActivity(this.activity).then(response=>{
 						if(response.teacherPwd){
-							vm.modalInfo.activityPath = `https://peergraders.herokuapp.com/#/activity/${this.activity.urlId}`,
+							vm.modalInfo.activityPath = window.location.origin+`/#/activity/${this.activity.urlId}`,
 							vm.modalInfo.activityPassword = response.teacherPwd;
 							vm.showStep = 4;
 							this.goStep(1);
@@ -408,7 +408,7 @@ url("../../static/images/bg-school.png");
 	width: 80%;
 	margin: 0 auto;
 }
-.message.is-danger { 
+.message.is-danger {
 	width: 80%;
 	margin: 0 auto;
 }

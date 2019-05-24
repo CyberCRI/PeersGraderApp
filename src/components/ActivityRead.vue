@@ -2,28 +2,21 @@
 	<div id="action-bar">
 
 		<!-- ACCESS TO ADMIN DASHBOARD -->
-		<div class ="action-activity level">
-				<a class="button is-small" @click="manageActivity">
-			    <span class="icon is-medium">
-			      <i class="fas fa-edit"></i>
-			    </span>
-			    <span>Admin edit</span>
+			<div class="buttons is-centered">
+				<a class="button is-danger" @click="manageActivity">
+			    <span class="icon"><i class="fab fa-edit"></i></span>
+			    <span>Admin access</span>
 			  </a>
-			<!-- <div class="level-item">
-				<a class="button is-small">
-			    <span class="icon is-medium">
-			      <i class="fas fa-book"></i>
-			    </span>
-			    <span>Rubric</span>
-			  </a>
-			</div> -->
-				<a class="button is-small" @click="openInvite">
-			    <span class="icon is-medium">
-			      <i class="fas fa-share-square"></i>
-			    </span>
-			    <span>Send invitations</span>
-			  </a>
-		</div>
+			<!--
+				<a class="button is-danger" @click="openInvite">
+					<span class="icon"><i class="fab fa-book is-medium"></i></span>
+					<span>Rubric</span>
+				</a> -->
+				<a class="button is-danger" @click="openInvite">
+					<span class="icon"><i class="fab fa-share-square"></i></span>
+					<span>Send invitations</span>
+				</a>
+			</div>
 
 		<!-- ADMIN DASHBOARD -->
 		<div v-if="showInvite && isAdmin" id="manage-message">
@@ -133,8 +126,8 @@
 				isAdmin: 'isAdmin'
 			}),
 			activityLink(){
-				// https://jsfiddle.net/y16d3zrb/
-				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId+'/review';
+				// https://jsfiddle.net/m4gqc1b5/
+				return window.location.origin+'/#/activity/'+this.activity.urlId+'/review';
 			}
 		},
 		methods : {
