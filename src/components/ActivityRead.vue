@@ -3,22 +3,22 @@
 
 		<!-- ACCESS TO ADMIN DASHBOARD -->
 			<div class="buttons is-centered">
-				<a class="button is-danger" @click="manageActivity">
-			    <span class="icon"><i class="fab fa-edit"></i></span>
+				<a class="button is-danger" @click="manageActivity"><!-- goes to edit page -->
+			    <span class="icon"><i class="fas fa-edit"></i> </span>
 			    <span>Admin access</span>
 			  </a>
 			<!--
-				<a class="button is-danger" @click="openInvite">
+				<a class="button is-danger">
 					<span class="icon"><i class="fab fa-book is-medium"></i></span>
 					<span>Rubric</span>
 				</a> -->
 				<a class="button is-danger" @click="openInvite">
-					<span class="icon"><i class="fab fa-share-square"></i></span>
+					<span class="icon"><i class="fas fa-share-square"></i></span>
 					<span>Send invitations</span>
 				</a>
 			</div>
 
-		<!-- ADMIN DASHBOARD -->
+		<!-- ADMIN INVITE PARTICIPANTS -->
 		<div v-if="showInvite && isAdmin" id="manage-message">
 			<article class="message is-danger">
 			  <div class="message-header">
@@ -26,15 +26,18 @@
 			    <button @click="closeInvite" class="delete" aria-label="delete"></button>
 			  </div>
 			  <div class="message-body">
+					<!-- TABS -->
 				  <div class="tabs">
 					  <ul>
-					    <li  :class="{'is-active' : tab == 'link' , '' : tab=='email'}" @click="tabswitch" ><a class="button" data-tab="link">Link</a></li>
-					    <li :class="{'is-active' : tab == 'email' , '' : tab=='link'}" @click="tabswitch"><a class="button" data-tab="email">Email</a></li>
+					    <li :class="{'is-active' : tab == 'link' , '' : tab=='email'}" @click="tabswitch"><a class="button" data-tab="link" >Link </a></li>
+					    <li :class="{'is-active' : tab == 'email', '' : tab=='link' }" @click="tabswitch"><a class="button" data-tab="email">Email</a></li>
 					  </ul>
 					</div>
+					<!-- CONTENTS  -->
 					<div id="tab-content">
+						<!-- LINK sharing -->
 						<div :class="{'is-active' : tab == 'link' , '' : tab=='email'}" data-content="link">
-							<div class="link-div"><p>Why are we sharing by link ? I don't know. Tell us !</p></div>
+							<div class="link-div"><p>You can copy this link and share it with the students your previously registered.</p></div>
 							<div class="field has-addons">
 							  <div class="input-link control">
 							    <input class="input" type="text" id="link-activity" :value="activityLink" disabled="disabled">
@@ -46,6 +49,7 @@
 							  </div>
 							</div>
 						</div>
+							<!-- EMAIL sharing -->
 						<div :class="{'is-active' : tab == 'email','': tab =='link'}" data-content="email">
 							<div id="tab-invite-content">
 								<input-tag class="input invite pg-mailtag" placeholder="Emails" :tags.sync="invitationRecipients" validation="email"></input-tag>
@@ -64,16 +68,18 @@
 							    <span>Send</span>
 							  </a>
 							</div>
-						</div>
-					</div>
+						</div> <!-- EMAIL sharing -->
+					</div> <!-- CONTENTS -->
 			  </div>
 			</article>
-		</div>
+		</div><!-- ADMIN INVITE PARTICIPANTS -->
 
-		<!-- ACTIVITY SUMMARY for everyone -->
+		<!-- PASSWORD FIELD -->
 		<div  v-if="showPwd && !isAdmin" class="pg-activity">
 			<pwd-activity :context="context"></pwd-activity>
 		</div>
+
+		<!-- ACTIVITY SUMMARY for everyone -->
 		<div class="pg-activity">
 			<div class="pg-activity-content">
 				<div class="pg-level">
