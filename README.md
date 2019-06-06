@@ -7,7 +7,7 @@
 ```shell
 npm install                           # Install dependencies
 npm run-script mongo                  # Run mongo
-npm run-script build && npm run dev   # Build website
+npm run-script build && npm run dev   # Build website and run dev mode (hot reloading).
 npm run-script serverjs               # Run website's server (requires `.env`)
 chromium-browser "http://localhost:5000/#/"   # Opens landing page
 ```
