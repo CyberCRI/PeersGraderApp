@@ -5,11 +5,11 @@
 `
 2. On Ubuntu, in several distinct shells,  :
 ```shell
-npm install                           # Install dependencies
-npm run-script mongo                  # Run mongo
-npm run-script build && npm run dev   # Build website and run dev mode (hot reloading).
+npm install                           # [optional] Install dependencies at first time
+npm run-script mongo                  # Turn on mongodb database
+npm run-script build && npm run dev   # [optional] Build website and run dev mode (hot reloading).
 npm run-script serverjs               # Run website's server (requires `.env`)
-chromium-browser "http://localhost:5000/#/"   # Opens landing page
+chromium-browser "http://localhost:5000/#/"   # [optional] Opens landing page
 ```
 
 ### Dependencies
