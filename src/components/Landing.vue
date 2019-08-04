@@ -1,5 +1,5 @@
 <template>
-	<div class="landing-content bg-wood">
+	<div class="landing-content">
 
 	<section id="create" class="section bg-school">
 		<div class="container">
@@ -8,7 +8,7 @@
 				<p class="subtitle is-4 has-text-white">The simple way to set up peers grading activities for your class.</p>
 			</div>
 			<br>
-			<div class="box is-radiusless">
+			<div class="box bg-wood" ><!--  is-radiusless -->
 				<div class="field is-grouped">
 					<p class="title-control control has-icons-left is-expanded">
 						<input class="input" type="text" placeholder="What is your activity about ?" v-model="title">
@@ -24,7 +24,7 @@
 		</div>
 	</section>
 
-	<section id="how-to" class="section has-background-light has-text-centered">
+	<section id="how-to" class="section bg-wood has-background-light has-text-centered">
     <div class="container">
 		<h3 class="title is-3">How it works</h3>
 		<div class="columns is-multiline">
@@ -135,7 +135,7 @@
 					<p><a href="./" class="has-text-white has-text-weight-bold">PeersGrader</a> — <span class="is-italic is-size-7">Let's do it!</span></p>
 				</div>
 				<div class="column  is-3">
-					<a href="https://github.com" class="has-text-white has-text-weight-bold"><span class="icon"><i class="fab fa-github-alt"></i></span></a>
+					<a href="https://github.com/CyberCRI/PeersGraderApp" class="has-text-white has-text-weight-bold"><span class="icon"><i class="fab fa-github-alt"></i></span></a>
 				</div>
 			</div>
 		</div>
@@ -156,15 +156,15 @@
 </script>
 
 <style scoped>
-	.bg-wood { background: url("../../static/images/bg-wood.png") repeat; }
+	.bg-wood {
+		background-image: url("../../static/images/bg-wood.png"); }
 	.bg-school{
 		color: white!important;
-		border: solid #EEE 1px;
 		background-size: 200px 200px;
    	background-image:  linear-gradient(to bottom,
      rgba(55,152,212,0.93) 0%,
      rgba(55,152,212,0.93) 100%),
-     url("../../static/images/bg-school.png");
+     url("../../static/images/bg-school.svg");
 	}
 
 	.landing-content{

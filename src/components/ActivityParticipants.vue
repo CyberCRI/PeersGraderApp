@@ -4,7 +4,7 @@
 				<span>Update</span>
 		</a>
 		<div class="level participants-label">
-			<label class="label">CSV Insertion</label>
+			<label class="label has-text-white">CSV Insertion</label>
 		</div>
 		<div class="field participants-label">
 			<textarea @blur="convertCSV" id="textarea" v-model="csvInsertion" class="textarea" placeholder="Textarea"></textarea>
@@ -13,7 +13,7 @@
 			<p style="color:red;">The field does not contain the minimum required field (email,group,role).</p>
 		</div>
 		<div class="level participants-label">
-			<label class="label">Participants</label>
+			<label class="label has-text-white">Participants and assignments</label>
 		</div>
 		<div v-for="(participant,i) in activity.participants" class="row-participant">
 			<div class="tooltip" :class="{'error-flag': isRowError(i), 'no-error' : !isRowError(i)}" >

@@ -4,20 +4,20 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import Notifications from 'vue-notification'
+import Notifications from 'vue-notification'     // ? from a node module !
 
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false;      // ? how does this works
 
 console.log(Vue.config)
 
-Vue.use(Notifications);
+Vue.use(Notifications);      // ?
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>'
+  el: '#app',                // main hook
+  router,                    // router
+  store,                     // js modules
+  components: { App },       // html,js,css components
+  template: '<App/>'         // ?
 })

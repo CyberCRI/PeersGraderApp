@@ -1,31 +1,24 @@
 <template>
 	<div id="action-bar">
-		<div class ="action-activity level">
-			
-				<a class="button is-small" @click="manageActivity">
-			    <span class="icon is-medium">
-			      <i class="fas fa-edit"></i>
-			    </span>
-			    <span>Modify</span>
+
+		<!-- ACCESS TO ADMIN DASHBOARD -->
+			<div class="buttons is-centered">
+				<a class="button is-danger" @click="manageActivity"><!-- goes to edit page -->
+			    <span class="icon"><i class="fas fa-edit"></i> </span>
+			    <span>Admin access</span>
 			  </a>
-			
-			<!-- <div class="level-item">
-				<a class="button is-small">
-			    <span class="icon is-medium">
-			      <i class="fas fa-book"></i>
-			    </span>
-			    <span>Rubric</span>
-			  </a>
-			</div> -->
-			
-				<a class="button is-small" @click="openInvite">
-			    <span class="icon is-medium">
-			      <i class="fas fa-share-square"></i>
-			    </span>
-			    <span>Send invitations</span>
-			  </a>
-			
-		</div>
+			<!--
+				<a class="button is-danger">
+					<span class="icon"><i class="fab fa-book is-medium"></i></span>
+					<span>Rubric</span>
+				</a> -->
+				<a class="button is-danger" @click="openInvite">
+					<span class="icon"><i class="fas fa-share-square"></i></span>
+					<span>Send invitations</span>
+				</a>
+			</div>
+
+		<!-- ADMIN INVITE PARTICIPANTS -->
 		<div v-if="showInvite && isAdmin" id="manage-message">
 			<article class="message is-danger">
 			  <div class="message-header">
@@ -33,15 +26,18 @@
 			    <button @click="closeInvite" class="delete" aria-label="delete"></button>
 			  </div>
 			  <div class="message-body">
+					<!-- TABS -->
 				  <div class="tabs">
 					  <ul>
-					    <li  :class="{'is-active' : tab == 'link' , '' : tab=='email'}" @click="tabswitch" ><a class="button" data-tab="link">Link</a></li>
-					    <li :class="{'is-active' : tab == 'email' , '' : tab=='link'}" @click="tabswitch"><a class="button" data-tab="email">Email</a></li>
+					    <li :class="{'is-active' : tab == 'link' , '' : tab=='email'}" @click="tabswitch"><a class="button" data-tab="link" >Link </a></li>
+					    <li :class="{'is-active' : tab == 'email', '' : tab=='link' }" @click="tabswitch"><a class="button" data-tab="email">Email</a></li>
 					  </ul>
 					</div>
+					<!-- CONTENTS  -->
 					<div id="tab-content">
+						<!-- LINK sharing -->
 						<div :class="{'is-active' : tab == 'link' , '' : tab=='email'}" data-content="link">
-							<div class="link-div"><p>Why are we sharing by link ? I don't know. Tell us !</p></div>
+							<div class="link-div"><p>You can copy this link and share it with the students your previously registered.</p></div>
 							<div class="field has-addons">
 							  <div class="input-link control">
 							    <input class="input" type="text" id="link-activity" :value="activityLink" disabled="disabled">
@@ -53,6 +49,7 @@
 							  </div>
 							</div>
 						</div>
+							<!-- EMAIL sharing -->
 						<div :class="{'is-active' : tab == 'email','': tab =='link'}" data-content="email">
 							<div id="tab-invite-content">
 								<input-tag class="input invite pg-mailtag" placeholder="Emails" :tags.sync="invitationRecipients" validation="email"></input-tag>
@@ -71,14 +68,18 @@
 							    <span>Send</span>
 							  </a>
 							</div>
-						</div>
-					</div>
+						</div> <!-- EMAIL sharing -->
+					</div> <!-- CONTENTS -->
 			  </div>
 			</article>
-		</div>
+		</div><!-- ADMIN INVITE PARTICIPANTS -->
+
+		<!-- PASSWORD FIELD -->
 		<div  v-if="showPwd && !isAdmin" class="pg-activity">
 			<pwd-activity :context="context"></pwd-activity>
 		</div>
+
+		<!-- ACTIVITY SUMMARY for everyone -->
 		<div class="pg-activity">
 			<div class="pg-activity-content">
 				<div class="pg-level">
@@ -115,12 +116,12 @@
 			return {
 				showInvite : false,
 				showPwd : false,
-				tab : 'link', 
+				tab : 'link',
 				invitationRecipients : [],
 				invitationMessage: '',
 				context : ''
 			};
-		},	
+		},
 		components:{
 			'pwd-activity' : ActivityPassword,
 			'input-tag' : InputTag
@@ -131,7 +132,8 @@
 				isAdmin: 'isAdmin'
 			}),
 			activityLink(){
-				return 'https://peergraders.herokuapp.com/#/activity/'+this.activity.urlId;
+				// https://jsfiddle.net/m4gqc1b5/
+				return window.location.origin+'/#/activity/'+this.activity.urlId+'/review';
 			}
 		},
 		methods : {
@@ -145,8 +147,8 @@
 					}).then(response=>{
 						if(response.sent)
 							this.$notify({
-								group:'notifications',
-								title:'Invitations sent !',
+								group: 'notifications',
+								title: 'Invitations sent !',
 								text : 'Invitations have been sent. In case you did not get it.',
 								type : 'success'
 							});
@@ -166,8 +168,8 @@
 								});
 							} else {
 								this.$notify({
-									group:'notifications',
-									title:'Something went wrong ...',
+									group: 'notifications',
+									title: 'Something went wrong ...',
 									text : 'Stars were not aligned and despite our efforts to carry on your query, universe is ploting against us. Hate the game bro...',
 									type : 'error'
 								});
@@ -186,10 +188,10 @@
 			  const el = document.createElement('textarea');  // Create a <textarea> element
 			  el.value = str;                                 // Set its value to the string that you want copied
 			  el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
-			  el.style.position = 'absolute';                 
+			  el.style.position = 'absolute';
 			  el.style.left = '-9999px';                      // Move outside the screen to make it invisible
 			  document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
-			  const selected =            
+			  const selected =
 			    document.getSelection().rangeCount > 0        // Check if there is any content selected previously
 			      ? document.getSelection().getRangeAt(0)     // Store selection if found
 			      : false;                                    // Mark as false to know no selection existed before
@@ -206,16 +208,13 @@
 			},
 			tabswitch(e){
 				var tab = e.target.getAttribute('data-tab');
-
 				this.tab = tab;
 			},
 			noRedoNoFuckNo(){
 				var container = document.getElementById('mainContainer'),
-					actionBar = document.getElementById('action-bar'),
+					actionBar   = document.getElementById('action-bar'),
 					containerPadding = parseInt(window.getComputedStyle(container, null).getPropertyValue('padding')),
-					containerWidth = parseInt(window.getComputedStyle(container,null).getPropertyValue('width'));
-
-				
+					containerWidth   = parseInt(window.getComputedStyle(container, null).getPropertyValue('width'));
 
 				actionBar.style.position = 'relative';
 				actionBar.style.width = `calc(100% + ${2*containerPadding}px)`
@@ -242,8 +241,8 @@
 			...mapActions('activity',{
 				lookForActivity: 'lookForActivity',
 				sendInvitations: 'sendInvitations',
-				isRubricEmpty : 'isRubricEmpty',
-				setModifyWill : 'setModifyWill'
+				isRubricEmpty  : 'isRubricEmpty',
+				setModifyWill  : 'setModifyWill'
 			})
 		},
 		update(){
@@ -253,7 +252,7 @@
 			console.log('mounted')
 			await this.lookForActivity(this.$router.history.current.params.id);
 			this.invitationRecipients = this.activity.participants.reduce((a,c)=>{a.push(c.email);return a;},[]);
-			this.noRedoNoFuckNo();	
+			this.noRedoNoFuckNo();
 		},
 	};
 </script>
@@ -336,7 +335,7 @@
 
 	.action-activity{
 		display: flex!important;
-		background:#434e57;
+		background: #434e57;
 		justify-content: center;
 	}
 

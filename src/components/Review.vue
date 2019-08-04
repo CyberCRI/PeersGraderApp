@@ -176,7 +176,7 @@
 			<div v-else>
 				<div class="columns">
 					<div class="column is-12">
-						<h3 class="title has-text-centered has-text-white is-uppercase">You're presenting B*tch</h3>
+						<h3 class="title has-text-centered has-text-white is-uppercase">This session : you're presenting</h3>
 					</div>
 				</div>
 			</div>
@@ -522,7 +522,7 @@
 		padding: 1em;
 	}
 	.bg-wood { background: url("../../static/images/bg-wood.png") repeat; }
-	
+
 	.bg-school{
 		background-size: 200px 200px;
 		background-image:  linear-gradient(to bottom,
