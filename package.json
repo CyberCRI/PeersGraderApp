@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "npm run dev",
+    "postinstall":"npm run build",
     "mongo": "sudo service mongod start & sudo mongo --host 127.0.0.1:27017",
     "build": "node build/build.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

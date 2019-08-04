@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button @click="getPlanningV2()">get planning</button>
+		<button @click="getPlanningEmma()">get planning</button>
 		<table class="table">
 			<thead>
 				<tr><td colspan="2"></td><td :colspan="shifts.length" style="text-align:center;">Shifts</td></tr>
@@ -35,7 +35,8 @@
 		methods:{
 			...mapActions('activity',{
       	lookForActivity:'lookForActivity',
-      	getPlanningV2 : 'getPlanningV2'
+      	getPlanningV2 : 'getPlanningV2',
+      	getPlanningEmma : 'getPlanningEmma'
     	})
 			/*resetPlanning(){
 				this.shifts = [];
@@ -308,6 +309,8 @@
 			next((vm)=>{
 					vm.lookForActivity(to.params.id)
 				 });
+
+			//http://localhost:5000/#/activity/t_z~k/planning
 		}
 	};
 </script>

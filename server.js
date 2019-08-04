@@ -32,8 +32,6 @@ app.use(function(req, res, next) {
 if(process.env.NODE_ENV == 'production')
   app.use(express.static(DIST_DIR));
 
-
-
 //routes
 app.use(require('./routes'));
 /****************/

@@ -20,12 +20,9 @@
 				&nbsp;
 				<div class="tooltip-text">{{getRowError(i) || 'Line is ok'}}</div>
 			</div>
-			<div v-for="key in Object.keys(participant)" class="">
-		    <div v-if="isNotDynamicKey(key)" class="field">
+			<div v-for="key in customKeys(participant)" class="">
 		       <input class="input" type="text" v-model="participant[key]" :placeholder="key">
-		    </div>
 			</div>
-			<div
 			<div class="">
 		    <div class="">
 		       <input class="input" type="email" v-model="participant.email" placeholder="email" style="text-transform:lowercase">
@@ -80,6 +77,10 @@
 			})
 		},
 		methods: {
+			customKeys : function(participant){
+
+				return Object.keys(participant).filter(x=>this.isNotDynamicKey(x));
+			},
 			isNotDynamicKey(key){
 				return key!='token' && key!= 'email' && key!= '_id' && key!='group' && key!='role' && key!='reviewed'
 			},

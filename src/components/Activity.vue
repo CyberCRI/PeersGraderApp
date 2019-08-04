@@ -403,11 +403,6 @@
 	#stepper-container{
 		z-index: 999999999;
 		padding: 0.30em;
-		/*border-right: solid 1px transparent;
-		border-left:solid 1px transparent;
-		border-bottom : solid 1px transparent;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;*/
 	}
 
 	.icon{
@@ -429,41 +424,4 @@
 	.row-participant > input{
 		width: 30px;
 	}
-	/*#stepper{
-		position:fixed;
-		top:85%;
-	}*/
-
-/*	.participants-label{
-		display: flex;
-		justify-content: space-around;
-	}
-
-	.row-participant{
-		display: flex;
-		align-items: center;
-		justify-content: space-evenly;
-		margin-bottom: 1em;
-	}
-
-	input,textarea {
-		min-width: 90%;
-		width: 90%
-	}
-
-	h2{
-		text-align: center;
-		margin: 1.2em auto;
-		width: 20%;
-		font-size: 2vh;
-	}
-
-	.add-participant{
-		cursor: pointer;
-	}
-
-	.remove-participant{
-		cursor: pointer;
-	}*/
-
 </style>

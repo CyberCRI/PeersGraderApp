@@ -46,6 +46,7 @@ function getPassword(){
 
   return password;
 }
+
 module.exports = {
 	getParticipants : function(req,res){
 		var activityKey = req.params.id;
@@ -148,36 +149,6 @@ module.exports = {
 			sentActivity.teacherPwd = getPassword();	
 		}
 
-		/*if(!sentActivity.invitationsSent){
-			//might be beter to use reduce to create list receivers like so (depending on service restrictions)
-			//var mailist = sentActivity.participants.reduce((a,c)=>{a.push(c.email);return a;},[]);
-			//console.log('mailist',mailist.join(',')); put mailist join in to
-
-			for(var participant of sentActivity.participants){
-				participant.token = nanoid(8);
-
-				
-				const mailOptions = {
-				  from: process.env.MAIL_USER, // sender address
-				  to: participant.email, // list of receivers
-				  subject: 'Review Activity ' + sentActivity.title, // Subject line
-				  html: `<p>${sentActivity.teacherName} invited you to <a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/review?ptoken=${participant.token}">Review here</a></p>`
-				};
-
-
-				await transporter.sendMail(mailOptions, function (err, info) {
-				  if(err)
-				    console.log(err)
-				  else
-				    console.log(info);
-				});
-
-				
-			}
-			
-			sentActivity.invitationsSent = true;
-		}*/
-
 		const mailTeacher = {
 		  from: process.env.MAIL_USER, // sender address
 		  to: sentActivity.teacherEmail, // list of receivers
@@ -189,8 +160,8 @@ module.exports = {
 							  <h3 class="title is-6">Where is my activity ? Can I edit it ?</h3>
 							  <p style="margin:0px">
 							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-pencil-alt-solid.png">&nbsp;You can edit participants, options and the rubric using this link &amp; password.<br>
-							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-link-solid.png">&nbsp;Activity's link is : https://peergraders.herokuapp.com/#/activity/dtYwV<br>
-							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-key-solid.png" style="height:12px;width:12px">&nbsp;Master password is : ChubbyPanamanianMermaids<br>
+							    <img style="height:12px;width:12px" src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-link-solid.png">&nbsp;Activity's link is : ${process.env.APP_URL}/#/activity/${sentActivity.urlId}<br>
+							    <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-key-solid.png" style="height:12px;width:12px">&nbsp;Master password is : ${sentActivity.teacherPwd}<br>
 							  </p><br>
 							  <h3 class="title is-6">How do I <i>really</i> start the activity with my participants ?</h3>
 							  <p style="margin:0px">
@@ -201,9 +172,7 @@ module.exports = {
 							   <img src="http://image.noelshack.com/fichiers/2018/38/4/1537451362-hand-peace-solid.png" style="height:12px;width:12px">&nbsp;Enjoy ! Participants open the link, follow their missions, submiting evaluations as needed.
 							  </p>
 							  <br>
-							</div>`,
-		  htmlOld: `<p><a href="${process.env.APP_URL}/#/activity/${sentActivity.urlId}/">Activity here</a></p>
-		  			 <p>password : ${sentActivity.teacherPwd}</p>`
+							</div>`
 		};
 
 		transporter.use('compile', inLineCss());

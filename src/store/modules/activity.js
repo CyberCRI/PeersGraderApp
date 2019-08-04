@@ -12,8 +12,6 @@ export default {
                 token : '',
                 group: '',
                 name : '',
-                //cohort : 0,
-                //ine : '',
                 role : '',
                 invitationSent : false,
                 reviewed:[]
@@ -204,6 +202,82 @@ export default {
                     }
                 });
         },
+        getPlanningEmma(context){
+            var vm = this.vm,
+                groups = {
+                    observators : [],
+                    students : {},
+                    teachers : []                    
+                },
+                studentPositionShift = -1,
+                nbStudents = 0,
+                nbTeachers,
+                nbObservators,
+                maxStudents = 0;
+
+            function getGroups(groups){
+                return context.state.activity.participants.reduce((a,c)=>{
+                    
+                    if(c.role=='Student'){
+                        a.students[c.group] = a.students[c.group] || [];
+                        c.presentationCount = 0;
+                        c.gradingCount = 0;
+                        c.positionShift = Object.keys(a.students).length - 1;
+                        a.students[c.group].push(c);
+                    } else if(c.role=='Teacher'){
+                        c.gradingCount = 0;
+                        a.teachers.push(c);
+                    }
+                    else if(c.role=='Observator'){
+                        c.gradingCount = 0;
+                        a.observators.push(c);
+                    }
+
+                    return a;
+                },groups);
+            }
+
+            groups = getGroups(groups);
+
+            console.log('groups')
+            console.log(groups)
+            let groupsLabel = Object.keys(groups.students);
+
+            for(let group of groupsLabel){
+                nbStudents += groups.students[group].length;
+                 if(groups.students[group].length>maxStudents){
+                    maxStudents = groups.students[group].length;
+                }
+            }
+
+            nbTeachers = groups.teachers.length;
+            nbObservators = groups.observators.length;
+
+            var shifts = {},
+                nbShifts = maxStudents*context.state.activity.sessions;
+
+            shifts['students'] = new Array(nbShifts),
+            shifts['teachers'] = new Array(nbShifts),
+            shifts['observators'] = new Array(nbShifts);
+     
+            let shiftsLabel = Object.keys(shifts);
+
+            for(let entity of shiftsLabel){
+                for(var i=0;i<shifts[entity].length;i++){
+                    if(entity==='students')
+                        shifts[entity][i] = new Array(Object.keys(groups.students).length).fill().map(x=>({presenter:{},graders:[]}));
+                    else if(entity==='teachers')
+                        shifts[entity][i] = new Array(groups.teachers.length).fill().map(x=>({student:{}}));
+                    else
+                       shifts[entity][i] = new Array(groups.observators.length).fill().map(x=>({student:{}}));
+               }
+            }
+
+            console.log('shifts')
+            console.log(shifts);
+
+
+        },
         getPlanningV2(context){
             var vm = this._vm,
                 groups = {
@@ -224,7 +298,7 @@ export default {
                         a.students[c.group] = a.students[c.group] || [];
                         c.presentationCount = 0;
                         c.gradingCount = 0;
-                        c.positionShift = ++studentPositionShift;
+                        c.positionShift = Object.keys(a.students).length - 1;
                         a.students[c.group].push(c);
                     } else if(c.role=='Teacher'){
                         c.gradingCount = 0;
@@ -257,42 +331,43 @@ export default {
             var shifts = {},
                 nbShifts = maxStudents*context.state.activity.sessions;
 
-            shifts['students'] = new Array(nbStudents),
-            shifts['teachers'] = new Array(groups.teachers.length),
-            shifts['observators'] = new Array(groups.observators.length);
-
+            shifts['students'] = new Array(nbShifts),
+            shifts['teachers'] = new Array(nbShifts),
+            shifts['observators'] = new Array(nbShifts);
+     
             let shiftsLabel = Object.keys(shifts);
 
             for(let entity of shiftsLabel){
                 for(var i=0;i<shifts[entity].length;i++){
-                    shifts[entity][i] = new Array(nbShifts).fill().map(x=>({presenter:{},graders:[]}));
-
-                    for(var j=0;j<nbShifts;j++){
-                        shifts[entity][i][j] = {presenter:{},graders:[]};
-                    }
-                }
+                    if(entity==='students')
+                        shifts[entity][i] = new Array(Object.keys(groups.students).length).fill().map(x=>({presenter:{},graders:[]}));
+                    else if(entity==='teachers')
+                        shifts[entity][i] = new Array(groups.teachers.length).fill().map(x=>({student:{}}));
+                    else
+                       shifts[entity][i] = new Array(groups.observators.length).fill().map(x=>({student:{}}));
+               }
             }
 
             function isShiftOkToPresent(student,indexShift){
 
-                var ok = true;
+                let ok = true;
 
-                for(var i=0;i<shifts.students.length;i++){
-                    
-                        if(shifts.students[i][indexShift].presenter.email !== student.email && shifts.students[i][indexShift].presenter.group == student.group && i != student.positionShift){
-                            
-                            ok = false;
-                            break;
-                            
-                        } 
-                    
+
+                if(shifts.students[indexShift][student.positionShift].presenter){
+                    if(shifts.students[indexShift][student.positionShift].presenter.email != student.email && shifts.students[indexShift][student.positionShift].presenter.group == student.group){
+                      ok = false;
+                    }
                 }
-
+                
+                console.log(ok)
                 return ok;
-                    
             }
 
-            for(var i=0;i<groupsLabel.length;i++){
+            function getParticipant(email){
+                return context.state.activity.participants.find(x=>x.email == email);
+            }
+
+            for(let i=0;i<groupsLabel.length;i++){
                 while(groups.students[groupsLabel[i]].every(student=>
                     student.presentationCount < context.state.activity.sessions)){
 
@@ -300,16 +375,16 @@ export default {
                         if(groupStudents[j].presentationCount < context.state.activity.sessions){
                             let indexShift = 0,i=0;
                                 
-                               
-                            
                                 while(groupStudents[j].presentationCount < context.state.activity.sessions){
                                     
                                     if(groupStudents[j].presentationCount < context.state.activity.sessions){
                                         if(isShiftOkToPresent(groupStudents[j],indexShift)){
-                                            shifts.students[groupStudents[j].positionShift][indexShift].presenter = {
+                                            shifts.students[indexShift][groupStudents[j].positionShift].presenter = {
                                                 group : groupStudents[j].group,
                                                 email : groupStudents[j].email
                                             }
+
+
 
                                             groupStudents[j].presentationCount = groupStudents[j].presentationCount+1;
                                             
@@ -340,162 +415,211 @@ export default {
                 }
             }
 
-            var nbGrading = Math.round((context.state.activity.participants.length - groupsLabel.length)/groupsLabel.length),
+            //var nbGrading = Math.round((context.state.activity.participants.length - groupsLabel.length)/groupsLabel.length)//really ? still not convinced here ... yeah definitely BS,
+
+            var nbGrading = nbShifts - context.state.activity.sessions, 
                 constraints = {
-                    isMaxSize : {
+                    isGraderAlreadyGrading : {
+                        check : function(specifier){
+
+
+                            let student = specifier.student,
+                                gradersShift = shifts.students[specifier.indexShift].reduce((a,p)=>a.concat(p.graders),[]),
+                                ok = gradersShift.map(x=>x.email).includes(student.email);
+                                console.log('gradersShift',gradersShift)
+                        console.log('isGraderAlreadyGrading return',!ok);
+                        return !ok;
+                        },
+                        priority : 50
+                    },
+                    isGraderAlreadyPresenting : {
+                        check : function (specifier) {
+                            
+                            let student = specifier.student,
+                                ok = false,
+                                t =shifts.students[specifier.indexShift].reduce((a,p)=>a.concat(p.presenter),[]);
+                                console.log('t',t)
+                            if(shifts.students[specifier.indexShift].reduce((a,p)=>a.concat(p.presenter),[]).map(x=>x.email).includes(student.email))
+                                ok = false;
+                            else ok = true;
+
+                            console.log('isGraderAlreadyPresenting return',ok);
+                            return ok;
+                        },
+                        priority : 45
+                    },
+                    isGradersFull : {
+                        check : function (specifier){
+                            let graders = shifts.students[specifier.indexShift][specifier.indexPool].graders,
+                                ok = false;
+
+                            
+
+                            if(graders.length < maxStudents - 1)
+                                ok = true;
+                            
+                            console.log('isGradersFull return',ok)
+                            return ok;
+                        },
+                        priority : 40
+                    },
+                    isGradingDone : {
                         check : function(specifier){
                             let student = specifier.student,
                                 ok = false;
+
 
                             if(student.gradingCount < nbGrading){
                                 ok = true;
                             } 
-
+                            
+                            console.log('isGradingDone return',ok);
                             return ok;
 
                         },
-                        priority : 30
+                        priority : 35
                     },
                     isPresentersGroupDifferent : { 
                         check : function (specifier){
-                           console.log('isPresentersGroupDifferent')
+                        
                             let student = specifier.student,
-                                shiftCell = specifier.shiftCell,
-                                positionShift = specifier.positionShift,
-                                shiftStudents = specifier.shiftStudents,
                                 ok = false;
 
-                            if(shiftStudents[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].group== student.group || student.positionShift == positionShift  || student.group == shiftCell.presenter.group )
+                            if(shifts.students[specifier.indexShift][specifier.indexPool].presenter.group == student.group)
                                 ok = false;
                             else ok = true;
 
-                            console.log('okGroupDifferent',ok);
+                            console.log('isPresentersGroupDifferent return',ok);
+                            
                             return ok;
+                        },
+                        priority : 20
+                    },
+                    isGradersGroupDifferent : {
+                        check : function(specifier){
+
+                            let ok = !shifts.students[specifier.indexShift][specifier.indexPool].graders.map(x=>x.group).includes(specifier.student.group);
+
+                            console.log('isGradersGroupDifferent return',ok);
+                        },
+                        priority : 15
+                    },
+                    /*isThereABuddy : {
+                        check : function(specifier){
+
+                            let student = specifier.student,
+                                ok = false;
+
+                            if(specifier.indexShift > 0){
+                                ok = shifts.students[specifier.indexShift][specifier.indexPool].//chacun de ces graders n'est pas buddy avec student.email
+                                                                    graders.every(x=>!getParticipant(x.email).reviewed.map(c=>c.email).includes(specifier.student.email));
+
+                            } else ok = true;
+                            
+                            console.log('isThereABuddy return',!ok);
+                            return !ok;
+
                         },
                         priority : 25
                     },
-                    isThereABuddy : {
-                        check : function(specifier){
-                            console.log('isThereABuddy',specifier.student.email,specifier.indexShift,specifier.student.positionShift);
-                            let student = specifier.student,
-                                shiftStudents = specifier.shiftStudents,
-                                ok = !shiftStudents[student.positionShift].reduce((a,g)=>a.concat(g.email),[]).includes(student.email);
-
-                            console.log('okIsThere A buddy',ok);
-
-                            return ok;
-                        },
-                        priority : 5
-                    },
                     isThereABuddyPreviousSession : {
                         check : function (specifier){
-                            console.log('isThereABuddyPreviousSession')
-                            let student = specifier.student,
-                                indexShift = specifier.indexShift,
-                                shiftStudents = specifier.shiftStudents,
-                                ok;
+                            var ok = true;
 
-                            if(indexShift>0){
-                                console.log('length graders')
-                                console.log(shiftStudents[student.positionShift][indexShift-1].graders)
-                                ok = !shiftStudents[student.positionShift][indexShift-1].graders.reduce((a,g)=>a.concat(g.email),[]).includes(student.email);
-                            }
-                            else ok = true;
+                             if(specifier.indexShift > 0){
+                                
+                                ok = shifts.students[specifier.indexShift][specifier.indexPool].//chacun de ces graders n'est pas buddy avec student.email
+                                                                    graders.every(x=>!getParticipant(x.email).reviewed.filter((c,i)=>i==specifier.indexPool-1).map(x=>x.email).includes(specifier.student.email));
+                            } 
 
-                            console.log('isThereABuddyPreviousSessionOK',ok);
-                            return ok;
+                            console.log('isThereABuddyPreviousSession return',!ok);
+
+                            return !ok;
                         },
-                        priority : 10
+                        priority : 30
                     },
                     isPresenterGroupReviewedAlready : {
                         check : function(specifier){
-                            console.log('isPresenterGroupReviewedAlready')
+                            
                             let student = specifier.student,
-                                shiftCell = specifier.shiftCell,
-                                positionShift = specifier.positionShift,
-                                ok = student.reviewed.reduce((a,g)=>a.concat(g.group),[]).includes(shifts.students[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].group);
+                                indexShift = specifier.indexShift,
+                                indexPool = specifier.indexPool,
+                                ok = student.reviewed.reduce((a,g)=>a.concat(g.group),[]).filter(x=>x=!student.group).includes(shifts.students[specifier.indexShift][specifier.indexPool].presenter.group);
 
-                            console.log('isPresenterGroupdAlreadyOk',ok)
+                            console.log('isPresenterGroupReviewedAlready return',ok);
                             return !ok;
                         },
-                        priority : 15
+                        priority : 30
                     },
                     isPresenterPersonReviewedAlready : {
                         check : function (specifier){
 
-                            console.log('isPresenterPersonReviewedAlready')
-                            let student = specifier.student,
-                                shiftCell = specifier.shiftCell,
-                                positionShift = specifier.positionShift,
-                                ok = student.reviewed.reduce((a,g)=>a.concat(g.email),[]).includes(shifts.students[positionShift].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].email);
+                             let student = specifier.student,
+                                indexShift = specifier.indexShift,
+                                indexPool = specifier.indexPool,
+                                ok = student.reviewed.reduce((a,g)=>a.concat(g.email),[]).filter(x=>x=!student.email).includes(shifts.students[specifier.indexShift][specifier.indexPool].presenter.email);
 
-                            console.log('OK',ok)
+                            console.log('isPresenterPersonReviewedAlready return',!ok)
                             return !ok;
                         },
-                        priority : 20
-                    }
+                        priority : 25
+                    }*/
                 };
-                console.log('nbGrading',nbGrading)
+            
+
             function getConstraints(priority){
+
                 var priorityConstraints = [],
                     priorityOrderedConstraints = Object.keys(constraints).sort((a,b)=>constraints[b].priority-constraints[a].priority);
 
-                for(var i=0,prioritySum = 0;prioritySum < priority && i<priorityOrderedConstraints.length;i++){
+                for(let i=0,prioritySum = 0;prioritySum < priority && i<priorityOrderedConstraints.length;i++){
                     priorityConstraints.push(priorityOrderedConstraints[i]);
                     prioritySum += constraints[priorityConstraints[i]].priority;
                 }
 
                 return priorityConstraints;
-
             }
 
-            /*for(var row=0;row<shifts.students.length;row++){
-                for(var col=0;col<shifts.students[row].length;col++){
+            var priority = 315;
 
-                }
-            }*/
+            console.log('shifts');
+            console.log(shifts);
+            console.log('groups');
+            console.log(groups)
+            console.log('participants')
+            console.log(context.state.activity.participants)
+            console.log('nbGrading',nbGrading)
 
-            for(var i=0;i<groupsLabel.length;i++){
-                console.log('i',i)
-                while(groups.students[groupsLabel[i]].every(student=>
-                    student.gradingCount < nbGrading)){
+            console.log('after initialisation')
 
-                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
-                        let loopTrough = 0,
-                            priority = 105;
+            for(var i=0;i<1;i++){
+                while(groups.students[groupsLabel[i]][0].gradingCount < nbGrading){
 
-                        gradingCountMeet:
-                        while(groupStudents[j].gradingCount < nbGrading){
-                            let constraintsToApply = getConstraints(priority);
+                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<1;j++){
 
-                            for(var row = 0;row < shifts.students.length;row++){
-                                for(var col = 0;col < shifts.students[row].length; col++){
-                                    console.log('shifts info');
-                                    console.log('cell');
-                                    console.log(shifts.students[row][col]);
-                                    console.log('student');
-                                    console.log(groupStudents[j]);
-                                    console.log('priority',priority);
-                                    console.log('loopTrough',loopTrough);
+                            for(var indexShift = 0; indexShift < shifts.students.length; indexShift++){
+                                for(var indexPool = 0; indexPool < shifts.students[indexShift].length; indexPool++){
+                                    let priorityConstraints = getConstraints(priority);
 
-                                    if(constraintsToApply.reduce((a,c)=>a && constraints[c].check({
+                                    console.log('Testing to insert',groupStudents[j].email,'at',indexShift,indexPool);
+                                    console.log('shifts',shifts.students[indexShift][indexPool]);
+                               
+                                    if(priorityConstraints.every(x=>{console.log('constrainst',x);return constraints[x].check({
                                         student : groupStudents[j],
-                                        shiftCell :shifts.students[row][col],
-                                        shiftStudents : shifts.students,
-                                        indexShift : col,
-                                        positionShift : row
-                                    }),true)){
-                                        
-                                        
-                                        shifts.students[row][col].graders.push({
+                                        indexShift : indexShift,
+                                        indexPool : indexPool
+                                    })==true})){
+
+                                        console.log('INSERTED',indexShift,indexPool)
+                                        shifts.students[indexShift][indexPool].graders.push({
                                             reviewedId : groupStudents[j]._id,
                                             email : groupStudents[j].email,
                                             group : groupStudents[j].group,
                                             role : groupStudents[j].role,
-                                            session : col+1
+                                            session : indexShift+1
                                         });
 
-
+                                        groupStudents[j].gradingCount += 1;
 
                                         var participant = getParticipant(groupStudents[j].email);
 
@@ -503,56 +627,33 @@ export default {
                                                 if(participant.reviewed.length == 0){
                                                     participant.reviewed = new Array(nbShifts);
                                                 }
-                                                console.log('row col',row,col,shifts.students[row][col])
-                                                console.log('presenterParticipantmail')
-                                                console.log(shifts.students[row][col].presenter.email)
-                                                var presenterParticipant = getParticipant(shifts.students[row].reduce((a,s)=>s.presenter.email?a.concat(s.presenter):a,[])[0].email);
-                                                console.log('presenter')
-                                                console.log(presenterParticipant)
-                                                if(participant.reviewed[col] == undefined){
-                                                    participant.reviewed[col] = {
+                                       
+                                                var presenterParticipant = getParticipant(shifts.students[indexShift][indexPool].presenter.email);
+                                                
+                                                if(participant.reviewed[indexShift] == undefined){
+                                                    participant.reviewed[indexShift] = {
                                                         reviewedId : presenterParticipant._id,
                                                         email : presenterParticipant.email,
                                                         group : presenterParticipant.group,
                                                         role : presenterParticipant.role,
-                                                        session : col+1
+                                                        session : indexShift+1
                                                     };
 
-                                                    groupStudents[j].gradingCount += 1;
+                                                    
                                                 }
-                                                else continue;
                                             }
 
-                                        console.log(groupStudents[j].email)
-                                        console.log('here i am bruh, should i try something ? ');
-                                    }
-
-                                    if(groupStudents[j].gradingCount >= nbGrading){
-                                        break gradingCountMeet;
                                     }
                                 }
                             }
-
-                            
-                            loopTrough++;
-
-                            if(loopTrough >= nbShifts*10){
-                                priority -= 5;
-                                loopTrough = 0;
-                            }
-                        }
                     }
+                    
                 }
             }
-
-            function getParticipant(email){
-                return context.state.activity.participants.find(x=>x.email == email);
-            }
-
             
-
-            console.log('shifts')
+            console.log('shifts');
             console.log(shifts);
+            console.log('groups');
             console.log(groups)
             console.log('participants')
             console.log(context.state.activity.participants)
@@ -861,3 +962,89 @@ export default {
         }
     }
 };
+
+/*
+
+
+for(var i=0;i<1;i++){//i<groupsLabel.lenght
+                
+                //while(groups.students[groupsLabel[i]].every(student=>
+                    //student.gradingCount < nbGrading)){
+                while(groups.students[groupsLabel[i]][0].gradingCount < nbGrading){
+                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<1;j++){
+                        let loopTrough = 0,
+                        priority = 310;
+
+                        gradingCountMeet:
+                        while(groupStudents[j].gradingCount < nbGrading){
+                            priority = 310;
+
+                            for(var indexShift = 0; indexShift < shifts.students.length; indexShift++){
+                                for(var indexPool = 0; indexPool < shifts.students[indexShift].length; indexPool++){
+                                    let priorityConstraints = getConstraints(priority);
+                                    console.log('Testing to insert',groupStudents[j].email,'at',indexShift,indexPool);
+                                    console.log('shifts',shifts.students[indexShift][indexPool]);
+                                    /*if(getConstraints(priority).reduce((a,c)=>a && constraints[c].check({
+                                        student : groupStudents[j],
+                                        indexShift : indexShift,
+                                        indexPool : indexPool
+                                    }),true)){
+                                    if(priorityConstraints.every(x=>{console.log('constrainst',x);return constraints[x].check({
+                                        student : groupStudents[j],
+                                        indexShift : indexShift,
+                                        indexPool : indexPool
+                                    })==true})){
+
+                                        console.log('INSERTED',indexShift,indexPool)
+                                        shifts.students[indexShift][indexPool].graders.push({
+                                            reviewedId : groupStudents[j]._id,
+                                            email : groupStudents[j].email,
+                                            group : groupStudents[j].group,
+                                            role : groupStudents[j].role,
+                                            session : indexShift+1
+                                        });
+
+                                        groupStudents[j].gradingCount += 1;
+
+                                        var participant = getParticipant(groupStudents[j].email);
+
+                                            if(participant){
+                                                if(participant.reviewed.length == 0){
+                                                    participant.reviewed = new Array(nbShifts);
+                                                }
+                                       
+                                                var presenterParticipant = getParticipant(shifts.students[indexShift][indexPool].presenter.email);
+                                                
+                                                if(participant.reviewed[indexShift] == undefined){
+                                                    participant.reviewed[indexShift] = {
+                                                        reviewedId : presenterParticipant._id,
+                                                        email : presenterParticipant.email,
+                                                        group : presenterParticipant.group,
+                                                        role : presenterParticipant.role,
+                                                        session : indexShift+1
+                                                    };
+
+                                                    
+                                                }
+                                                else continue;
+                                            }
+                                    }
+
+                                    if(groupStudents[j].gradingCount >= nbGrading){
+                                        break gradingCountMeet;
+                                    }
+                                }
+                            }
+                            
+                            loopTrough++;
+
+                            if(loopTrough >= nbShifts+1){
+                                console.log('OH YEAH CANT BE DONE')
+                                console.log(groupStudents[j].group)
+                                priority -= 5;
+                                loopTrough = 0;
+                            }
+                        }
+                    }
+                }
+            }*/
