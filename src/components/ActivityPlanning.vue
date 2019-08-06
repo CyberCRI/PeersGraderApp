@@ -11,7 +11,7 @@
 				<tr v-for="participant in activity.participants">
 					<td>{{participant.group}}</td>
 					<td>{{participant.email}}</td>
-					<td v-for="(toReview,index) of participant.reviewed">{{toReview ? toReview.group : 'uncomputed'}}</td>
+					<td v-for="(toReview,index) of participant.reviewed">{{toReview ? toReview.group : 'u'}}</td>
 				</tr>
 			</tbody>
 		</table>

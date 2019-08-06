@@ -221,7 +221,7 @@ export default {
                         a.students[c.group] = a.students[c.group] || [];
                         c.presentationCount = 0;
                         c.gradingCount = 0;
-                        c.positionShift = Object.keys(a.students).length - 1;
+                        c.positionShift = Object.keys(a.students).length - 1;//la place de l'étudiant dans le planning
                         a.students[c.group].push(c);
                     } else if(c.role=='Teacher'){
                         c.gradingCount = 0;
@@ -231,7 +231,6 @@ export default {
                         c.gradingCount = 0;
                         a.observators.push(c);
                     }
-
                     return a;
                 },groups);
             }
@@ -240,6 +239,7 @@ export default {
 
             console.log('groups')
             console.log(groups)
+
             let groupsLabel = Object.keys(groups.students);
 
             for(let group of groupsLabel){
@@ -272,10 +272,98 @@ export default {
                }
             }
 
+            function isShiftOkToPresent(student,indexShift){
+
+                let ok = true;
+
+                //si la case du planning a déjà un étudiant qui présente
+                if(shifts.students[indexShift][student.positionShift].presenter){
+                    //si l'étudiant de la case est le même que celui passé en argument ou du même groupe
+                    if(shifts.students[indexShift][student.positionShift].presenter.email != student.email && shifts.students[indexShift][student.positionShift].presenter.group == student.group){
+                      ok = false;//on peut pas insérer ici
+                    }
+                }
+                
+                console.log(ok)
+                return ok; //sinon oui
+            }
+
+            function getParticipant(email){
+                return context.state.activity.participants.find(x=>x.email == email);//renvoie l'objet participant correspondant au participant de l'email
+            }
+
+            for(let i=0;i<groupsLabel.length;i++){
+                while(groups.students[groupsLabel[i]].every(student=>
+                    student.presentationCount < context.state.activity.sessions)){
+
+                    for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
+                        if(groupStudents[j].presentationCount < context.state.activity.sessions){
+                            let indexShift = 0,i=0;
+                                
+                                while(groupStudents[j].presentationCount < context.state.activity.sessions){
+                                    
+                                    if(groupStudents[j].presentationCount < context.state.activity.sessions){
+                                        if(isShiftOkToPresent(groupStudents[j],indexShift)){
+                                            shifts.students[indexShift][groupStudents[j].positionShift].presenter = {
+                                                group : groupStudents[j].group,
+                                                email : groupStudents[j].email
+                                            }
+
+
+
+                                            groupStudents[j].presentationCount = groupStudents[j].presentationCount+1;
+                                            
+
+                                            var participant = getParticipant(groupStudents[j].email);
+
+                                            if(participant){
+                                                if(participant.reviewed.length == 0){
+                                                    participant.reviewed = new Array(nbShifts);
+                                                }
+                                                
+                                                participant.reviewed[indexShift] = {
+                                                    reviewedId : groupStudents[j]._id,
+                                                    email : groupStudents[j].email,
+                                                    group : groupStudents[j].group,
+                                                    role : groupStudents[j].role,
+                                                    session : indexShift+1
+                                                };
+                                            }
+                                        } 
+
+                                        indexShift++;
+                                    }
+                                    
+                                }
+                        }
+                    }
+                }
+            }
+
+            function getConstraints(priority){
+
+                var priorityConstraints = [],
+                    priorityOrderedConstraints = Object.keys(constraints).sort((a,b)=>constraints[b].priority-constraints[a].priority);
+
+                for(let i=0,prioritySum = 0;prioritySum < priority && i<priorityOrderedConstraints.length;i++){
+                    priorityConstraints.push(priorityOrderedConstraints[i]);
+                    prioritySum += constraints[priorityConstraints[i]].priority;
+                }
+
+                return priorityConstraints;
+            }
+
+            var constraints = {
+                isGraderAlreadyPresenting : {
+                    check : function(specifier){
+
+                    },
+                    priority : 50
+                }
+            }
+
             console.log('shifts')
             console.log(shifts);
-
-
         },
         getPlanningV2(context){
             var vm = this._vm,
@@ -297,6 +385,7 @@ export default {
                         a.students[c.group] = a.students[c.group] || [];
                         c.presentationCount = 0;
                         c.gradingCount = 0;
+                        console.log('a.students',a.students);
                         c.positionShift = Object.keys(a.students).length - 1;
                         a.students[c.group].push(c);
                     } else if(c.role=='Teacher'){
@@ -351,19 +440,20 @@ export default {
 
                 let ok = true;
 
-
+                //si la case du planning a déjà un étudiant qui présente
                 if(shifts.students[indexShift][student.positionShift].presenter){
+                    //si l'étudiant de la case est le même que celui passé en argument ou du même groupe
                     if(shifts.students[indexShift][student.positionShift].presenter.email != student.email && shifts.students[indexShift][student.positionShift].presenter.group == student.group){
-                      ok = false;
+                      ok = false;//on peut pas insérer ici
                     }
                 }
                 
                 console.log(ok)
-                return ok;
+                return ok; //sinon oui
             }
 
             function getParticipant(email){
-                return context.state.activity.participants.find(x=>x.email == email);
+                return context.state.activity.participants.find(x=>x.email == email);//renvoie l'objet participant correspondant au participant de l'email
             }
 
             for(let i=0;i<groupsLabel.length;i++){
