@@ -1,4 +1,3 @@
-import axios from 'axios';
 import router from '../../router'
 
 export default {
@@ -14,7 +13,7 @@ export default {
             context.commit('setErrors',errors);
         },
         getParticipants(context,activityId){
-            axios.get('http://localhost:5001/activity/'+activityId+'/participants').then(function(response){
+            this._vm.$axios.get('http://localhost:5001/activity/'+activityId+'/participants').then(function(response){
                 if(response.data.success){
                     context.commit('setParticipants',response.data.participants);
                 }

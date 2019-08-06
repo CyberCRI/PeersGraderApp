@@ -5,11 +5,13 @@ import App from './App'
 import router from './router'
 import store from './store'
 import Notifications from 'vue-notification'     // ? from a node module !
-
+import axios from 'axios'
 
 Vue.config.productionTip = false;      // ? how does this works
 
 console.log(Vue.config)
+
+Vue.prototype.$axios = axios;
 
 Vue.use(Notifications);      // ?
 

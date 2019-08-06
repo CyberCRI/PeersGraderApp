@@ -1,4 +1,3 @@
-import axios from 'axios';
 import router from '../../router'
 
 export default {
@@ -41,7 +40,7 @@ export default {
                     && this.state.activity.activity.rubrics[0].descriptors[0].points == 0;
         },
         sendInvitations(context,invitationSpecifier){
-            return axios.post('/api/activity/sendInvitations',{
+            return this._vm.$axios.post('/api/activity/sendInvitations',{
                 activity: invitationSpecifier.activity,
                 destinators : invitationSpecifier.destinators,
                 message : invitationSpecifier.message
@@ -73,7 +72,7 @@ export default {
             context.commit('setWithId',withId)
         },
         getAuthActivity(context,specifier){//certainement refacto les bails ici
-            return axios.get('/api/activity/'+specifier.urlId).then((response)=>{
+            return this._vm.$axios.get('/api/activity/'+specifier.urlId).then((response)=>{
                 if(response.data.success){
                     console.log('auth activity')
                     if(specifier.pwd == response.data.activity.teacherPwd){
@@ -91,7 +90,7 @@ export default {
             });
         },
         lookForActivity(context,key){
-            return axios.get('/api/activity/'+key).then((response)=>{
+            return this._vm.$axios.get('/api/activity/'+key).then((response)=>{
                 if(response.data.success){
                     console.log('found smthg')
                     console.log(response.data.activity);
@@ -104,7 +103,7 @@ export default {
         },
         deleteActivity(context,activityId){
             
-            axios.delete('/api/activity/'+activityId).then(response=>{
+            this._vm.$axios.delete('/api/activity/'+activityId).then(response=>{
                 if(response.data.success){
 
                     this._vm.$notify({
@@ -161,7 +160,7 @@ export default {
         },
         setActivity(context,activity){
             if(activity.urlId)
-                return axios.put('/api/activity/'+activity.urlId,{activity:context.state.activity}).then((response)=>{
+                return this._vm.$axios.put('/api/activity/'+activity.urlId,{activity:context.state.activity}).then((response)=>{
                     console.log('there');   
                     console.log(response)
                     if(response.data.success){
@@ -181,7 +180,7 @@ export default {
 
 
                 });
-            else return axios.post('/api/activity',{activity:context.state.activity}).then((response)=>{
+            else return this._vm.$axios.post('/api/activity',{activity:context.state.activity}).then((response)=>{
                     console.log('here')
 
                     if(response.data.success){

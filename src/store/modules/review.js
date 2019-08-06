@@ -1,4 +1,3 @@
-import axios from 'axios';
 import router from '../../router'
 //in the end just delete the schema, its actually useless and makes us miserable & also look miserable
 export default {
@@ -50,7 +49,7 @@ export default {
         },
         lookForReviewFromParticipant(context,review){
             //might have to try with weird  caracters in mail 
-            return axios.get('/api/activity/'+review.activityUrlId+'/review/grader/'+review.grader.email).then(response=>{
+            return this._vm.$axios.get('/api/activity/'+review.activityUrlId+'/review/grader/'+review.grader.email).then(response=>{
                 if(response.data.hasReview){
                     console.log('getReviewFromParticipant')
                     context.commit('setReview',response.data.review);
@@ -72,7 +71,7 @@ export default {
         },
         lookForReview(context,review){
 
-            return axios.get('/api/activity/'+review.activityUrlId+'/review/'+review.urlId).then((response)=>{
+            return this._vm.$axios.get('/api/activity/'+review.activityUrlId+'/review/'+review.urlId).then((response)=>{
                 if(response.data.success){
                    console.log('getReview');
                    console.log(response.data.review)
@@ -88,7 +87,7 @@ export default {
             if(context.state.hasPushedSave){
                 if(!review.urlId){
                     console.log(review.activityUrlId);
-                    return axios.post('/api/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
+                    return this._vm.$axios.post('/api/activity/'+review.activityUrlId+'/review',{review:review}).then(response=>{
                         if(response.data.success){
 
                             context.commit('setReview',response.data.review);
@@ -111,7 +110,7 @@ export default {
                     });
                 } else {
                     console.log('sentReviewU',review);
-                    axios.put('/api/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
+                    this._vm.$axios.put('/api/activity/'+review.activityUrlId+'/review/'+review.urlId,{review:review}).then(response=>{
                         
                         context.dispatch('setHasPushedSave',false);
                         context.commit('setReview',response.data.review);

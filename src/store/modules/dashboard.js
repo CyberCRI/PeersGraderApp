@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 export default {
 	namespaced : true,
@@ -11,7 +10,7 @@ export default {
 		},
 		getSummaryRows(context,specifier){
 
-			return axios.get('/api/activity/'+specifier.activityUrlId+'/admin',{params : {profs:specifier.coefs.profs,peers:specifier.coefs.peers,observers:specifier.coefs.observers}}).then((response)=>{
+			return this._vm.$axios.get('/api/activity/'+specifier.activityUrlId+'/admin',{params : {profs:specifier.coefs.profs,peers:specifier.coefs.peers,observers:specifier.coefs.observers}}).then((response)=>{
         if(response.data.rows){
         		console.log('here')
         	console.log(response.data.rows);
