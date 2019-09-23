@@ -218,7 +218,6 @@
 </template>
 
 <script>
-	import axios from 'axios'
 	import ActivityRead from '@/components/ActivityRead'
 	import ActivityParticipants from '@/components/ActivityParticipants'
 	import ActivityHeader from '@/components/ActivityHeader'
@@ -228,42 +227,42 @@
 
 	export default {
 		name : 'Activity',
-		components:{
-			'activity-header': ActivityHeader,
+		components:{ // components used, see template
+			'activity-header': ActivityHeader, 
 			'read-activity' : ActivityRead,
 			'participants-acitivity' : ActivityParticipants,
 			'rubric-activity': ActivityRubric
 		},
-		data(){
+		data(){ //method that contains all data for the component
 			return {
-				showStep : 1,
-				showModal: false,
-				modalInfo : {
+				showStep : 1, //showStep used to define which component is displayed to the user as each steps has dedicated component
+				showModal: false, //wether or not display the modal for the successful completion of the activity creation
+				modalInfo : { // object to embody modal infos
 					activityPath : '',
 					activityPassword : ''
-				},
-				APP_URL : ''
+				}
 			};
 		},
-		computed : {
-			...mapState('activity',{
-      	activity : 'activity',
-      	withId   : 'withId',
- 				isAdmin  : 'isAdmin',
- 				modifyWill : 'modifyWill'
+		computed : { //properties dynamically evaluated and cached, no reevaluation unless changed
+			...mapState('activity',{ // mapState method from vuex to bring properties from store to the component|since we have a modularized store, you have to specify from which module of the store the properties are from
+      	activity : 'activity', // properties from store || activity is an object that carries the activity model from monfo
+      	withId   : 'withId', // ?
+ 				isAdmin  : 'isAdmin',// ?
+ 				modifyWill : 'modifyWill' // ?
     	}),
-    	...mapState('participants',{
-      	errors : 'errors'
+    	...mapState('participants',{ // from module participant
+      	errors : 'errors' // needed to check if we can pass step 2
     	}),
-			checkFirstStepCompletion(){
+			checkFirstStepCompletion(){ //validation method for step 1
 				return this.activity.title && this.activity.guidelines && this.activity.sessions;
+				// if title,guidelines,sessions not falsy, returns true
 			}
 		},
 		methods: {
-			...mapActions('activity',{
-      	setActivity:'setActivity',
-      	resetActivitySession : 'resetActivitySession',
-      	getAuthActivity : 'getAuthActivity',
+			...mapActions('activity',{ //same as mapState for actions
+      	setActivity:'setActivity', //save the activity to db
+      	resetActivitySession : 'resetActivitySession',// reset activity
+      	//getAuthActivity : 'getAuthActivity', // certainly useless here
       	setWithId:'setWithId',
       	lookForActivity: 'lookForActivity',
       	deleteActivity: 'deleteActivity'
@@ -278,12 +277,12 @@
 			postActivity(){
 				console.log('launch save');
 				if(this.errors.length == 0){
-					var vm = this;
-					this.setActivity(this.activity).then(response=>{
+					
+					this.setActivity().then(response=>{
 						if(response.teacherPwd){
-							vm.modalInfo.activityPath = window.location.origin+`/#/activity/${this.activity.urlId}`,
-							vm.modalInfo.activityPassword = response.teacherPwd;
-							vm.showStep = 4;
+							this.modalInfo.activityPath = window.location.origin+`/#/activity/${this.activity.urlId}`,
+							this.modalInfo.activityPassword = response.teacherPwd;
+							this.showStep = 4;
 							this.goStep(1);
 						}
 					});
@@ -315,9 +314,9 @@
 				this.$router.push({path:'/activity/'+this.activity.urlId});
 			}
 		},
-		beforeRouteUpdate (to, from, next) {
+		beforeRouteUpdate (to, from, next) {//first function called in each components with that hook. this components being composed of other components, if this hook s present in those, the beforeRouteUpdate is also called
 		  console.log('beforeRouteUpdate')
-		  this.showStep = 1;
+		  this.showStep = 1; //set step to 1
 		  this.showModal = false;
 		  if(!to.params.id){
 		  	console.log('here in update');

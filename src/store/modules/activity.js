@@ -29,7 +29,7 @@ export default {
         },
         isAdmin : false,
         withId : false,
-        modifyWill : false,
+        modifyWill : false, 
         shifts : []
     },
     actions : {
@@ -71,7 +71,7 @@ export default {
         setWithId(context,withId){
             context.commit('setWithId',withId)
         },
-        getAuthActivity(context,specifier){//certainement refacto les bails ici
+        getAuthActivity(context,specifier){//certainement refacto les bails ici| certainly useless 
             return this._vm.$axios.get('/api/activity/'+specifier.urlId).then((response)=>{
                 if(response.data.success){
                     console.log('auth activity')
@@ -158,11 +158,10 @@ export default {
 
             context.commit('setWithId',false);
         },
-        setActivity(context,activity){
-            if(activity.urlId)
+        setActivity(context){
+            if(context.state.activity.urlId)
                 return this._vm.$axios.put('/api/activity/'+activity.urlId,{activity:context.state.activity}).then((response)=>{
-                    console.log('there');   
-                    console.log(response)
+                    
                     if(response.data.success){
                         this._vm.$notify({
                             group: 'notifications',
@@ -170,11 +169,10 @@ export default {
                             text: 'This activity have been updated with success.',
                             type : 'success'
                         });
-                        console.log('there there')
+                        
                         context.state.activity = response.data.activity;
                         context.state.userSession = true;
 
-                        //return new Promise((resolve,reject)=>resolve({}));
                     }
 
 

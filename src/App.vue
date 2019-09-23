@@ -1,9 +1,9 @@
 <template>
-  <div id="pg-app">
+  <div id="pg-app"> <!-- main component for the app -->
     <notifications group="notifications"/>
-    <div v-if="$route.path=='/'">
-      <pg-header />
-      <pg-landing />
+    <div v-if="$route.path=='/'"> <!-- global $route object made available by adding router to the vue instance, if path is /, user is visiting first page, therefore we display header and landing components -->
+      <pg-header /> <!-- header component, see src/components/Header.vue-->
+      <pg-landing /><!-- landing componenet, see src/components/Landing.vue-->
     </div>
     <div v-else id="pg-main-container" class="">
       <router-view></router-view>
@@ -12,27 +12,19 @@
 </template>
 
 <script>
-import Header from '@/components/Header'
-import Landing from '@/components/Landing'
+/* TO DO 
+Redefine footer behavior, use relative units and css grids
+*/
 
-export default { // ? what is that "export default" for
-  name: 'App',
+
+import Header from '@/components/Header' //importing component Header as Header | @ is a shortcut/alias for the src folder
+import Landing from '@/components/Landing' //importing component Landing as Landing
+
+export default { // ? what is that "export default" for | /*export default is modularizing the javascript code for the component. Its creates a scope for this component. But it's a singular vue object which attending hooks, methods and properties that vue has predefined in its prototype. We surdefined their default behavior if needed to suits our needs*/
+  name: 'App',// name to identify component. Useful in router/index.js mainly. Not really needed here tho
   components : {
-    'pg-header' : Header,    // app header
+    'pg-header' : Header,    // app header | key of object defines the tag name that is going to bind component template to the template section, value is the name of the 
     'pg-landing' : Landing   // app landing
-  },
-  data(){
-    return { landing : true };
-  },
-  beforeRouteEnter(to,from,next){
-    console.log('beforeRouteEnter')
-    console.log('to',to)
-    console.log('from',from)
-  },
-  beforeRouteUpdate(to,from,next){
-    console.log('beforeRouteUpdate')
-    console.log('to',to)
-    console.log('from',from)
   },
   mounted(){
     // ? Burger vs Menu manager
@@ -44,6 +36,7 @@ export default { // ? what is that "export default" for
             menu.classList.toggle('is-active');
         });
     }
+
 
     // Footer constant repositioning
     window.onresize = (function() {
@@ -69,7 +62,8 @@ export default { // ? what is that "export default" for
 </script>
 
 <style>
-  @import '../node_modules/bulma/css/bulma.css';
+  /* All style typed there will be available for all the components as its in the App.vue  */
+  @import '../node_modules/bulma/css/bulma.css';/* bulma library made available, allows use of class and whatever*/
 
   html, body{
     height: 100%

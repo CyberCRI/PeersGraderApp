@@ -61,22 +61,6 @@
     </nav>
 </template>
 
-<script>
-	import {mapState} from 'vuex'
-
-	export default {
-		computed : {
-			...mapState('activity',{
-         	activity : 'activity',
-         	withId   : 'withId',
-    			isAdmin  : 'isAdmin'
-    	   }),
-         activityUrl(){
-           return '/activity/'+this.activity.urlId;
-         }
-		}
-	};
-</script>
 
 <style scoped>
 .bg-wood,
