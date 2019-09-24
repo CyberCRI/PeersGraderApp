@@ -133,22 +133,6 @@
 								  </div>
 								</div>
 							</div>
-							<!-- <div class="field">
-							  <label class="label">Name</label>
-							  <div class="control">
-							    <input class="input" type="text" v-model="activity.teacherName" placeholder="Your name">
-							  </div>
-							</div> -->
-
-							<!-- <div class="field">
-							  <label class="label">Email</label>
-							  <div class="control has-icons-left">
-							    <input class="input" type="email" placeholder="Email input" v-model="activity.teacherEmail" style="text-transform: lowercase">
-							    <span class="icon is-small is-left">
-							      <i class="fas fa-envelope"></i>
-							    </span>
-							  </div>
-							</div> -->
 						</div>
 					</div>
 
@@ -189,7 +173,6 @@
 					        <div @click="redirect" class="buttons is-centered"><span class="button is-danger">I took note!</span></div>
 					      </div>
 					    </div>
-					    <!--  <button @click="redirect" class="modal-close is-large" aria-label="close"></button> -->
 					</div>
 
 				</div>
@@ -208,7 +191,7 @@
 						<span v-if="activity.urlId!=undefined">Update</span>
 						<span v-else>Save</span>
 					</a>
-					<a v-if="(withId && isAdmin && modifyWill)" @click="delActivity" class="button is-danger level-item">
+					<a v-if="(withId && isAdmin && modifyWill)" @click="deleteActiviy" class="button is-danger level-item">
 						Delete
 					</a>
 				</p>
@@ -246,8 +229,8 @@
 		computed : { //properties dynamically evaluated and cached, no reevaluation unless changed
 			...mapState('activity',{ // mapState method from vuex to bring properties from store to the component|since we have a modularized store, you have to specify from which module of the store the properties are from
       	activity : 'activity', // properties from store || activity is an object that carries the activity model from monfo
-      	withId   : 'withId', // ?
- 				isAdmin  : 'isAdmin',// ?
+      	withId   : 'withId', // Used to determine wether or not to load reading mode or writing mode
+ 				isAdmin  : 'isAdmin',// Used to determine wether or not the user is the creator of the activity and therfore can
  				modifyWill : 'modifyWill' // ?
     	}),
     	...mapState('participants',{ // from module participant
@@ -262,19 +245,14 @@
 			...mapActions('activity',{ //same as mapState for actions
       	setActivity:'setActivity', //save the activity to db
       	resetActivitySession : 'resetActivitySession',// reset activity
-      	//getAuthActivity : 'getAuthActivity', // certainly useless here
-      	setWithId:'setWithId',
-      	lookForActivity: 'lookForActivity',
-      	deleteActivity: 'deleteActivity'
+      	setWithId:'setWithId', //set withId property
+      	lookForActivity: 'lookForActivity', // method to load activity data 
+      	deleteActivity: 'deleteActivity'// method to deleteActivity
     	}),
     	...mapActions('participants',{
-      	setErrors : 'setErrors'
+      	setErrors : 'setErrors' // method to set content of errors array for Activity participants
     	}),
-    	delActivity()//put it back in store, change name
-    	{
-    		this.deleteActivity(this.activity.urlId);
-    	},
-			postActivity(){
+			postActivity(){ //to save activity in db 
 				console.log('launch save');
 				if(this.errors.length == 0){
 					
@@ -288,22 +266,23 @@
 					});
 				}
 			},
-			checkRubric(){
+			checkRubric(){ //check if rubrics are properly made.
+				//if every rubrics' points matches their descriptors sum points, return true
          return this.activity.rubrics.every(r=>Number(r.points) === r.descriptors.reduce((a,d)=>a+Number(d.points),0));
       },
-			goStep(i){
-
-				if(this.showStep == 3){
-					if(this.checkRubric())
-						this.showStep+=i;
+			goStep(i){ //function that updates showStep value 
+				//perfect example of not willing to refine stuffs leads to utter nonsense.. redo stuff boys.
+				if(this.showStep == 3){ // if it's step 3 (rubrics set up)
+					if(this.checkRubric()) // if rubrics properly filled up
+						this.showStep+=i; // go to next/precedent screen
 					else {
 
-						this.$notify({
+						this.$notify({ // else notify user 
 							group:'notifications',
 							type:'error',
 							title:'Points skill incoherence'
 						});
-					}
+					}//if it's not step 3 and showStep if above 0, we can go to the next/precedent screen as long as long as step 1 is not empty and step 2 is without errors
 				} else if(this.showStep>=0 && this.showStep!=3 && this.checkFirstStepCompletion && this.errors.length==0){
 					this.showStep+=i;
 				}
@@ -311,31 +290,31 @@
 
 			},
 			redirect(){
-				this.$router.push({path:'/activity/'+this.activity.urlId});
+				this.$router.push({path:'/activity/'+this.activity.urlId}); //bring the user to the activity created 
 			}
 		},
 		beforeRouteUpdate (to, from, next) {//first function called in each components with that hook. this components being composed of other components, if this hook s present in those, the beforeRouteUpdate is also called
 		  console.log('beforeRouteUpdate')
 		  this.showStep = 1; //set step to 1
-		  this.showModal = false;
-		  if(!to.params.id){
+		  this.showModal = false; //set modal success to false
+		  if(!to.params.id){ //if no id we want the activity to be cleaned/ made if the user started stuff and for some reason wanted reload page
 		  	console.log('here in update');
 		  	this.resetActivitySession();
 
 
-		  if(to.query.title)
+		  if(to.query.title)// get the activity title from route /
 		  	this.activity.title = to.query.title;
 
 
-		  	this.setErrors([]);
+		  	this.setErrors([]);// empty errors in case of a reload 
 		  	console.log('reset ?');
-		  } else {
+		  } else { // if theres an id, its load the activity based on the id to load Activity Read 
 		  	this.setWithId(true);
-		  	this.lookForActivity(to.params.id);
+		  	this.lookForActivity(to.params.id);//load activity state
 		  }
-		  next()
+		  next();
 		},
-		beforeRouteEnter(to,from,next){
+		beforeRouteEnter(to,from,next){ // because we chose (certainly unwisely) to load everything from the router, there are some uses cases where beforeRouteUpdate is not called because it's called only on the first time the user navigates to the route/component. So to fix that, we used this hook. It's basically the same stuff as beforeRouteEnter, only from here, the this is not  to the component's vue instance, so we wrap the logic within the next function where it's accessible. 
 
 			console.log('to then from')
 			console.log(to);

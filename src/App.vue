@@ -13,7 +13,7 @@
 
 <script>
 /* TO DO 
-Redefine footer behavior, use relative units and css grids
+Redefine menu behavior on resize
 */
 
 
@@ -27,7 +27,7 @@ export default { // ? what is that "export default" for | /*export default is mo
     'pg-landing' : Landing   // app landing
   },
   mounted(){
-    // ? Burger vs Menu manager
+    // ? Burger vs Menu manager 
     var burger = document.querySelector('.burger');
     if(burger!=null){
       var menu = document.querySelector('#'+burger.dataset.target);
@@ -37,26 +37,6 @@ export default { // ? what is that "export default" for | /*export default is mo
         });
     }
 
-
-    // Footer constant repositioning
-    window.onresize = (function() {
-        /*var documentHeight = jQuery(document).height();
-        var element = jQuery('#you-element');
-        var distanceFromBottom = documentHeight - (element.position().top + element.outerHeight(true));*/
-        var documentHeight = 0,
-            element = null,
-            distanceFromBottom = 0; // ? so its always 0 !
-
-        if(distanceFromBottom <= 0){
-           var footer = document.querySelector('#stepper-container');
-
-           footer.style.position = "fixed";
-           footer.style.bottom = "0";
-           footer.style.height = "60px";
-           footer.style.background = "white";
-           footer.style.width = "75%;"
-        }
-    });
   }
 }
 </script>
@@ -79,7 +59,8 @@ export default { // ? what is that "export default" for | /*export default is mo
 
   #pg-main-container{
    position : absolute;
-   top:7.5%;
+   min-height: 60%;
+   top:5.5%;
    left:12.5%;
    width: 75%;
   }

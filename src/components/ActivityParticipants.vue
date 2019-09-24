@@ -229,10 +229,6 @@
 		},
 		beforeRouteEnter(to,from,next){
 			next(vm=>{
-				/*vm.setActivityId(vm.$store.state.activity.activity._id)
-				vm.setActivityUrlId(vm.$store.state.activity.activity.urlId);
-				vm.getParticipants(vm.$store.state.activity.activity.urlId);*/
-				console.log('in there')
 				vm.participantRoute = true;
 			})
 		}
