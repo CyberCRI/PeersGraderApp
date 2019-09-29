@@ -31,6 +31,7 @@
 		methods:{
 			...mapActions('activity',{
       	lookForActivity:'lookForActivity',
+      	getPlanning : 'getPlanning',
       	getPlanningV2 : 'getPlanningV2',
       	getPlanningFinal: 'getPlanningFinal'
 //      	getPlanningEmma : 'getPlanningEmma'
