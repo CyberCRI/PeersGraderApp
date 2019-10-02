@@ -299,6 +299,8 @@ export default {
                                 
                                 while(groupStudents[j].presentationCount < context.state.activity.sessions){
                                     
+                                    //if(indexShift>context.state.activity.sessions -1) indexShift = 0;
+
                                     if(groupStudents[j].presentationCount < context.state.activity.sessions){
                                         if(isShiftOkToPresent(groupStudents[j],indexShift)){
                                             shifts.students[indexShift][groupStudents[j].positionShift].presenter = {
@@ -364,7 +366,7 @@ export default {
                     console.log('isGraderAlreadyGrading return',!ok);
                     return !ok;
                     },
-                    priority : 50
+                    priority : 100
                 },
                 isGraderAlreadyPresenting : {
                     check : function (specifier) {
@@ -380,7 +382,7 @@ export default {
                         console.log('isGraderAlreadyPresenting return',ok);
                         return ok;
                     },
-                    priority : 50
+                    priority : 100
                 },
                 isGradersFull : {
                     check : function (specifier){
@@ -442,7 +444,8 @@ export default {
                 },
                 isThereABuddyPreviousSession : {// applicable si maxStudents > 2
                     check : function (specifier){
-                        let ok = false;
+                        
+                        let ok = true;
 
                          if(specifier.indexShift > 0){
                             
@@ -456,7 +459,7 @@ export default {
                     },
                     priority : 30
                 },
-                isThereABuddy : {// applicable si maxStudents > 2
+                /*isThereABuddy : {// applicable si maxStudents > 2
                     check : function(specifier){
 
                         let student = specifier.student,
@@ -473,7 +476,7 @@ export default {
 
                     },
                     priority : 10
-                },
+                },*/
                 isPresenterGroupReviewedAlready : {//session < nbrGoups
                     check : function(specifier){
                         
@@ -485,7 +488,7 @@ export default {
                         console.log('isPresenterGroupReviewedAlready return',ok);
                         return !ok;
                     },
-                    priority : 20
+                    priority : 100
                 },
                 isPresenterPersonReviewedAlready : {//session < nbrGoups
                     check : function (specifier){
@@ -498,7 +501,7 @@ export default {
                         console.log('isPresenterPersonReviewedAlready return',ok)
                         return !ok;
                     },
-                    priority : 25
+                    priority : 30
                 }
             };
 
@@ -508,14 +511,17 @@ export default {
             console.log('while shit',groups.students[groupsLabel[0]][0]);
             console.log('for after while shit',groups.students[groupsLabel[0]][0]);
 
-            for(var i=0;i<groupsLabel.length;i++){
+
+            for(var i=groupsLabel.length-1;i>-1;i--){
             //for(var i=0;i<1;i++){//pour tous les groupes 
                 let onePass = false;
-                for(var j=0,groupStudents=groups.students[groupsLabel[i]];j<groupStudents.length;j++){
-                    let priority = 345;
 
-                    while(groups.students[groupsLabel[i]][j].gradingCount < nbGrading){ // tant que le mec en cours a pas noté
-                        if(priority>=140 && onePass) priority-=5;
+                
+                for(var groupStudents=groups.students[groupsLabel[i]],j=0;j<groupStudents.length;j++){
+                    let priority = 550;
+
+                    //while(groups.students[groupsLabel[i]][j].gradingCount < nbGrading){ // tant que le mec en cours a pas noté
+                        if(priority>=400 && onePass) priority-=5;
                         let priorityConstraints = getConstraints(priority);
 
                             for(var indexShift = 0; indexShift < shifts.students.length; indexShift++){
@@ -534,7 +540,7 @@ export default {
                                         indexShift : indexShift,
                                         indexPool : indexPool
                                     })==true})){
-
+                                    try{
                                         console.log('INSERTED',indexShift,indexPool)
                                         shifts.students[indexShift][indexPool].graders.push({
                                             reviewedId : groupStudents[j]._id,
@@ -567,15 +573,20 @@ export default {
                                                     
                                                 }
                                             }
+                                        } catch(e){
+                                            continue;
+                                        }
 
                                     }
                                 }
                             }
                             onePass = true;
-                    }
+                    //}
                     
                 }
             }
+
+
 
 
 
