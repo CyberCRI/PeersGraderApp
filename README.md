@@ -18,7 +18,7 @@ chromium-browser "http://localhost:5000/#/"   # [optional] Opens landing page
 
 ### Routes
 
-| Route `./#/{...}`                   | Verb   | Pass* | Description
+| Route `./#/{...}`                   | Verb   | Pass | Description
 | ----------------------------------- | ------ | --- | --
 | /activity                           | GET    | no  | Get activity form to define an activity `{ title, guideline, sessions, participants }`
 | /activity                           | POST   | no  | Create an activity with unique id and admin password.
