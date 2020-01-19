@@ -3,12 +3,10 @@
 /* SET UP ************************************************************* */
 /* ******************************************************************** */
 var dev = true;
-var cl = function(parameters){
-  if(dev){ console.log(parameters);}
-};
+var cl = function(parameters){ if(dev){ console.log(parameters);} };
 var getNumberOfSessions = function(keys) {
   var count = keys.filter(function(str) { return str.indexOf('presenting') > -1; }).length;
-  return count
+  return count;
 }
 
 var getUrlVars = function() {
@@ -219,10 +217,9 @@ function showInfo(data,tabletop,eventNum) {
     var avgPeers = student.gradesPeers.length ?
           student.gradesPeers.reduce(function(toll, arr) { return toll + arr[1]; }, 0) / student.gradesPeers.length : undefined;
     var avgProfs = student.gradesProfs.length ?
-          (student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0) / student.gradesProfs.length)
-          : avgPeers;
+          student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0)           / student.gradesProfs.length : avgPeers;
     if (!student.gradesPeers.length){ avgPeers = avgProfs; }
-    console.log("here: ",+avgPeers.toFixed(1),avgPeers,+avgProfs.toFixed(1),avgProfs);
+    console.log("2b/",student.indivEmail.split('@')[0],+avgPeers.toFixed(1),+avgPeers.toFixed(1),+avgProfs.toFixed(1));
     students[i].averagePeers = +avgPeers.toFixed(1);
     students[i].averageProfs = +avgProfs.toFixed(1);
     students[i].profReviewed = student.gradesProfs.length? true:false;
@@ -460,7 +457,7 @@ function showInfo(data,tabletop,eventNum) {
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["date","indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","finalGradePP","rankPP","fopaPP","indivFamily","indivEmail"]; //,"indivCity"
+  var cols = ["date","indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","rankPP","fopaPP","finalGradePP","indivFamily","indivEmail"]; //,"indivCity"
   $(".activity:last").append('<h4>Table</h4>')
   tablify(studentsSort,cols,eventNum);
   $(".activity:last").append('<h4>Violins</h4>')
@@ -482,13 +479,13 @@ var gkeys = {
   "2018.04.14": '1KIcOQZcSsM7ifXlypevI2ut7qyqSshLyR8dGmBE7VTo', // named P5 fdv
   "2018.05.03": '1TcGypsFLd2jvYJrI_AlPRKPhSOYPFpBWa9uvFrwhoLg', // named P5 biomed
   "2019.01.11": '1ai3SnqmW6tmA8AKsDmjxxI1ey-Esn3m6jc0_JeCDQVg', // named P5 biomed
-	"2019.05.20": '1mF54W78XfpgUejgEJwv780yfH8Sm_l6h7btKXVU8Q78',
+  "2019.05.20": '1mF54W78XfpgUejgEJwv780yfH8Sm_l6h7btKXVU8Q78', // named P5 biomed
+  "2020.01.10": '1ia0ZsS_HEHxIaOikGhtpv7Byxn9i6FystsGr4Mkz8cE', // named P5 biomed BUT PARTIAL EVENT
   "testpoem"  : '1MQkHnD-2XJSVnvL5PQDjfygJOJXoeHayVoBiak82jLU'
 };
 
-var displayResults = function(googleSheetID,cycle) {
-  var cycle= cycle;
-  console.log('cycle1',cycle)
+var displayResults = function(googleSheetID) {
+  console.log("googleSheetID",googleSheetID)
   Tabletop.init({
     key: googleSheetID,
     callback: showInfo,
@@ -497,7 +494,8 @@ var displayResults = function(googleSheetID,cycle) {
 };
 
 var googleId = function(date) {
-  var id =  document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys[date||'2019.01.11'];
+  date? date=date:date='2020.01.10';
+  var id = document.getElementById("googleSheetId").value || getUrlVars()["google"] || gkeys[date];
   return id;
 };
 var resetPage = function(){ $('#hook').empty(); }
@@ -505,7 +503,7 @@ var resetPage = function(){ $('#hook').empty(); }
 window.onload = function() {
   $('#run').on('click', function(){
     resetPage();
-    $("#hook").append('<div><h3>Activity</h3></div>');
+    $("#hook").append('<div class="activity"><h3>Activity</h3></div>');
     displayResults(googleId())
   });
   $('#open').on('click', function(){
