@@ -3,12 +3,26 @@
 /* SET UP ************************************************************* */
 /* ******************************************************************** */
 var dev = true;
-var cl = function(parameters){ if(dev){ console.log(parameters);} };
-var getNumberOfSessions = function(keys) {
-  var count = keys.filter(function(str) { return str.indexOf('presenting') > -1; }).length;
-  return count;
-}
+var cl = function(args){ var args = args || []; if(dev){ return console.log(args); } };
+/* Timer **** */
+/* var timer = []; timer.push(now ()); cl.timer(timer,[bolean]) */
+var now = function(comment) { return { time: new Date(), step: comment}};
+var timer=[];
+cl.timer = function(array,reset){
+  reset= reset?true:false;
+  for(var i=0; i<array.length -1;i++){
+    var comment = array[i].comment?' Step: '+array[i].comment:'';
+  	console.log(
+      "Period_"+i+"⟶"+(i+1)+" : "+(array[i+1].time-array[i].time)/1000+"sec."+comment+'.'
+    );
+  }
+	console.log("Period_0⟶"+(array.length-1)+" : "+(array[array.length-1]-array[0])/1000+"sec.");
+  if(reset){ timer=[] };
+};
 
+/* ******************************************************************** */
+/* QUERY ************************************************************** */
+/* ******************************************************************** */
 var getUrlVars = function() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -16,17 +30,23 @@ var getUrlVars = function() {
   });
   return vars;
 }
-cl(["window.location.search",getUrlVars()["google"]]);
+cl(['Source > window.location.search',getUrlVars()["google"]]);
+
 /* ******************************************************************** */
 /* DATA FORMATING ***************************************************** */
 /* ******************************************************************** */
-var sortJSON = function (data, key, way) {
-  return data.sort(function(a, b) {
+var sortJSON = function (arr, key, way) {
+  return arr.sort(function(a, b) {
     var x = a[key], y = b[key];
-    if (way==='123') { return ((x<y)? -1 : ((x>y)?1:0)) ; }
-    if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)) ; }
+    if (way==='123') { return ((x<y)? -1 : ((x>y)?1:0)); }
+    if (way==='321') { return ((x>y)? -1 : ((x<y)?1:0)); }
   });
 };
+
+var getNumberOfSessions = function(keys) {
+  var count = keys.filter(function(str) { return str.indexOf('presenting') > -1; }).length;
+  return count;
+}
 var individualIdToGroupId = function (string) {
   var str = string || '';
   str.match(/\d/)? str= str.match(/.*\d/)[0]: str=str ;
@@ -36,15 +56,15 @@ var individualIdToGroupId = function (string) {
 // key : 'actual string on google questionnaire'  <==== !!!!!
 var  createListOfTerms = function(sessions){
   var obj = {
-    date       : 'Event',
-    indivEmail : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
-    indivFamily: 'Name?',
-    indivId    : 'Identifiant?',
-    country    : 'Country of education?',
-    city       : 'City of education?',
-    gender     : 'Gender?',
-    session    : 'session',
-    presenting : 'presenting',
+    date      : 'Event',
+    email     : 'Email Address', // 	Session #1 — group presenting to me	Session #1 — grade you give
+    family    : 'Name?',
+    id        : 'Identifiant?',
+    country   : 'Country of education?',
+    city      : 'City of education?',
+    gender    : 'Gender?',
+    session   : 'session',
+    presenting: 'presenting',
   };
   for (var s=1; s<=sessions; s++) {
     obj['S'+s+'group'] = 'Session #'+s+' — group presenting to me'; // 'title '+S+' on google sheet';
@@ -54,365 +74,355 @@ var  createListOfTerms = function(sessions){
 }
 
 /* ******************************************************************** */
-/* Extract instance of Evaluation ************************************* */
-
+/* EVALUATIONS ******************************************************** */
+/* ******************************************************************** */
 // flattening the database, showing up each instance of evaluation "A grade B" and metadata.
 var flattening = function(jsonData, numberOfSessions, terms) {
   var d = [];
   jsonData.forEach(function(x){
     for (var i=1; i<=numberOfSessions;i++){
+      var grade = x[terms['S'+i+'grade']];
       var instanceOfEvaluation = {
-        date        : x[terms.date],
-        session     : i,
-        indivEmail  : x[terms.indivEmail],
-        indivFamily : x[terms.indivFamily],
-        indivId     : x[terms.indivId],
-        indivGroupId: individualIdToGroupId(x[terms.indivId]),
-        indivGender : x[terms.gender],
-        indivCity   : x[terms.city],
-        indivStatus :
-          individualIdToGroupId(x[terms.indivId]).match('Prof')?'professor':
-          individualIdToGroupId(x[terms.indivId]).match('G')?'student':'observator',
-        grpEv: individualIdToGroupId(x[terms['S'+i+'group']]),
-        grdEv: x[terms['S'+i+'grade']] === "I'm presenting (no grade)"? terms.presenting: +x[terms['S'+i+'grade']]
+        evalDate    : x[terms.date],
+        evalSession : i,
+        graderEmail : x[terms.email],
+        graderFamily: x[terms.family],
+        graderId    : x[terms.id],
+        graderGroupId: individualIdToGroupId(x[terms.id]),
+        graderGender: x[terms.gender],
+        graderCity  : x[terms.city],
+        graderStatus:
+          individualIdToGroupId(x[terms.id]).match('Prof')?'professor':
+          individualIdToGroupId(x[terms.id]).match('G')?'student':'observator',
+        presenterGroupId: individualIdToGroupId(x[terms['S'+i+'group']]),
+        evalGrade:
+        //  typeof (+grade) === 'number'? +grade
+        //    :grade === "I'm presenting (no grade)"? terms.presenting
+        //      :grade === "Not evaluating"? 'none'
+        //        :'Warning: invalide evaluation grade ('+grade+') from '+x[terms.id]+' to '+individualIdToGroupId(x[terms['S'+i+'group']])+'.'
+         x[terms['S'+i+'grade']] === "I'm presenting (no grade)"? terms.presenting
+         :x[terms['S'+i+'grade']] === "Not evaluating"? 'none'
+          :+x[terms['S'+i+'grade']]
       };
       d.push(instanceOfEvaluation);
     }
   })
   return d;
 };
+// Enrich evaluations by presenter's demographics
+var findPresenter = function(evaluations,session,presenterGroupId){
+  var res = evaluations
+    .filter(eval => eval.graderGroupId===presenterGroupId)
+    .filter(eval => eval.evalGrade==='presenting')
+    .filter(eval => eval.evalSession===session);
+  return res;
+}
+var findPresenter2 = function(evaluations,session,presenterGroupId){
+  var res = evaluations
+    .filter(eval => eval.graderGroupId===presenterGroupId
+      && eval.evalGrade==='presenting'
+      && eval.evalSession===session);
+  return res;
+}
+var evaluationsPlusPresenters = function(evaluations){
+  return evaluations.map(function(eval,index){
+    var enriched = {...eval};
+    item = findPresenter2(evaluations,eval.evalSession,eval.presenterGroupId);
+    //console.log('EVALUATING:',eval); console.log('ITEM:',item);
+/**/if(item.length!==1){ console.warn('WARNING: abnormal number ('+item.length+') of individuals recorded to present at that time.\nData: ',eval) };
+      enriched.presenterEmail  = item[0]? item[0].graderEmail : 'none', // THIS IS THE PRESENTER
+      enriched.presenterFamily = item[0]? item[0].graderFamily: 'none',
+      enriched.presenterId     = item[0]? item[0].graderId:     'none',
+      enriched.presenterGroupId= item[0]? item[0].graderGroupId:'none',
+      enriched.presenterGender = item[0]? item[0].graderGender :'none',
+      enriched.presenterCity   = item[0]? item[0].graderCity :  'none',
+      enriched.presenterStatus = item[0]? item[0].graderStatus: 'none';
+/**/if(index==0){ console.log(evaluations[0]); console.log(eval) }
+    return enriched;
+  });
+};
+ // converts evaluation into evaluator's demographics and enriched evaluation into dual demographic object
+var evalToDemo = function(eval){ // convert enriched evaluation into dual demographic object
+  if(!eval.presenterId){ return {
+      evalDate     : eval.evalDate,
+      graderStatus : eval.graderStatus,
+      graderEmail  : eval.graderEmail,
+      graderFamily : eval.graderFamily,
+      graderId     : eval.graderId,
+      graderGroupId: eval.graderGroupId,
+      graderGender : eval.graderGender,
+      graderCity   : eval.graderCity,
+    }
+  }
+  else { return {
+   'from':eval.graderId,'fromGender':eval.graderGender,'fromFamily':eval.graderFamily,
+   'evalGrade':eval.evalGrade,
+   'to': eval.presenterId, 'toGender': eval.presenterGender,'toFamily':eval.presenterFamily,}
+  }
+ };
 
 /* ******************************************************************** */
-/* EVALUATIONS ******************************************************** */
+/* EVALUATIONS FILTERS ************************************************ */
+var participantInteractions= (evaluations,emailAsId) => { return evaluations.filter(eval => (eval['graderEmail']   ===emailAsId || eval['presenterEmail']===emailAsId)) ||[] },
+    participantAsGrader    = (evaluations,emailAsId) => { return evaluations.filter(eval => (eval['graderEmail']   ===emailAsId && typeof eval.evalGrade === 'number')) ||[] }, // excludes "I'am presenting" evaluations
+    participantAsPresenter = (evaluations,emailAsId) => { return evaluations.filter(eval => (eval['presenterEmail']===emailAsId)) ||[] }, // INCLUDEs "I'am presenting" evaluations
+    participantPeersEvals  = (evaluations,emailAsId) => { return evaluations.filter(eval => (eval['presenterEmail']===emailAsId && typeof eval.evalGrade === 'number' && eval['graderStatus']==='student')) ||[] },
+    participantProfsEvals  = (evaluations,emailAsId) => { return evaluations.filter(eval => (eval['presenterEmail']===emailAsId && typeof eval.evalGrade === 'number' && eval['graderStatus']==='professor')) ||[] }; // grades given and presentations given, needs "typeof eval.evalGrade==='number'" for only grades given.
+
 /* ******************************************************************** */
+/* CALCULATIONS ******************************************************* */
+var averaging=(arrayOfNumbers) => { // important: all elements must be numbers
+  return (arrayOfNumbers.reduce((a,b) => a+b, 0)/arrayOfNumbers.length).toFixed(1);
+};
+var participantGradesReceivedDistribution = (evaluations, emailAsId) => {
+  return evaluations.filter(eval => eval['presenterEmail']===emailAsId && typeof eval.evalGrade ==='number').map(eval => eval.evalGrade);
+};
+var participantGradesReceivedAverage      = (evaluations, emailAsId) => {
+      var grades = participantGradesReceivedDistribution(evaluations, emailAsId);
+      return averaging(grades);
+    };
+
+
+    // Linear, 1d:
+    // normalness = perfect - distance;
+    /* Linear, 5d:
+    normalness = perfect - distance*5; */
+    /* Discrete :
+    if      (distance<=0.05*perfect){ normalness=1.0*perfect; }
+    else if (distance<=0.1*perfect) { normalness=0.8*perfect; }
+    else if (distance<=0.2*perfect) { normalness=0.5*perfect; }
+    else if (distance<=0.3*perfect) { normalness=0.3*perfect; }
+    else { normalness= 0; } */
+    // Sigmoid_function > Logistic function
+    // var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
+/* SeriousnessAssessment (function) *********************************** */
+    var seriousnessAssessment = function(average,gradeGiven,perfect,typical){
+      perfect = perfect || 20,
+      typical = perfect&&typical?typical:0.75*perfect,
+      currentFormula= "Louis polynominale";
+      var normalness = perfect
+      - 1*Math.pow(average-gradeGiven,2)
+      + 1*Math.abs(average-typical);
+      // var detailOfSeriousness = { 'average': average, 'gradeGiven': gradeGiven, 'distance': distance, 'normalness': normalness, 'formula': formula };
+      return normalness>perfect? perfect:normalness<0?0:normalness.toFixed(1);
+    };
+    var evalToSeriousness = function(evaluations,eval){ // convert enriched evaluation into dual demographic object
+      gradePerfect = gradePerfect || 20, gradeTypical=gradeTypical || 15;
+      var avg = participantGradesReceivedAverage(evaluations,eval.presenterEmail);
+      return { // for each graded student, create a pre-normalness object which includs all received grades
+       'from':eval.graderId,'fromGender':eval.graderGender,'fromFamily':eval.graderFamily,
+       'evalGrade':eval.evalGrade,
+       'evalDistanceToNorm': +(eval.evalGrade-avg).toFixed(2),
+       'evalSeriousness': +seriousnessAssessment(avg,eval.evalGrade,gradePerfect,gradeTypical),
+       'presenterGradesReceived': participantGradesReceivedDistribution(evaluations,eval.presenterEmail),
+       'presenterGradesReceivedAverage': avg,
+       'to': eval.presenterId, 'toGender': eval.presenterGender,'toFamily':eval.presenterFamily }
+     };
+/*    var seriousness = function(accumulator, currentValue, currentIndex, array) {
+      return accumulator + currentValue
+    } */
 
 /* ******************************************************************** */
 /* STUDENTS *********************************************************** */
 /* ******************************************************************** */
 /* 1) Students listing ************************************************ */
-var createCleanPersona = function(item){
-  var persona = {
-    date   : item.date,
-    indivStatus : item.indivStatus,
-    indivEmail  : item.indivEmail,
-    indivFamily : item.indivFamily,
-    indivId     : item.indivId,
-    indivGroupId: item.indivGroupId,
-    indivGender : item.indivGender,
-    indivCity   : item.indivCity,
-    gradesPeers : [],
-    averagePeers: null,
-    gradesProfs : [],
-    averageProfs: null,
-    averageAll  : null,
-    gradesGiven : [],
-    normalness  : null,
+var createParticipants = function(evaluations, emailAsId, ratioProfs, ratioPeers, ratioSeriousness){
+  var ratioProfs = ratioProfs|| 0.5, ratioPeers = ratioPeers || 0.25, ratioSeriousness= ratioSeriousness || 0.25;
+  var participantEval = evaluations.find(eval => eval['graderEmail'] === emailAsId);
+  // IF participant never grades other !??? ==> Still! I created evaluations elements where declared "GRADING"... no one.
+  var curParticipantInteractions= participantInteractions(evaluations,emailAsId),
+      curParticipantAsGrader    = participantAsGrader(curParticipantInteractions,emailAsId),
+      curParticipantAsPresenter = participantAsPresenter(curParticipantInteractions,emailAsId),
+      curParticipantPeersEvals  = participantPeersEvals(curParticipantInteractions,emailAsId),
+      curParticipantProfsEvals  = participantProfsEvals(curParticipantInteractions,emailAsId);
+  // list of enriched evaluations implying curParticipant and a graded student, then fetch graded student's other grades
+  var preNormalness = curParticipantAsGrader.map(eval => { return evalToSeriousness(evaluations,eval); });
+  //console.log('Prenormalness',curParticipantAsGrader,preNormalness);
+  participant = {
+    evalDate     : participantEval.evalDate,
+    graderStatus : participantEval.graderStatus,
+    graderEmail  : participantEval.graderEmail,
+    graderFamily : participantEval.graderFamily,
+    graderId     : participantEval.graderId,
+    graderGroupId: participantEval.graderGroupId,
+    graderGender : participantEval.graderGender,
+    graderCity   : participantEval.graderCity,
+    gradesReceivedAll:      curParticipantPeersEvals.concat(curParticipantProfsEvals).map(eval => { return evalToDemo(eval); }) || [],
+/**/  gradesReceivedPeers:  curParticipantPeersEvals.map(eval => { return evalToDemo(eval); }) || [],
+/**/  gradesReceivedProfs:  curParticipantProfsEvals.map(eval => { return evalToDemo(eval);}) || [],
+    averagePeers: +(curParticipantPeersEvals.map(eval => eval.evalGrade).reduce((a,b) => a+b, 0)/curParticipantPeersEvals.length).toFixed(1) || null, // averaging()
+    averageProfs: +(curParticipantProfsEvals.map(eval => eval.evalGrade).reduce((a,b) => a+b, 0)/curParticipantProfsEvals.length).toFixed(1) || null, // averaging()
+/**/  averageAll  : null,
+    gradesGiven : curParticipantAsGrader.map(eval => { return evalToDemo(eval); }) || [],
+    averageGiven: +(curParticipantAsGrader.map(eval => eval.evalGrade).reduce((a, b) => a+b, 0)/curParticipantAsGrader.length).toFixed(1) || 'none',
+/**/  normalnessDistribution: preNormalness.map(item => +item.evalSeriousness.toFixed(1)),
+    averageNormalness: +(preNormalness.reduce((a,b) => a+b.evalSeriousness, 0) / preNormalness.length).toFixed(1),
     finalGrade  : null
-  }
-  return persona
-}
+  };
+  participant.profReviewed=  participant.gradesReceivedProfs.length? true:false;
+  participant.peersReviewed= participant.gradesReceivedPeers.length? true:false;
+  participant.averageAll = +(participant.averagePeers*ratioPeers + participant.averageProfs*ratioProfs).toFixed(1); // Does this equal 1 ????????
+  // fail safe;
+  return participant;
+};
 
 /* ******************************************************************** */
-/* Students > create table of students ******************************** */
-var getPersonaList = function(evaluations) {
-  let uniqIds = {};
-  let filtered = evaluations
-      .map(createCleanPersona)
-      .filter(obj => !uniqIds[obj.indivId] && (uniqIds[obj.indivId] = true));
-  return filtered
-}
+/* Adjustments ******************************************************** */
+/* Fill averageProfs for students never reviewed by prof ************** */
+var addAverageProfsOrPeersWhenMissing = function (students,groups){
+  students.forEach(function(student, i) {
+    if(student.profReviewed=== false){ // no professor reviewed the students
+      console.warn(`Warning: abnormal number of evaluation by professors (0).\n
+      Please organize at least one teacher evaluation for `+student.graderFamily+` (`+student.graderId+`: `+student.graderEmail+`).`);
+      var groupOfTheStudent = groups.find(group => group.groupId === student.graderGroupId);
+      students[i].averageProfs = groupOfTheStudent.averageProfs || students[i].averagePeers || null ;
+    }
+    if (student.gradesReceivedPeers.length === 0){
+      console.warn(`Warning: abnormal number of evaluation by peers (0).\n
+      Please organize at least 2 peers evaluations for `+student.graderFamily+` (`+student.graderId+`: `+student.graderEmail+`).`);
+      students[i].averagePeers = groupOfTheStudent.averagePeers || groupOfTheStudent.averageProfs || students[i].averageProfs || null;
+    }
+  })
+  return students;
+};
 
 /* ******************************************************************** */
-/* Student grades injection ******************************************* */
+/* GROUPS : this adds fairness **************************************** */
+/* ******************************************************************** */
+/* 2) Groups grades ************************************************** */
+var createGroups = function(evaluations, groupID){
+  let curGroupAllEvals   = evaluations.filter(eval => (eval['presenterGroupId'] ===groupID && typeof eval.evalGrade==='number')),
+      curGroupPeersEvals = curGroupAllEvals.filter(eval => (eval['graderStatus']!=='professor')),
+      curGroupProfsEvals = curGroupAllEvals.filter(eval => (eval['graderStatus']==='professor'));
+  let group = {
+    evalDate: [...new Set(curGroupPeersEvals.map(eval => eval.evalDate))],
+    groupId  : groupID,
+    gradesReceivedPeers: curGroupPeersEvals.map(eval => { return {'from': eval.graderId, 'grade': eval.evalGrade}}),
+    gradesReceivedProfs: curGroupProfsEvals.map(eval => { return {'from': eval.graderId, 'grade': eval.evalGrade}}),
+    gradesAll:  curGroupAllEvals.map(eval => { return {'from': eval.graderId, 'grade': eval.evalGrade}}),
+    averagePeers : curGroupPeersEvals.map(eval => eval.evalGrade).reduce((a, b) => a+b, 0)/curGroupPeersEvals.length,
+    averageProfs : curGroupProfsEvals.map(eval => eval.evalGrade).reduce((a, b) => a+b, 0)/curGroupProfsEvals.length,
+    averageAll   : null
+  };
+  group.averageAll = +(group.averagePeers/2 + group.averageProfs/2).toFixed(1);
+  // fail proof:
+  if(curGroupProfsEvals.length === 0) group.averageProfs= group.averagePeers;
+  if(curGroupPeersEvals.length === 0) group.averagePeers= group.averageProfs;
+  return group;
+};
+
+var addFinalGrades = (arrOfStudents,ratioProfs,ratioPeers,ratioNormalness,targetColumn) => {
+  var arr = arrOfStudents.map((item,i) => {
+    item[targetColumn]=+(ratioProfs*item.averageProfs+ ratioPeers*item.averagePeers + ratioNormalness*item.averageNormalness).toFixed(1);
+    return item; })
+  console.log('Added a final grade column based on:\n{ ratioProfs: ',ratioProfs,', ratioPeers: ',ratioPeers,', ratioNormalness: ',ratioNormalness,', targetColumn: ',targetColumn,'}')
+  return arr;
+};
+// Based on column A sorted from higher to lower, in column B, adds the rank. When value in A repeats, repeats rank, but continue to increment by +1 each time.
+var addRank = function(sortedArr,sourceColumn,newColumn){
+  var arr= sortedArr.map((item,i) => {
+    item[newColumn] = i===0 || sortedArr[i][sourceColumn] !== sortedArr[i-1][sourceColumn]  ? i+1 // anytime new grade appears, rank=i
+        : sortedArr[i-1][newColumn] // elseIf: equal grade, then equal rank
+    return item; })
+  console.log('Added a rank column `'+newColumn+'` based on `'+sourceColumn+'`.\n',sortedArr);
+  return arr;
+};
 /*
-var gradesReceivedBy= function(evaluations, presenterId){
-  function presenting(item) {
-    if(item.indivId == presenterId && item.grdEv == terms.presenting){ return item.session }
-  }
-  var sessionsPresenting = evaluations.map(presenting);
-var evaluations.filter()
-  function getFullName(item, index) {
-    var fullname = [item.firstname,item.lastname].join(" ");
-    return fullname;
-  }
-  return array
-}*/
-
-var getGradesReceived = function(evaluations, students, terms){
-  for (var i = 0; i < evaluations.length; i++) {  // add session
-    var presenterEval = evaluations[i];
-    if (presenterEval.grdEv == terms.presenting) {
-      for (var j = 0; j < evaluations.length; j++) {
-        var graderEval = evaluations[j];
-        if (  graderEval.session == presenterEval.session  // same session
-            && graderEval.grpEv  == presenterEval.grpEv // presenting groups are equal
-            && graderEval.grdEv !== terms.presenting // evaluator NOT presenting
-           ) {
-          for (var k = 0; k < students.length; k++) { // for all students
-            if (students[k].indivEmail == presenterEval.indivEmail && !isNaN(graderEval.grdEv)) { // if presenter equal the evalued
-              graderEval.indivStatus === 'student' || graderEval.indivStatus === 'observator' ?
-                students[k].gradesPeers.push([graderEval.indivGroupId, +graderEval.grdEv]):
-                students[k].gradesProfs.push([graderEval.indivGroupId, +graderEval.grdEv]); // in var student, collect grade
-            }
-          }
-        }
-      }
-    }
-  }
-}
+var addRank2 = (array,sourceColumnumn,newColumnumn) => array.reduce(
+  function(a,b,currentIndex){ array[currentIndex][newColumnumn] = ; }
+) */
+/*  var  = function(previous, current, currentIndex, array) {
+      // Math.min(1,2,3,4)
+      current.
+      return newPrevious;
+    } */
 
 /* ******************************************************************** */
-/*  Students A notes given to other injection ************************* */
-var getGradesGiven = function(evaluations, students){
-  for (var i = 0; i < students.length; i++) {
-    var student = students[i];
-    students[i].gradesGiven = [];
-    for (var j = 0; j < evaluations.length; j++) {
-      var evaluation = evaluations[j],
-          studentEvaluationsSent = (student.indivEmail == evaluation.indivEmail);
-      if(studentEvaluationsSent) {
-        students[i].gradesGiven.push([ evaluation.grpEv, evaluation.grdEv])
-      }
-    }
+/* FOPA *************************************************************** */
+// on array of students, with baseColumn being `finalGrade` and newColumnumn being `averageProfs`
+var findExtremsOnTwinColum = function(input,sourceColumn,newColumn){
+  var minBaseCol,
+      maxBaseCol,
+      minReturnCol,
+      maxReturnCol;
+  for(var i=0; i<input.length; i++){
+      if(minBaseCol===undefined || input[i][sourceColumn] < minBaseCol){
+        minBaseCol = input[i][sourceColumn]; minReturnCol = input[i][newColumn]; }
+      if(maxBaseCol===undefined || input[i][sourceColumn] > maxBaseCol){
+        maxBaseCol = input[i][sourceColumn]; maxReturnCol = input[i][newColumn]; }
   }
+  return { "min": minReturnCol, "max": maxReturnCol};
 }
-
+// given min, max, and data.length, assign a FOPA key with levant value.
+var addFopa = function(data,referenceCol,resultCol,gradesMin,gradesMax){
+  var output = data;
+  var normalisedDistancesBetweenResultGrades = (gradesMax-gradesMin)/(data.length-1);
+  for(var i=0; i<data.length; i++){
+    output[i][resultCol] = +(gradesMax - (output[i][referenceCol])*normalisedDistancesBetweenResultGrades).toFixed(3);
+  }
+  return output;
+  //return output.map(item => (item) { item[resultCol] = +(gradesMax - (output[i][referenceCol])*normalisedDistancesBetweenResultGrades).toFixed(3 ; return item;})
+}
 /* ******************************************************************* */
 /* Set up ************************************************************ */
 /* ******************************************************************* */
-var evaluations= [],
-    students   = [],
-    groupsList = [],
-    groups     = [],
-    studentsClean=[];
+var evaluations = [],
+    studentsIDs = [],
+    participantsIDs=[],
+    students    = [],
+    groupsIDs   = [],
+    groups      = [],
+    dataForAntoineArr=[];
+var ratioProfs = 0.5,
+    ratioPeers = 0.25,
+    ratioNormalness = 1-(ratioProfs+ratioPeers),
+    gradePerfect = 20,
+    gradeTypical = 0.75*gradePerfect||15,
+    gradeMinimum = 0;
 
 /* ******************************************************************* */
 /* ShowInfo ********************************************************** */
 /* ******************************************************************* */
 function showInfo(data,tabletop,eventNum) {
   eventNum = eventNum || 1;
-  console.log(i,data,tabletop)
+  console.log('/ Tabletop: \n',tabletop)
+  console.log('/ Source data google:\n',data)
   var keys = Object.keys(data[0]),
       sessions = getNumberOfSessions(keys),
       googleTerms = createListOfTerms(sessions); // matching google sheet
   cl(['1/ keys: ',keys.length, keys]);
   cl(['2/ sessions: ',sessions]);
   cl(['3/ googleTerms: ',googleTerms.length, googleTerms]);
-  // https://docs.google.com/spreadsheets/d/1cD1Lt4RK2GGmMMi2MoM6nbkvH0c2TrkTbHATUSpipTc
-  // http://www.jsoneditoronline.org/?id=f1c7796026cc37212e950eb0ac30b24d
 
-  var evaluations = flattening(data, sessions, googleTerms);
-  cl(['4a/ evaluations ',evaluations.length,evaluations]); // Students list
-  var students = getPersonaList(evaluations).filter(function (e) { return e.indivStatus == 'student';});
-  cl('5a/ students > creation (empty)',students.length,students);
-  getGradesReceived(evaluations, students, googleTerms) // not sorted by session
-  cl('5b/ students > add "gradesReceived"');
-  getGradesGiven(evaluations, students);
-  cl('5c/ students > add "gradesGiven"');
+  evaluations = flattening(data, sessions, googleTerms);
+  enrichedEvaluations = evaluationsPlusPresenters(evaluations);
+  cl(['/ evaluations: '+ evaluations.length+'\n',evaluations]); // Students list
+  cl(['/ enrichedEvaluations: '+enrichedEvaluations.length+'\n',enrichedEvaluations]); // Students list
 
-  /* ******************************************************************** */
-  /* 2b) Students average injection ************************************* */
-  for (var i = 0; i < students.length; i++) {
-    var student = students[i]
-    var avgPeers = student.gradesPeers.length ?
-          student.gradesPeers.reduce(function(toll, arr) { return toll + arr[1]; }, 0) / student.gradesPeers.length : undefined;
-    var avgProfs = student.gradesProfs.length ?
-          student.gradesProfs.reduce(function(a, b) { return a + b[1];}, 0)           / student.gradesProfs.length : avgPeers;
-    if (!student.gradesPeers.length){ avgPeers = avgProfs; }
-    console.log("2b/",student.indivEmail.split('@')[0],+avgPeers.toFixed(1),+avgPeers.toFixed(1),+avgProfs.toFixed(1));
-    students[i].averagePeers = +avgPeers.toFixed(1);
-    students[i].averageProfs = +avgProfs.toFixed(1);
-    students[i].profReviewed = student.gradesProfs.length? true:false;
-  }
-  cl('5d/ students > add "averagePeers", "averageProfs", "profReviewed"\'s values.');
-  cl(['5e/ students ',students.length,students]);
+  var dataForAntoine = function(arr){ return arr.map(eval =>evalToDemo(eval)) }
+  console.log('Antoine',dataForAntoine(enrichedEvaluations).filter(eval => typeof eval.evalGrade === 'number'));
 
-  /* ******************************************************************** */
-  /* GROUPS ************************************************************* */
-  /* This section is a work in progress for additional fairness ********* */
-  /* ******************************************************************** */
-  /* 1) Groups listing ************************************************** */
-  for (var i = 0; i < evaluations.length; i++) {
-    var newId = evaluations[i].indivGroupId;
-    if (groupsList.indexOf(newId) === -1) {
-      groupsList.push(newId);
-    }
-  }
-  cl(['7/ groupsList=[]: ',groupsList.length,groupsList]); // Students list
-  /* ******************************************************************** */
-  /* Groups table creation ********************************************** */
-  for (var i = 0; i < groupsList.length; i++) {
-    if (!groupsList[i].match('Prof') ) {
-      groups.push({
-        groupDate:null,               //
-        groupId: groupsList[i],
-        gradesPeers: [],
-        averagePeers: null,
-        gradesProfs: [],
-        averageProfs: null,
-        averageAll: null
-      })
-    }
-  }
-  /* ******************************************************************** */
-  /* Groups grades gathering ******************************************** */
-  for (var i = 0; i < groups.length; i++) {
-    var rowGrp = groups[i];
-    for (var j = 0; j < evaluations.length; j++) {
-      var rowEv = evaluations[j];
-      if (rowEv.grdEv !== 'presenting' && rowGrp.groupId === rowEv.grpEv) {
-        rowEv.indivStatus === 'professor' ?
-          groups[i].gradesProfs.push(rowEv.grdEv) :
-          groups[i].gradesPeers.push(rowEv.grdEv);
-      }
-    }
-  }
-  /* ******************************************************************** */
-  /* Groups averages calculus ******************************************* */
-  for (var i = 0; i < groups.length; i++) {
-    var rowGrp = groups[i];
-    var avgPeers = rowGrp.gradesPeers.reduce(function(a, b) { return a + b; }, 0) / rowGrp.gradesPeers.length,
-        avgProfs = rowGrp.gradesProfs.length?
-          rowGrp.gradesProfs.reduce(function(a, b) { return a + b; }, 0) / rowGrp.gradesProfs.length
-          : avgPeers;
-    groups[i].averagePeers = avgPeers;
-    groups[i].averageProfs = avgProfs;
-    groups[i].averageAll = (avgPeers/2 + avgProfs/2).toFixed(1);
-  }
-  var grpClean = groups.map(function(x) {
-    return {
-      grp: x.groupeId,
-      averagePeers: x.averagePeers,
-      averageProfs: x.averageProfs
-    };
-  });
+  participantsIDs= [...new Set(enrichedEvaluations.map(eval => eval.graderEmail))];
+  studentsIDs    = [...new Set(enrichedEvaluations.filter(eval=>eval.evalGrade==='presenting').map(eval=>eval.graderEmail) )];
+  students= studentsIDs.map(function(studentEmailAsId){ return createParticipants(enrichedEvaluations,studentEmailAsId)})
+    .filter(function (eval) { return eval.graderStatus === 'student';}); // only true students, no observers nor professors
+  cl(['/ participantsIDs=[]: ',participantsIDs.length,participantsIDs]); // Participants list
+  cl(['/ studentsIDs=[]: ',studentsIDs.length,studentsIDs]); // Students list
 
-  /* ******************************************************************** */
-  /* Adjustments ******************************************************** */
-  /* Fill averageProfs for students never reviewed by prof ************** */
-  for (var i = 0; i < students.length; i++) {
-    for (var j = 0; j < groups.length; j++) {
-      if (!students[i].averageProfs && students[i].indivGroupId === groups[j].groupId) {
-        students[i].averageProfs = groups[j].averageProfs || students[i].averagePeers ;
-      }
-    }
-  }
- // cl(["10/ groups[0]: ", JSON.stringify(groups)]);
+  var groupsIDs = [...new Set(enrichedEvaluations.map(eval => eval.graderGroupId))];
+  groups  = groupsIDs.filter(g=>!g.match('Prof')).map(g => createGroups(enrichedEvaluations,g));   // only true students ??
+  cl(['/ groupsIDs=[]: ',groupsIDs.length,groupsIDs]); // groups list
 
-
-
-  /* ******************************************************************** */
-  /* NORMALNESS SCORE *************************************************** */
-  /* ******************************************************************** */
-  /* ******************************************************************** */
-  /* SeriousnessAssessment (function) *********************************** */
-  var seriousnessAssessment = function(avg,gradeGiven,bonus, counter,perfect,typical){
-				perfect = perfect || 20,
-				typical = perfect&&typical?typical:0.75*perfect;
-    var distance  = Math.abs(avg - gradeGiven),
-				normalness=0;
-		// Linear, 1d:
-		// normalness = perfect - distance;
-		/* Linear, 5d:
-       normalness = perfect - distance*5; */
-		/* Discrete :
-    if      (distance<=0.05*perfect){ normalness=1.0*perfect; }
-    else if (distance<=0.1*perfect) { normalness=0.8*perfect; }
-    else if (distance<=0.2*perfect) { normalness=0.5*perfect; }
-    else if (distance<=0.3*perfect) { normalness=0.3*perfect; }
-    else { normalness= 0; } */
-		// Sigmoid_function > Logistic function
-		// var y = 1 / (1 + Math.exp(x));  // y = 1/(1+e^x)
-		/* Louis degration polinomiale : */
-			normalness = perfect
-				- 1*Math.pow(Math.abs(avg-gradeGiven),2)
-				+ 1*Math.abs(avg-typical);
-		/**/
-		console.log('normalness: ',normalness);
-		console.log('distance: ',distance);
-		if(normalness>perfect){ normalness=perfect; }
-		if(normalness<0){ normalness=0; }
-    bonus= bonus + normalness;
-    counter= counter+1;
-    return [bonus,counter,normalness];
-  };
-
-  /* ******************************************************************** */
-  /* Seriousness calculation ******************************************** */
-  for (var i=0; i< students.length; i++){
-    var bonus=0, counter=0, averageTrust=0,
-        item = students[i];
-    var grdGiven = item.gradesGiven,
-        name = item.indivEmail;
-    for (var j=0;j<grdGiven.length;j++){
-      var grp = grdGiven[j][0],
-          grd = grdGiven[j][1];
-      for (var k=0;k<groups.length;k++){ //2
-        if(grp === groups[k].groupId && typeof grd === 'number'){
-          var avgProfs= groups[k].averageProfs,
-              avgAll  = groups[k].averageAll;
-          var res = seriousnessAssessment(avgAll,grd,bonus,counter,20,15),
-          bonus   = res[0],
-          counter = res[1];
-          var bump= res[2];
-//        cl(['Seriousness -- Eval by x:',[groupId,grd],'; Eval by all:',[groupId,avgAll],'=> ',bump]);
-        }
-      }
-    }
-    students[i].normalness =(bonus/counter).toFixed(1);
-    // cl(['Seriousness overall for',name,bonus.toFixed(1),'/',counter,': ',students[i].normalness]);
-  }
+ addAverageProfsOrPeersWhenMissing(students,groups);
 
   /* ******************************************************************** */
   /* FINAL STUDENT SCORE ************************************************ */
   /* ******************************************************************** */
-  /* Final grade injection ************** */
-  for (var i = 0; i < students.length; i++) {
-    var row = students[i],
-      sum = .50*(row.averageProfs) + .25*row.averagePeers + .25*row.normalness;
-      students[i].finalGrade = +sum.toFixed(1);
-  }
-  for (var i = 0; i < students.length; i++) {
-    var row = students[i],
-      sum = 0.66*(row.averageProfs) + 0.34*row.averagePeers + 0*row.normalness;
-      students[i].finalGradePP = +sum.toFixed(1);
-  }
-  cl('11/ students > add "finalGrade"'); // students with grades
+// Based on averagePeers, averagePeers, averageNormalness and defined weights, creates and adds a final grade column and value.
+var students = addFinalGrades(students,ratioProfs=.5,ratioPeers=.25,ratioNormalness=.25,targetColumn='finalGrade');
+var students = addFinalGrades(students,.66,.34,0,'finalGradePP');
+console.log(students[0])
 
-
-
-  /* ******************************************************************** */
-  /* FOTA *************************************************************** */
-  var addRank = function(input,basedOnCol,returnedCol){
-    for(var i = 0; i<input.length; i++){
-    	if(i !=0 && input[i][basedOnCol] == input[i-1][basedOnCol]){
-      	input[i][returnedCol]=input[i-1][returnedCol];
-      } else { input[i][returnedCol] = i; }
-    }
-  	return input;
-  };
-
-  var findExtremsOnTwinColum = function(input,basedOnCol,returnedCol){
-  	var minBaseCol,
-    		maxBaseCol,
-    		minReturnCol,
-        maxReturnCol;
-    for(var i=0; i<input.length; i++){
-    	 	if(minBaseCol===undefined || input[i][basedOnCol] < minBaseCol){ minBaseCol = input[i][basedOnCol]; minReturnCol = input[i][returnedCol]; }
-    	 	if(maxBaseCol===undefined || input[i][basedOnCol] > maxBaseCol){ maxBaseCol = input[i][basedOnCol]; maxReturnCol = input[i][returnedCol]; }
-    }
-    return { "min": minReturnCol, "max": maxReturnCol};
-  }
-  // given min, max, and data.length, assign a FOPA key with levant value.
-  var addFopa = function(data,referenceCol,resultCol,min,max){
-  	var output = data;
-  	var distance = (max-min)/(data.length-1);
-  	for(var i=0; i<output.length; i++){
-      console.log(max, i+1, output[i][referenceCol], distance);
-    	output[i][resultCol] = +(max - (output[i][referenceCol])*distance).toFixed(3);
-    }
-    return output;
-  }
   /* ************************************************************************* */
   // FOPA ALGO ******************************************************************** */
   /* var min = findExtrems(data).min,
@@ -436,28 +446,13 @@ function showInfo(data,tabletop,eventNum) {
   /* DATA CLEANING ****************************************************** */
   /* ******************************************************************** */
   /* SORTING ************************************************************ */
-  var studentsSort = sortJSON(students,'indivId', '123')
-  cl(['12/ students > sorted: ',studentsSort.length, studentsSort]); // students with grades
-  /* ******************************************************************** */
-  /* Pre-TABLE ********************************************************** * /
-  var finalDataForm = function(item){
-    // THIS IS NEEDS, GIVES STRUCTURE TO TABLE
-    return {
-      "indivId"     : item.indivId,
-      "averageProfs": item.averageProfs,
-      "averagePeers": item.averagePeers,
-      "normalness"  : item.normalness,
-      "finalGrade"  : item.finalGrade,
-      "indivFamily" : item.indivFamily,
-      "indivEmail"  : item.indivEmail
-    }
-  }
-  var studentsSortAverages = studentsSort.map(finalDataForm);
-  cl(['13/ studentsReformated: ',studentsSortAverages.length, studentsSortAverages]); // students with grades
+  var studentsSort = sortJSON(students,'graderId', '123')
+  cl(['Students > sorted: \n',studentsSort.length, studentsSort]); // students with grades
+
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["date","indivId","indivGender","profReviewed","averageProfs","averagePeers","normalness","finalGrade","rank","fopa","rankPP","fopaPP","finalGradePP","indivFamily","indivEmail"]; //,"indivCity"
+  var cols = ["evalDate","graderId","graderGender","profReviewed","averageProfs","averagePeers","averageGiven","averageNormalness","finalGrade","rank","fopa","rankPP","fopaPP","finalGradePP","graderFamily","graderEmail"]; //,"graderCity"
   $(".activity:last").append('<h4>Table</h4>')
   tablify(studentsSort,cols,eventNum);
   $(".activity:last").append('<h4>Violins</h4>')
