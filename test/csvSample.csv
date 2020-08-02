@@ -1,0 +1,13 @@
+name,email,group,role
+G01a,g01a@m.io,1,student
+G01b,g01b@m.io,1,student
+G01c,g01c@m.io,1,student
+G02a,G02a@m.io,2,student
+G02b,G02b@m.io,2,student
+G02c,G02c@m.io,2,student
+G03a,g03a@m.io,3,student
+G01b,g03b@m.io,3,student
+G01c,g03c@m.io,3,student
+G04a,G04a@m.io,4,student
+G04b,G04b@m.io,4,student
+G04c,G04c@m.io,4,student
