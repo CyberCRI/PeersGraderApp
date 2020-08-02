@@ -1,0 +1,8 @@
+name,email,group,role
+G01a,stephane.jabol@cri-paris.org,1,student
+G02a,hugo.lopez@cri-paris.org,2,student
+G03a,g03a@m.io,3,student
+G04a,g04a@m.io,4,student
+G05a,g05a@m.io,5,student
+P01,p01@m.io,teacher,teacher
+P02,p02@m.io,teacher,teacher
