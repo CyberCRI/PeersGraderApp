@@ -157,6 +157,7 @@ var evalToDemo = function(eval){ // convert enriched evaluation into dual demogr
   else { return {
    'from':eval.graderId,'fromGender':eval.graderGender,'fromFamily':eval.graderFamily,
    'evalGrade':eval.evalGrade,
+   'toReceivedAverage':'undefined', // <<<<<<<<<<<<<<<<<------------------------------------------------------------- NEXT TO FIX
    'to': eval.presenterId, 'toGender': eval.presenterGender,'toFamily':eval.presenterFamily,}
   }
  };
@@ -175,6 +176,7 @@ var averaging=(arrayOfNumbers) => { // important: all elements must be numbers
   return (arrayOfNumbers.reduce((a,b) => a+b, 0)/arrayOfNumbers.length).toFixed(1);
 };
 var participantGradesReceivedDistribution = (evaluations, emailAsId) => {
+  // participantAsPresenter.filter(eval => typeof eval.evalGrade ==='number').map(eval => eval.evalGrade)
   return evaluations.filter(eval => eval['presenterEmail']===emailAsId && typeof eval.evalGrade ==='number').map(eval => eval.evalGrade);
 };
 var participantGradesReceivedAverage      = (evaluations, emailAsId) => {
@@ -210,13 +212,17 @@ var participantGradesReceivedAverage      = (evaluations, emailAsId) => {
       gradePerfect = gradePerfect || 20, gradeTypical=gradeTypical || 15;
       var avg = participantGradesReceivedAverage(evaluations,eval.presenterEmail);
       return { // for each graded student, create a pre-normalness object which includs all received grades
-       'from':eval.graderId,'fromGender':eval.graderGender,'fromFamily':eval.graderFamily,
+       'from':eval.graderId,
+       'fromGender':eval.graderGender,
+       'fromFamily':eval.graderFamily,
        'evalGrade':eval.evalGrade,
        'evalDistanceToNorm': +(eval.evalGrade-avg).toFixed(2),
        'evalSeriousness': +seriousnessAssessment(avg,eval.evalGrade,gradePerfect,gradeTypical),
        'presenterGradesReceived': participantGradesReceivedDistribution(evaluations,eval.presenterEmail),
        'presenterGradesReceivedAverage': avg,
-       'to': eval.presenterId, 'toGender': eval.presenterGender,'toFamily':eval.presenterFamily }
+       'to': eval.presenterId,
+       'toGender': eval.presenterGender,
+       'toFamily':eval.presenterFamily }
      };
 /*    var seriousness = function(accumulator, currentValue, currentIndex, array) {
       return accumulator + currentValue
@@ -240,6 +246,7 @@ var createParticipants = function(evaluations, emailAsId, ratioProfs, ratioPeers
   //console.log('Prenormalness',curParticipantAsGrader,preNormalness);
   participant = {
     evalDate     : participantEval.evalDate,
+    evalRatios   : { ratioProfs: ratioProfs, ratioPeers: ratioPeers, ratioSeriousness: ratioSeriousness },
     graderStatus : participantEval.graderStatus,
     graderEmail  : participantEval.graderEmail,
     graderFamily : participantEval.graderFamily,
@@ -259,9 +266,9 @@ var createParticipants = function(evaluations, emailAsId, ratioProfs, ratioPeers
     averageNormalness: +(preNormalness.reduce((a,b) => a+b.evalSeriousness, 0) / preNormalness.length).toFixed(1),
     finalGrade  : null
   };
-  participant.profReviewed=  participant.gradesReceivedProfs.length? true:false;
-  participant.peersReviewed= participant.gradesReceivedPeers.length? true:false;
-  participant.averageAll = +(participant.averagePeers*ratioPeers + participant.averageProfs*ratioProfs).toFixed(1); // Does this equal 1 ????????
+  participant.reviewedByProfs=  participant.gradesReceivedProfs.length? true:false;
+  participant.reviewedByPeers= participant.gradesReceivedPeers.length? true:false;
+  participant.averageAll = +(participant.averagePeers*ratioPeers + participant.averageProfs*ratioProfs + participant.averageNormalness * ratioSeriousness ).toFixed(1); // Does this equal 1 ????????
   // fail safe;
   return participant;
 };
@@ -271,7 +278,7 @@ var createParticipants = function(evaluations, emailAsId, ratioProfs, ratioPeers
 /* Fill averageProfs for students never reviewed by prof ************** */
 var addAverageProfsOrPeersWhenMissing = function (students,groups){
   students.forEach(function(student, i) {
-    if(student.profReviewed=== false){ // no professor reviewed the students
+    if(student.reviewedByProfs=== false){ // no professor reviewed the students
       console.warn(`Warning: abnormal number of evaluation by professors (0).\n
       Please organize at least one teacher evaluation for `+student.graderFamily+` (`+student.graderId+`: `+student.graderEmail+`).`);
       var groupOfTheStudent = groups.find(group => group.groupId === student.graderGroupId);
@@ -358,7 +365,7 @@ var addFopa = function(data,referenceCol,resultCol,gradesMin,gradesMax){
   var output = data;
   var normalisedDistancesBetweenResultGrades = (gradesMax-gradesMin)/(data.length-1);
   for(var i=0; i<data.length; i++){
-    output[i][resultCol] = +(gradesMax - (output[i][referenceCol])*normalisedDistancesBetweenResultGrades).toFixed(3);
+    output[i][resultCol] = +(gradesMax - (output[i][referenceCol]-1)*normalisedDistancesBetweenResultGrades).toFixed(3);
   }
   return output;
   //return output.map(item => (item) { item[resultCol] = +(gradesMax - (output[i][referenceCol])*normalisedDistancesBetweenResultGrades).toFixed(3 ; return item;})
@@ -427,17 +434,17 @@ console.log(students[0])
   // FOPA ALGO ******************************************************************** */
   /* var min = findExtrems(data).min,
   		max = findExtrems(data).max; */
-  var ext = findExtremsOnTwinColum(students,'finalGrade','averageProfs'),
-  		min = ext.min,
-  		max = ext.max;
+  var extrems = findExtremsOnTwinColum(students,'finalGrade','averageProfs'),
+  		min = extrems.min,
+  		max = extrems.max;
   var _dataSorted = sortJSON(students, 'finalGrade', '321');
   var _dataRanked = addRank(_dataSorted,'finalGrade','rank')
   var _dataFopaed = addFopa(_dataRanked,'rank','fopa', min, max);
 
   // FopqPP
-  var extPP = findExtremsOnTwinColum(students,'finalGradePP','averageProfs'),
-      minPP = extPP.min,
-      maxPP = extPP.max;
+  var extremsPP = findExtremsOnTwinColum(students,'finalGradePP','averageProfs'),
+      minPP = extremsPP.min,
+      maxPP = extremsPP.max;
   var _dataSortedPP = sortJSON(students, 'finalGradePP', '321');
   var _dataRankedPP = addRank(_dataSortedPP,'finalGradePP','rankPP')
   var _dataFopaedPP = addFopa(_dataRankedPP,'rankPP','fopaPP',minPP, maxPP);
@@ -452,7 +459,7 @@ console.log(students[0])
   /* ******************************************************************** */
   /* RENDERING ********************************************************** */
   /* ******************************************************************** */
-  var cols = ["evalDate","graderId","graderGender","profReviewed","averageProfs","averagePeers","averageGiven","averageNormalness","finalGrade","rank","fopa","rankPP","fopaPP","finalGradePP","graderFamily","graderEmail"]; //,"graderCity"
+  var cols = ["evalDate","graderId","graderGender","reviewedByProfs","averageProfs","averagePeers","averageGiven","averageNormalness","finalGrade","rank","fopa","rankPP","fopaPP","finalGradePP","graderFamily","graderEmail"]; //,"graderCity"
   $(".activity:last").append('<h4>Table</h4>')
   tablify(studentsSort,cols,eventNum);
   $(".activity:last").append('<h4>Violins</h4>')
