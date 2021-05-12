@@ -24,7 +24,7 @@
     "moment": "^2.22.2",
     "mongoose": "^5.7.5",
     "nanoid": "^1.0.3",
-    "nodemailer": "^4.6.7",
+    "nodemailer": "^6.4.16",
     "nodemailer-juice": "^1.0.1",
     "vue": "^2.5.2",
     "vue-good-table": "^2.13.0",
